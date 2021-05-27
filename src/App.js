@@ -16,10 +16,10 @@ function App() {
       <Router>
         <div>
           <Switch>
-            <Route exact path="/log-in">
-              <LogInPage />
+            <Route exact path="/log-in"> {/* Natasha */}
+              <LogInPage /> 
             </Route>
-            <Route exact path="/dashboard">
+            <Route exact path="/dashboard"> {/* Natasha */}
               <Dashboard/>
             </Route>
           </Switch>
