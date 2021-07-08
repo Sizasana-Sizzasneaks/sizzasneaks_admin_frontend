@@ -8,6 +8,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Dashboard from "./Dashboard.js"
 import { BrowserRouter as Router, Route }from "react-router-dom";
 import { withRouter } from 'react-router-dom';
+import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 
 function LogInPage(){
 
@@ -17,10 +18,11 @@ function LogInPage(){
     const bstyle={margin: "8px 0"
 
     }
+    
 
     return(
       
-       <div className="LogInPage">
+       <div className="LogInPage" noValidate autoComplete="Off">
             {/* <h1>Admin Login</h1> */}
 
             <Grid>
@@ -31,10 +33,12 @@ function LogInPage(){
                     </Grid>
                     <Box align="center">
                     <Container>  
-                   <TextField label="Email" placeholder="Enter email"  variant="outlined" />
+                   <TextField label="Email" id= "new" placeholder="Enter email"  variant="outlined" 
+                     
+                   />
                    </Container>
                 <Container>
-                   <TextField label="Password" placeholder="Enter password" type="password" style={tstyle} variant="outlined"/>
+                   <TextField label="Password" placeholder="Enter password" type="password" style={tstyle} variant="outlined" />
                     </Container>
 
 <Container>
@@ -49,7 +53,7 @@ function LogInPage(){
       />
        </Container>
 
-        <Button type="submit" color="primary" style={bstyle}  variant="contained">SIGN IN</Button>
+        <Button type="submit" color="primary" style={bstyle}  variant="contained" >SIGN IN</Button>
       
            <Typography>
            <Link href="#" >
