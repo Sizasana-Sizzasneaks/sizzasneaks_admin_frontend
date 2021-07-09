@@ -8,7 +8,11 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Dashboard from "./Dashboard.js"
 import { BrowserRouter as Router, Route }from "react-router-dom";
 import { withRouter } from 'react-router-dom';
+<<<<<<< HEAD
 import  useStyles  from "../general/style";
+=======
+import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
+>>>>>>> 1aab81924d7826a178aa2c0360807fbbeabf11cd
 
 function LogInPage(){
 
@@ -19,13 +23,17 @@ function LogInPage(){
     const bstyle={margin: "8px 0", backgroundColor:"#02ced1"
 
     }
+<<<<<<< HEAD
    
+=======
+    
+>>>>>>> 1aab81924d7826a178aa2c0360807fbbeabf11cd
 
     return(
 
       <form className={classes.root} noValidate autoComplete="off">
       
-       <div className="LogInPage">
+       <div className="LogInPage" noValidate autoComplete="Off">
             {/* <h1>Admin Login</h1> */}
 
             <Grid>
@@ -38,12 +46,22 @@ function LogInPage(){
                     <Box align="center">
 
                     <Container>  
+<<<<<<< HEAD
                    <TextField label="Email" placeholder="Enter email"  variant="outlined"  style = {tstyle}/>
+=======
+                   <TextField label="Email" id= "new" placeholder="Enter email"  variant="outlined" 
+                     
+                   />
+>>>>>>> 1aab81924d7826a178aa2c0360807fbbeabf11cd
                    </Container>
 
                 <Container>
+<<<<<<< HEAD
                    <TextField label="Password" placeholder="Enter password" type="password" style={tstyle} variant="outlined"
                  />
+=======
+                   <TextField label="Password" placeholder="Enter password" type="password" style={tstyle} variant="outlined" />
+>>>>>>> 1aab81924d7826a178aa2c0360807fbbeabf11cd
                     </Container>
 
 <Container>
@@ -58,7 +76,11 @@ function LogInPage(){
       />
        </Container>
 
+<<<<<<< HEAD
         <Button type="submit" color="primary" style={bstyle}  variant="contained" >Submit</Button>
+=======
+        <Button type="submit" color="primary" style={bstyle}  variant="contained" >SIGN IN</Button>
+>>>>>>> 1aab81924d7826a178aa2c0360807fbbeabf11cd
       
            <Typography>
            <Link href="#" >
