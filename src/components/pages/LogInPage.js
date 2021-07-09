@@ -8,17 +8,22 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Dashboard from "./Dashboard.js"
 import { BrowserRouter as Router, Route }from "react-router-dom";
 import { withRouter } from 'react-router-dom';
+import  useStyles  from "../general/style";
 
 function LogInPage(){
 
+    const classes = useStyles();
     const paperStyle={padding:20, height:"55vh", width:700, margin:"20px auto"}
-    const avatarStyle={backgroundColor:"green"}
-    const tstyle= {margin: "20px"}
-    const bstyle={margin: "8px 0"
+    const avatarStyle={backgroundColor:"#02ced1"}
+    const tstyle= {margin: "20px", width: 400}
+    const bstyle={margin: "8px 0", backgroundColor:"#02ced1"
 
     }
+   
 
     return(
+
+      <form className={classes.root} noValidate autoComplete="off">
       
        <div className="LogInPage">
             {/* <h1>Admin Login</h1> */}
@@ -29,12 +34,16 @@ function LogInPage(){
                     <Avatar style={avatarStyle}><PersonIcon/></Avatar>
                      <h2>Sign In</h2>
                     </Grid>
+
                     <Box align="center">
+
                     <Container>  
-                   <TextField label="Email" placeholder="Enter email"  variant="outlined" />
+                   <TextField label="Email" placeholder="Enter email"  variant="outlined"  style = {tstyle}/>
                    </Container>
+
                 <Container>
-                   <TextField label="Password" placeholder="Enter password" type="password" style={tstyle} variant="outlined"/>
+                   <TextField label="Password" placeholder="Enter password" type="password" style={tstyle} variant="outlined"
+                 />
                     </Container>
 
 <Container>
@@ -49,7 +58,7 @@ function LogInPage(){
       />
        </Container>
 
-        <Button type="submit" color="primary" style={bstyle}  variant="contained">SIGN IN</Button>
+        <Button type="submit" color="primary" style={bstyle}  variant="contained" >Submit</Button>
       
            <Typography>
            <Link href="#" >
@@ -63,7 +72,7 @@ function LogInPage(){
             </Grid>
 
        </div>
-
+       </form>
 
     )
 

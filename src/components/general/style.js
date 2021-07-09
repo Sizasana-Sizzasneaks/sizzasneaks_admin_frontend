@@ -3,9 +3,7 @@ const useStyles = makeStyles((theme) => ({
     grow: {
         flexGrow: 1,
     },
-    menuButton: {
-        marginRight: theme.spacing(2),
-    },
+   
     title: {
         display: 'none',
         [theme.breakpoints.up('sm')]: {
@@ -27,18 +25,18 @@ const useStyles = makeStyles((theme) => ({
             width: 'auto',
         },
     },
-    searchIcon: {
-        padding: theme.spacing(0, 2),
-        height: '100%',
-        position: 'absolute',
-        pointerEvents: 'none',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
+   
     inputRoot: {
         color: 'inherit',
     },
+
+    root: {
+        '& .MuiTextField-root': {
+            margin: theme.spacing(1),
+            width: 200,
+          },
+    },
+
     inputInput: {
         padding: theme.spacing(1, 1, 1, 0),
         // vertical padding + font size from searchIcon
@@ -61,6 +59,8 @@ const useStyles = makeStyles((theme) => ({
             display: 'none',
         },
     },
+   
+      
 }));
 
 export default useStyles;
