@@ -1,4 +1,5 @@
 import "./App.css";
+import { useSelector } from "react-redux";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 //App Components
@@ -6,11 +7,15 @@ import Navbar from "./components/general/Navbar.js";
 import Footer from "./components/general/Footer.js";
 import { Container } from "react-bootstrap";
 
+
 //Pages
 import Dashboard from "./components/pages/Dashboard.js";
 import LogInPage from "./components/pages/LogInPage.js";
 
+
 function App() {
+  
+
   return (
     <>
       <Router>

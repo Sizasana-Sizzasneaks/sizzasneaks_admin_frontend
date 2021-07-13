@@ -1,5 +1,19 @@
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 
+
+/* ------------------------Natasha-Added------------------------------ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body{
+  background: rgb(236, 236, 236);
+}
+
+/* ------------------------------------------------------------ */
+
 .row {
   margin: 0;
   padding: 0;
@@ -13,9 +27,13 @@
 nav p {
   margin-bottom: 0;
 }
+
 .App {
   text-align: center;
-}
+  font-family: sans-serif;
+    
+  }
+  
 
 .App-logo {
   height: 40vmin;
@@ -227,5 +245,6 @@ footer {
 .payment-container {
   margin-left: auto;
 }
+
 
 
