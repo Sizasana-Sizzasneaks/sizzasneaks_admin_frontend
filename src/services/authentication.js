@@ -6,7 +6,7 @@ export const logIn = (email, password) => {
 
   //getUserDetails();
 
-  firebase
+ return firebase
     .auth()
     .setPersistence(firebase.auth.Auth.Persistence.SESSION)
     .then(() => {
@@ -15,7 +15,7 @@ export const logIn = (email, password) => {
         .signInWithEmailAndPassword(email, password)
         .then((user) => {
           console.log("admin signedIn");
-          return { ok: true, message: null };
+          return { ok: true, message: "Successful Log In"};
         })
         .catch((error) => {
           console.log("Log In Error");

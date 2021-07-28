@@ -1,17 +1,10 @@
 import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import {useSelector} from "react-redux";
-import NavbarLog from "./Navbar Login";
 
-//isEmpty === true then display adminlog in  nav else display this one
 function Navbar() {
-  var isLoggedIn=useSelector((state)=> state.firebase.auth.isEmpty);
-  console.log(isLoggedIn);
   return (
-    <div>
-      {isLoggedIn ? <NavbarLog/> :
-      <nav>
+    <nav>
       <div className="navbar-banner">
         <Container
           fluid="xl"
@@ -32,7 +25,7 @@ function Navbar() {
             </Col>
 
 
-            <Col xs={2} style={{ padding: "0", marginLeft: "auto"  }}>
+            {/* <Col xs={2} style={{ padding: "0", marginLeft: "auto"  }}>
               <Row className="top-right-nav-banner-links">
                 <Col
                   xs={5}
@@ -58,7 +51,7 @@ function Navbar() {
                   </Link>
                 </Col>
               </Row>
-            </Col>
+            </Col> */}
           </Row>
         </Container>
       </div>
@@ -69,36 +62,13 @@ function Navbar() {
         >
           <div style={{ display: "flex", height: "100%" }}>
             <div style={{ height: "100%", display: "inline-block" }}>
-              <NavabarNavigationLink label="Dashboard"  />
-              <NavabarNavigationLink label="Orders" />
-              <NavabarNavigationLink label="Inventory" />
-             
+              <p className="sub-nav"> Adminstration Log In</p>      
             </div>
             
           </div>
         </Container>
       </div>
     </nav>
-    }
-    </div>
-  );
-}
-
-function NavabarNavigationLink(props) {
-  return (
-    <div
-      className="navbarNavigationLink"
-      onClick={function () {
-        alert("Coming Soon");
-      }}
-    >
-      <p style={{}}>{props.label}</p>
-      {props.expandable && (
-        <span class="material-icons" style={{ marginLeft: "10px" }}>
-          expand_more
-        </span>
-      )}
-    </div>
   );
 }
 

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 //App Components
 import Navbar from "./components/general/Navbar.js";
+import NavbarLog from "./components/general/Navbar Login";
 import Footer from "./components/general/Footer.js";
 import { Container } from "react-bootstrap";
 
@@ -14,7 +15,7 @@ function App() {
   return (
     <>
       <Router>
-        <Navbar />
+        <Navbar/>
         <Container fluid="xl" style={{ padding: "0" }}>
           <div>
             <Switch>
@@ -31,7 +32,7 @@ function App() {
               <Route exact path="/">
                 {" "}
                 {/* Natasha */}
-                <Dashboard />
+                <LogInPage />
               </Route>
             </Switch>
           </div>
