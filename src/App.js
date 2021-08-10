@@ -14,6 +14,7 @@ import Dashboard from "./components/pages/Dashboard.js";
 import LogInPage from "./components/pages/LogInPage.js";
 import InventoryPage from "./components/pages/InventoryPage.js";
 import InventoryItemPage from "./components/pages/InventoryItemPage.js";
+import UpdateInventoryItemPage from "./components/pages/UpdateInventoryItemPage.js";
 
 //Redux Store
 import store from "./redux/index.js";
@@ -83,6 +84,11 @@ function App() {
                   {" "}
                   {/* Natasha */}
                   <InventoryItemPage />
+                </Route>
+                <Route exact path="/inventory/update/:id">
+                  {" "}
+                  {/* Natasha */}
+                  <UpdateInventoryItemPage />
                 </Route>
                 <Route exact path="/">
                   {" "}
