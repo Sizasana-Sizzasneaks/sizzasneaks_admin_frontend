@@ -16,7 +16,7 @@ import store from "./redux/index.js";
 dotenv.config();
 
 const rrfConfig = {
-    userProfile: 'users'
+    // userProfile: 'users'
     // useFirestoreForProfile: true // Firestore for Profile instead of Realtime DB
   }
 
