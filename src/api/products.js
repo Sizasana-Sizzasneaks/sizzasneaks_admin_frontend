@@ -103,3 +103,36 @@ export const getProduct = async (id) => {
     return getCurrentUserIdTokenResult;
   }
 };
+
+export const createProduct = async (productData) => {
+  var getCurrentUserIdTokenResult = await getCurrentUserIdToken();
+
+  if (getCurrentUserIdTokenResult.ok === true) {
+    const config = {
+      headers: {
+        credentialclaims: "administrator",
+        Authorization: "Bearer " + getCurrentUserIdTokenResult.data,
+      },
+    };
+
+    return axios
+      .post(API_CONSTANTS.PRODUCTS_ROUTE, { product: productData }, config)
+      .then((res) => {
+        return res.data;
+      })
+      .catch((error) => {
+        console.log(error.message);
+
+        if (error.message === "Network Error") {
+          return {
+            ok: false,
+            message: "Network Error - Please Check your Internet Connection",
+          };
+        }
+       
+        return { ok: false, message: "Error Creating New Product." };
+      });
+  } else {
+    return getCurrentUserIdTokenResult;
+  }
+};
