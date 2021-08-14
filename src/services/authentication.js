@@ -1,12 +1,9 @@
 import { getFirebase } from "react-redux-firebase";
-import { getUserDetails } from "../api/user";
 
 export const logIn = (email, password) => {
   var firebase = getFirebase();
 
-  //getUserDetails();
-
- return firebase
+  return firebase
     .auth()
     .setPersistence(firebase.auth.Auth.Persistence.SESSION)
     .then(() => {
@@ -15,7 +12,7 @@ export const logIn = (email, password) => {
         .signInWithEmailAndPassword(email, password)
         .then((user) => {
           console.log("admin signedIn");
-          return { ok: true, message: "Successful Log In"};
+          return { ok: true, message: "Successful Log In" };
         })
         .catch((error) => {
           console.log("Log In Error");
@@ -26,33 +23,21 @@ export const logIn = (email, password) => {
       var errorCode = error.code;
       var errorMessage = error.message;
     });
-
-  // return firebase
-  //   .auth()
-  //   .signInWithEmailAndPassword(email, password)
-  //   .then((user) => {
-  //     console.log("admin signedIn");
-  //     return { ok: true, message: null };
-  //   })
-  //   .catch((error) => {
-  //     console.log("Log In Error");
-  //     return { ok: false, message: "Log In Error" };
-  //   });
 };
 
 //get CurrentUserIDToken
-export const getCurrentUserIdToken = () => {
+export const getCurrentUserIdToken = async () => {
   var firebase = getFirebase();
-
-  return firebase
+  var output;
+  await firebase
     .auth()
     .currentUser.getIdToken(true)
     .then((idToken) => {
-      console.log("something happened");
-      return { ok: true, data: idToken };
+      output = { ok: true, data: idToken };
     })
     .catch((error) => {
-      console.log("nothing happened");
-      return { ok: false, error: error };
+      output = { ok: false, message: "Failed to get Id Token" };
     });
+
+  return output;
 };

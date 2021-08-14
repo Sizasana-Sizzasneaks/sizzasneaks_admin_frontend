@@ -7,7 +7,7 @@ import NavbarLog from "./Navbar Login";
 //isEmpty === true then display adminlog in  nav else display this one
 function Navbar() {
   var isLoggedIn=useSelector((state)=> state.firebase.auth.isEmpty);
-  console.log(isLoggedIn);
+  
   return (
     <div>
       {isLoggedIn ? <NavbarLog/> :
@@ -69,9 +69,9 @@ function Navbar() {
         >
           <div style={{ display: "flex", height: "100%" }}>
             <div style={{ height: "100%", display: "inline-block" }}>
-              <NavabarNavigationLink label="Dashboard"  />
-              <NavabarNavigationLink label="Orders" />
-              <NavabarNavigationLink label="Inventory" />
+              <NavabarNavigationLink label="Dashboard" route="" />
+              <NavabarNavigationLink label="Orders" route="Comming Soon" />
+              <NavabarNavigationLink label="Inventory" route="inventory" />
              
             </div>
             
@@ -86,11 +86,9 @@ function Navbar() {
 
 function NavabarNavigationLink(props) {
   return (
+    <Link to={"/" + props.route}>
     <div
       className="navbarNavigationLink"
-      onClick={function () {
-        alert("Coming Soon");
-      }}
     >
       <p style={{}}>{props.label}</p>
       {props.expandable && (
@@ -99,6 +97,7 @@ function NavabarNavigationLink(props) {
         </span>
       )}
     </div>
+    </Link>
   );
 }
 
