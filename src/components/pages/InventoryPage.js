@@ -171,7 +171,7 @@ function InventoryPage(props) {
             />
           </Col>
         </Row>
-        <Row>
+        <Row >
           <Col>
             {" "}
             <SearchInputField

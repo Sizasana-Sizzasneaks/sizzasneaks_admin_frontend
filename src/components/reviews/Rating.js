@@ -3,11 +3,9 @@ import React from "react";
 import Styles from "./Rating.module.css";
 
 function Rating(props) {
-  // var [rating, setRating] = React.useState(props.initial || 0);
 
   function rate(rateValue) {
     if (typeof props.mutable !== "undefined" || props.mutable === false) {
-      //setRating(rateValue);
     }
     if (typeof props.trackRating !== "undefined") {
       props.trackRating(rateValue);
