@@ -1,0 +1,15 @@
+.Info {
+  font-weight: 300;
+}
+
+.Info:hover {
+    cursor: pointer;
+  }
+
+.TopLine {
+  margin-bottom: 8px;
+}
+
+.LeftAlign {
+  text-align: right;
+}

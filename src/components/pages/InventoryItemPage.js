@@ -1,10 +1,16 @@
 import React from "react";
+import { Row} from "react-bootstrap";
+import Styles from "./InventoryItemPage.module.css";
 import { useParams } from "react-router-dom";
 import { getProduct } from "../../api/products.js";
 import {
   getReviewsByProductId,
   deleteReviewByReviewId,
 } from "../../api/review.js";
+
+import ProductDetailsCard from "../inventory/ProductDetailsCard";
+import ReviewBox from "../reviews/ReviewBox.js";
+import Button from "../general/Button.js";
 
 function InventoryItemPage(props) {
   var { id } = useParams();
@@ -22,6 +28,7 @@ function InventoryItemPage(props) {
 
       if (getProductResult.ok === true) {
         //Product Item is at index 0 of date
+        setProduct(getProductResult.data[0]);
         console.log(getProductResult.data[0]);
       } else {
         console.log(getProductResult);
@@ -35,9 +42,10 @@ function InventoryItemPage(props) {
     if (typeof product_id !== "undefined") {
       var getReviewsResult = await getReviewsByProductId(product_id);
       if (getReviewsResult.ok === true) {
-        //Reviews are at .data.reviews - its an Arrray
+        //Reviews are at .data.reviews - its an Array
         //rating average is at .data.ratingAverage - its an Integer
         //reviewCount is at .data.reviewCount - its an Integer
+        setReviews(getReviewsResult.data);
         console.log(getReviewsResult.data);
       } else {
         console.log(getReviewsResult);
@@ -52,16 +60,16 @@ function InventoryItemPage(props) {
       var deleteReviewResult = await deleteReviewByReviewId(review_id);
 
       if (deleteReviewResult.ok === true) {
-        //Delete Of review Succesfull
+        //Delete Of review Successful
         //Notify User by Displaying message on screen
         //Then refresh product Reviews
-        console.log("Delete was Succesfull");
+        console.log("Delete was Successful");
         console.log(deleteReviewResult);
       } else {
-        //Delete Of review Not Succesfull
+        //Delete Of review Not Successful
         //Notify User by Displaying message on screen
         //Dont bother refreshing product Reviews
-        console.log("Delete was Not Succesfull");
+        console.log("Delete was Not Successful");
         console.log(deleteReviewResult);
       }
     } else {
@@ -70,9 +78,31 @@ function InventoryItemPage(props) {
   }
 
   return (
-    <div>
-      <p>Inventory Item Page</p>
-      {/* <p>{products && products}</p> */}
+    <div className={Styles.InventoryItemPage}>
+      <Row className={Styles.EditButtonSegment}>
+        <Button
+          label="Edit"
+          styles={{ backgroundColor: "#FADA35", marginLeft: "auto", width:"min-content" }}
+        />
+      </Row>
+
+      {product && (
+        <ProductDetailsCard
+          productId={product._id}
+          productName={product.productName}
+          brand={product.brand}
+          showProduct={product.showProduct ? "Visible" : "Hidden"}
+          Category={product.categories}
+          supplierCost={product.supplierCost}
+          supplierTax={product.supplierTaxAmount}
+          sellingTax={product.sellingPriceTaxAmount}
+          sellingPrice={product.sellingPrice}
+        />
+      )}
+
+      <Row className={Styles.ProductFurtherDetailsCard}></Row>
+      {/* <Row className={Styles.ProductRevenueCard}></Row> */}
+     {reviews && <ReviewBox reviews={reviews}/>}
     </div>
   );
 }
