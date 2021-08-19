@@ -9,7 +9,6 @@ src\services\authentication.js
 This file contains  the code that sets up firebase for user authentication.
 A user session is handled through firebase tailing when the user logged in and logged out.
 
-
 ----------------------------------------------------------------------------------------------------------
 src\services\dateManipulationFunctions.js
 
