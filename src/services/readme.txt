@@ -15,6 +15,13 @@ src\services\dateManipulationFunctions.js
 
 This file contains the functions used to manipulation the date object to track when a user interacts with the application.
 
+The functions in the file are:
+
+a) convertDateToString 
+ A date is instance is created and converted to a string format.
+
+b) getCurrentDateAsString
+  A date instance is created to be used in retrieving the full current date.
 ----------------------------------------------------------------------------------------------------------
 src\services\InputValidation.js
 
