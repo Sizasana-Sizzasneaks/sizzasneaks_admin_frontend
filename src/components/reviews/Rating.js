@@ -6,6 +6,7 @@ function Rating(props) {
 
   function rate(rateValue) {
     if (typeof props.mutable !== "undefined" || props.mutable === false) {
+      // setRating(rateValue);
     }
     if (typeof props.trackRating !== "undefined") {
       props.trackRating(rateValue);

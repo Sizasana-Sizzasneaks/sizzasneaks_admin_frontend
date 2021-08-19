@@ -15,7 +15,6 @@ This component is used to display a rating value between 1 and 5 into visual rat
 
 This component has the following properties:-
 
-
 ----------------------------------------------------------------------------------------------
 ReviewBox.js
 
