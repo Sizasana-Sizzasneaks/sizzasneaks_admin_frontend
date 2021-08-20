@@ -6,8 +6,8 @@ The following is a breakdown of all the this folders contents:-
 ----------------------------------------------------------------------------------------------------------
 src\services\authentication.js
 
-This file contains  the code that sets up firebase for user authentication.
-A user session is handled through firebase tailing when the user logged in and logged out.
+This file contains functions associated with authentication of a user, this may include Login, Sign Up
+functionality and the retrieval of user tokens, 
 
 ----------------------------------------------------------------------------------------------------------
 src\services\dateManipulationFunctions.js
@@ -24,5 +24,5 @@ b) getCurrentDateAsString
 ----------------------------------------------------------------------------------------------------------
 src\services\InputValidation.js
 
-This file contains the code that deals with user validation for authorized access to the SIZZASNEAKS e-commerce site.
-User validation takes palce when a user provides their data such as the email and the password to the application.
+This file contains the code that deals with input validation. Input from users is always checked against a corresponding 
+set of validation rules. THis help ensure that all data entered by users is in a valid format

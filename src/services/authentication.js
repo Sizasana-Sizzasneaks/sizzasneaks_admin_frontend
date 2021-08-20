@@ -21,6 +21,7 @@ export const logIn = (email, password) => {
         //if a user has signed in with an email and a password they get feedback
         .then((user) => {
           console.log("admin signedIn");
+          getCurrentUserIdToken();
           return { ok: true, message: "Successful Log In" };
         })
         //if signing in fails, the user gets an error from the application.
@@ -48,6 +49,7 @@ export const getCurrentUserIdToken = async () => {
     .auth()
     .currentUser.getIdToken(true)
     .then((idToken) => {
+      console.log(idToken);
       output = { ok: true, data: idToken };
     })
     .catch((error) => {
