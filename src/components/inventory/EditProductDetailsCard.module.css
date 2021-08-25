@@ -1,0 +1,31 @@
+
+.ProductDetailsCard {
+    background-color: white;
+    margin-top: 25px;
+    margin-bottom: 35px;
+    padding: 25px;
+  }
+  
+  .ProductDetailsHeader p {
+    font-size: 20px;
+  }
+  
+  .RightAlign p {
+    text-align: right;
+  }
+
+  .ProductDetailsLabel{
+   display: flex;
+   align-items: center;
+  }
+  
+  .ProductDetailsLabel p {
+    font-weight: 400;
+    margin-bottom: 0px;
+  }
+  
+  .SingleRow{
+
+    margin-bottom: 20px;
+
+  }

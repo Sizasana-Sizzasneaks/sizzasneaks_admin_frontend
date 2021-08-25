@@ -16,6 +16,7 @@ function UpdateInventoryItemPage(props) {
   var { id } = useParams();
 
   React.useEffect(() => {
+    getProductItem(id);
   }, []);
 
   async function getProductItem(product_id) {
