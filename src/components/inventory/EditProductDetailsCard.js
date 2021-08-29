@@ -1,13 +1,15 @@
-import { Input } from "@material-ui/core";
 import React from "react";
 import { Row, Col } from "react-bootstrap";
 import InputField from "../general/InputField.js";
 import Styles from "./EditProductDetailsCard.module.css";
+import BoxSelector from "../general/BoxSelector.js";
+import DropDownInput from "../general/DropDownInput.js";
 
 import {
   validateBasicString,
   validateFundsValue,
   validateVisibility,
+  validateCategories,
 } from "../../services/InputValidation.js";
 
 function EditProductDetailsCard(props) {
@@ -46,19 +48,35 @@ function EditProductDetailsCard(props) {
             error={props.productNameError}
           />
         </Col>
-        <Col xl={3}></Col>
+        <Col xl={2}></Col>
         <Col xl={2} className={Styles.ProductDetailsLabel}>
           <p>Supplier Cost:</p>
         </Col>
-        <Col xl={2} className={Styles.RightAlign}>
+        <Col xl={3} className={Styles.RightAlign}>
           <InputField
+            type="text"
+            inputStyle={{ textAlign: "right" }}
             value={props.supplierCost}
             onChange={async (value) => {
+              var newValue = value
+                .replace(/[^0-9.]/g, "")
+                .replace(/(\..*)\./g, "$1");
+
               if (typeof props.setSupplierCost !== "undefined") {
-                props.setSupplierCost(value);
+                props.setSupplierCost(newValue);
+              }
+            }}
+            onBlur={async (value) => {
+              var numberValue = parseFloat(value, 10);
+
+              var cleanValue =
+                Math.round((numberValue + Number.EPSILON) * 100) / 100;
+
+              if (typeof props.setSupplierCost !== "undefined") {
+                props.setSupplierCost(cleanValue);
               }
               if (typeof props.setSupplierCostError !== "undefined") {
-                var supplierCostCheck = await validateFundsValue(value);
+                var supplierCostCheck = await validateFundsValue(cleanValue);
                 props.setSupplierCostError(supplierCostCheck);
               }
             }}
@@ -71,7 +89,7 @@ function EditProductDetailsCard(props) {
         <Col xl={2} className={Styles.ProductDetailsLabel}>
           <p>Brand:</p>
         </Col>
-        <Col xl={2}>
+        <Col xl={3}>
           <InputField
             value={props.brand}
             onChange={async (value) => {
@@ -86,19 +104,33 @@ function EditProductDetailsCard(props) {
             error={props.brandError}
           />
         </Col>
-        <Col xl={4}></Col>
+        <Col xl={2}></Col>
         <Col xl={2} className={Styles.ProductDetailsLabel}>
           <p>Supplier Tax:</p>
         </Col>
-        <Col xl={2} className={Styles.RightAlign}>
+        <Col xl={3} className={Styles.RightAlign}>
           <InputField
             value={props.supplierTax}
+            inputStyle={{ textAlign: "right" }}
             onChange={async (value) => {
+              var newValue = value
+                .replace(/[^0-9.]/g, "")
+                .replace(/(\..*)\./g, "$1");
               if (typeof props.setSupplierTax !== "undefined") {
-                props.setSupplierTax(value);
+                props.setSupplierTax(newValue);
+              }
+            }}
+            onBlur={async (value) => {
+              var numberValue = parseFloat(value, 10);
+
+              var cleanValue =
+                Math.round((numberValue + Number.EPSILON) * 100) / 100;
+
+              if (typeof props.setSupplierTax !== "undefined") {
+                props.setSupplierTax(cleanValue);
               }
               if (typeof props.setSupplierTaxError !== "undefined") {
-                var supplierTaxCheck = await validateFundsValue(value);
+                var supplierTaxCheck = await validateFundsValue(cleanValue);
                 props.setSupplierTaxError(supplierTaxCheck);
               }
             }}
@@ -111,8 +143,8 @@ function EditProductDetailsCard(props) {
         <Col xl={2} className={Styles.ProductDetailsLabel}>
           <p>Visibility:</p>
         </Col>
-        <Col xl={2}>
-          <InputField
+        <Col xl={3}>
+          <DropDownInput
             value={props.visibility}
             onChange={async (value) => {
               if (typeof props.setVisibility !== "undefined") {
@@ -126,20 +158,34 @@ function EditProductDetailsCard(props) {
             error={props.visibilityError}
           />
         </Col>
-        <Col xl={4}></Col>
+        <Col xl={2}></Col>
         <Col xl={2} className={Styles.ProductDetailsLabel}>
           <p>Selling Tax:</p>
         </Col>
-        <Col xl={2} className={Styles.RightAlign}>
+        <Col xl={3} className={Styles.RightAlign}>
           <InputField
             value={props.sellingTax}
+            inputStyle={{ textAlign: "right" }}
             onChange={async (value) => {
+              var newValue = value
+                .replace(/[^0-9.]/g, "")
+                .replace(/(\..*)\./g, "$1");
               if (typeof props.setSellingTax !== "undefined") {
-                props.setSellingTax(value);
+                props.setSellingTax(newValue);
               }
-              if (typeof props.setSellingTaxError !== "undefined") {
-                var sellingTaxCheck = await validateFundsValue(value);
-                props.setSellingTaxError(sellingTaxCheck);
+            }}
+            onBlur={async (value) => {
+              var numberValue = parseFloat(value, 10);
+
+              var cleanValue =
+                Math.round((numberValue + Number.EPSILON) * 100) / 100;
+
+              if (typeof props.setSellingTax !== "undefined") {
+                props.setSellingTax(cleanValue);
+              }
+              if (typeof props.setSellingPriceError !== "undefined") {
+                var sellingPriceCheck = await validateFundsValue(cleanValue);
+                props.setSellingTaxError(sellingPriceCheck);
               }
             }}
             error={props.sellingTaxError}
@@ -151,33 +197,80 @@ function EditProductDetailsCard(props) {
         <Col xl={2} className={Styles.ProductDetailsLabel}>
           <p>Category:</p>
         </Col>
-        <Col xl={2}>
-          <InputField
-            value={props.categories}
-            onChange={(value) => {
-              if (typeof props.setCategories !== "undefined") {
-                props.setCategories(value);
-              }
-              if (typeof props.setCategoriesError !== "undefined") {
-                // props.setCategoriesError();
-              }
+        <Col xl={3} style={{ marginTop: "auto", marginBottom: "auto" }}>
+          <BoxSelector
+            label="Women"
+            selected={props.categories.women}
+            select={async () => {
+              props.setCategories({ women: !props.categories.women });
+              var categoriesCheck = await validateCategories({
+                ...props.categories,
+                women: !props.categories.women,
+              });
+              props.setCategoriesError(categoriesCheck);
             }}
-            error={props.categoriesError}
           />
+          <BoxSelector
+            label="Men"
+            selected={props.categories.men}
+            select={async () => {
+              props.setCategories({ men: !props.categories.men });
+
+              var categoriesCheck = await validateCategories({
+                ...props.categories,
+                men: !props.categories.men,
+              });
+              props.setCategoriesError(categoriesCheck);
+            }}
+          />
+          <BoxSelector
+            label="Kids"
+            selected={props.categories.kids}
+            select={async () => {
+              props.setCategories({ kids: !props.categories.kids });
+
+              var categoriesCheck = await validateCategories({
+                ...props.categories,
+                kids: !props.categories.kids,
+              });
+              props.setCategoriesError(categoriesCheck);
+            }}
+          />
+          {props.categoriesError && (
+            <p className={[Styles.InputLabel, Styles.InputError].join(" ")}>
+              {!props.categoriesError.ok ? props.categoriesError.message : ""}
+            </p>
+          )}
         </Col>
-        <Col xl={4}></Col>
+        {}
+        <Col xl={2}></Col>
         <Col xl={2} className={Styles.ProductDetailsLabel}>
           <p>Selling Price:</p>
         </Col>
-        <Col xl={2} className={Styles.RightAlign}>
+        <Col xl={3} className={Styles.RightAlign}>
           <InputField
             value={props.sellingPrice}
+            inputStyle={{ textAlign: "right" }}
             onChange={async (value) => {
+              var newValue = value
+                .replace(/[^0-9.]/g, "")
+                .replace(/(\..*)\./g, "$1");
+
               if (typeof props.setSellingPrice !== "undefined") {
-                props.setSellingPrice(value);
+                props.setSellingPrice(newValue);
+              }
+            }}
+            onBlur={async (value) => {
+              var numberValue = parseFloat(value, 10);
+
+              var cleanValue =
+                Math.round((numberValue + Number.EPSILON) * 100) / 100;
+
+              if (typeof props.setSellingPrice !== "undefined") {
+                props.setSellingPrice(cleanValue);
               }
               if (typeof props.setSellingPriceError !== "undefined") {
-                var sellingPriceCheck = await validateFundsValue(value);
+                var sellingPriceCheck = await validateFundsValue(cleanValue);
                 props.setSellingPriceError(sellingPriceCheck);
               }
             }}

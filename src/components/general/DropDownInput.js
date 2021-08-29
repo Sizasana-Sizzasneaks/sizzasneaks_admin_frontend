@@ -1,7 +1,7 @@
 import React from "react";
-import Styles from "./InputField.module.css";
+import Styles from "./DropDownInput.module.css";
 
-function InputField(props) {
+function DropDownInput(props) {
   var [focused, setFocus] = React.useState(false);
 
   return (
@@ -30,26 +30,22 @@ function InputField(props) {
         }
         style={props.wrapperStyle}
       >
-        <input
-          type={props.type || "text"}
+        <select
           className={Styles.InputField}
           style={props.inputStyle}
-          onFocus={() => {
-            setFocus(true);
-          }}
-          onBlur={() => {
-            setFocus(false);
-            if (typeof props.onBlur !== "undefined") {
-              props.onBlur(props.value);
-            }
-          }}
           value={props.value}
+          name="visibility"
+          id="visibility-selector"
           onChange={(event) => {
             if (typeof props.onChange !== "undefined") {
               props.onChange(event.target.value);
             }
           }}
-        />
+        >
+          <option value=""></option>
+          <option value="true">True</option>
+          <option value="false">False</option>
+        </select>
       </div>
       {props.error && !props.error.ok && !focused && (
         <p className={[Styles.InputLabel, Styles.InputError].join(" ")}>
@@ -60,4 +56,4 @@ function InputField(props) {
   );
 }
 
-export default InputField;
+export default DropDownInput;

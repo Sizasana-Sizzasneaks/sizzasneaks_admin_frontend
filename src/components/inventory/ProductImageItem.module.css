@@ -1,0 +1,9 @@
+.ImageBox{
+    border-style: solid;
+    border-width: 2px;
+  
+}
+.ImageBox img{
+
+    width: 225px;
+}

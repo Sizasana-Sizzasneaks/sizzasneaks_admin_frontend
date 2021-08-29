@@ -1,6 +1,7 @@
 import React from "react";
 
 import EditProductDetailsCard from "../inventory/EditProductDetailsCard.js";
+import EditProductDataCard from "../inventory/EditProductDataCard.js";
 
 import { createProduct } from "../../api/products.js";
 function InventoryCreatePage(props) {
@@ -18,7 +19,11 @@ function InventoryCreatePage(props) {
   var [visibilityError, setVisibilityError] = React.useState(null);
 
   //Categories State
-  var [categories, setCategories] = React.useState(null);
+  var [categories, setCategories] = React.useState({
+    women: false,
+    men: false,
+    kids: false,
+  });
   var [categoriesError, setCategoriesError] = React.useState(null);
 
   //Supplier Cost State
@@ -36,6 +41,11 @@ function InventoryCreatePage(props) {
   //Selling Tax State
   var [sellingTax, setSellingTax] = React.useState(null);
   var [sellingTaxError, setSellingTaxError] = React.useState(null);
+
+  //Product Description
+  var [productDescription, setProductDescription] = React.useState(null);
+  var [productDescriptionError, setProductDescriptionError] =
+    React.useState(null);
 
   React.useEffect(() => {
     // createNewProduct();
@@ -135,7 +145,9 @@ function InventoryCreatePage(props) {
         setVisibilityError={setVisibilityError}
         //Categories
         categories={categories}
-        setCategories={setCategories}
+        setCategories={(change) => {
+          setCategories({ ...categories, ...change });
+        }}
         categoriesError={categoriesError}
         setCategoriesError={setCategoriesError}
         //Selling Price
@@ -158,6 +170,13 @@ function InventoryCreatePage(props) {
         setSupplierTax={setSupplierTax}
         supplierTaxError={supplierTaxError}
         setSupplierTaxError={setSupplierTaxError}
+      />
+      <EditProductDataCard
+        //Product Description
+        productDescription={productDescription}
+        setProductDescription={setProductDescription}
+        productDescriptionError={productDescriptionError}
+        setProductDescriptionError={setProductDescriptionError}
       />
     </div>
   );

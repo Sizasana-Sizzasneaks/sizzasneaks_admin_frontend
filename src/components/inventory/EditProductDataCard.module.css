@@ -1,0 +1,11 @@
+
+.ProductDataCard {
+    background-color: white;
+    margin-top: 25px;
+    margin-bottom: 35px;
+    padding: 25px;
+  }
+
+  .ProductImagesCarousel{
+    /* display: flex; */
+  }

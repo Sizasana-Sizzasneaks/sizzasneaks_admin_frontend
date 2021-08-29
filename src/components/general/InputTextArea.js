@@ -1,9 +1,8 @@
 import React from "react";
 import Styles from "./InputField.module.css";
 
-function InputField(props) {
+function InputTextArea(props) {
   var [focused, setFocus] = React.useState(false);
-
   return (
     <div
       className={Styles.EntireInputFieldComponent}
@@ -30,18 +29,14 @@ function InputField(props) {
         }
         style={props.wrapperStyle}
       >
-        <input
-          type={props.type || "text"}
-          className={Styles.InputField}
+        <textarea
+          className={Styles.InputTextArea}
           style={props.inputStyle}
           onFocus={() => {
             setFocus(true);
           }}
           onBlur={() => {
             setFocus(false);
-            if (typeof props.onBlur !== "undefined") {
-              props.onBlur(props.value);
-            }
           }}
           value={props.value}
           onChange={(event) => {
@@ -60,4 +55,4 @@ function InputField(props) {
   );
 }
 
-export default InputField;
+export default InputTextArea;

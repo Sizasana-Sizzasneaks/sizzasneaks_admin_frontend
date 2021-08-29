@@ -11,7 +11,7 @@
   }
   
   .RightAlign p {
-    text-align: right;
+    /* text-align: right; */
   }
 
   .ProductDetailsLabel{
@@ -28,4 +28,18 @@
 
     margin-bottom: 20px;
 
+  }
+  .InputLabel {
+    margin-bottom: 5px;
+    color: rgba(00, 00, 00, 0.6);
+    font-size: 13px;
+    font-weight: 500;
+    font-family: Barlow, sans-serif;
+  }
+
+  .InputError {
+    margin-top: 2px;
+    margin-bottom: 0px;
+    margin-left: 1px;
+    color: #b00020;
   }

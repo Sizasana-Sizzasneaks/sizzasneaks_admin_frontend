@@ -1,5 +1,5 @@
 .EntireInputFieldComponent {
-  width: min-content;
+  width: inherit;
 }
 
 .InputLabel {
@@ -40,20 +40,21 @@
 .InputField {
   border: none;
   outline: none;
-
-  width: 92%;
+  background-color: white;
+  height: 98%;
+  width: 98%;
+  
 }
 
 .EntireInputFieldComponent input {
   font-size: 15px;
-  font-family: Barlow,sans-serif;
+  font-family: Barlow, sans-serif;
 }
 
 .EntireInputFieldComponent textarea {
   font-size: 15px;
-  font-family: Barlow,sans-serif;
+  font-family: Barlow, sans-serif;
 }
-
 
 .InputField:focus {
   outline: none;
@@ -64,7 +65,6 @@
   margin-bottom: 0px;
   margin-left: 1px;
   color: #b00020;
-  width: 100%;
 }
 
 .InputTextArea {

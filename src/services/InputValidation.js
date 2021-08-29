@@ -68,7 +68,7 @@ export const validateBasicString = (text) => {
 
 // Visibility Validation
 const visibilitySchema = Yup.object().shape({
-  visibility: Yup.bool().oneOf([true, false], "Must be either true or false.")
+  visibility: Yup.bool().oneOf([true, false], "Must be either true or false.").typeError("Required")
 });
 
 export const validateVisibility = (flag) => {
@@ -82,16 +82,42 @@ export const validateVisibility = (flag) => {
     });
 };
 
-
 //Double (Amount) Validation
 
 const fundsValueSchema = Yup.object().shape({
-  value: Yup.number().required()
+  value: Yup.number().required().typeError("Invalid Entry"),
 });
 
-export const validateFundsValue= (value) => {
+export const validateFundsValue = (value) => {
   return fundsValueSchema
     .validate({ value: value })
+    .then(() => {
+      return { ok: true, message: null };
+    })
+    .catch((error) => {
+      return { ok: false, message: error.errors[0] };
+    });
+};
+
+//Categories Check
+
+export const validateCategories = (categoriesInput) => {
+  const categoriesSchema = Yup.object().shape({
+    categories: Yup.object().test(
+      "Great!",
+      "Select at least one category",
+      (categories) => {
+        if (categories.men || categories.women || categories.kids) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    ),
+  });
+
+  return categoriesSchema
+    .validate({ categories: categoriesInput })
     .then(() => {
       return { ok: true, message: null };
     })
