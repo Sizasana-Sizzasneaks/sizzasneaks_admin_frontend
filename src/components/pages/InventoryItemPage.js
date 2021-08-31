@@ -11,6 +11,7 @@ import {
 import ProductDetailsCard from "../inventory/ProductDetailsCard";
 import ReviewBox from "../reviews/ReviewBox.js";
 import Button from "../general/Button.js";
+import ProductOptionsCard from "../inventory/ProductOptionsCard";
 
 function InventoryItemPage(props) {
   var { id } = useParams();
@@ -100,8 +101,17 @@ function InventoryItemPage(props) {
         />
       )}
 
-      <Row className={Styles.ProductFurtherDetailsCard}></Row>
-      {/* <Row className={Styles.ProductRevenueCard}></Row> */}
+
+      {product && ( <Row className={Styles.ProductOptionsCard}>
+        <ProductOptionsCard 
+          product = {product}
+        />
+         <h1>Add new card here </h1>
+      </Row> 
+      )}
+
+      {
+        /* <Row className={Styles.ProductRevenueCard}></Row> */}
      {reviews && <ReviewBox reviews={reviews}/>}
     </div>
   );
