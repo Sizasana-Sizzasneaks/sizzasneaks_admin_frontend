@@ -9,6 +9,7 @@ import {
 } from "../../api/review.js";
 
 import ProductDetailsCard from "../inventory/ProductDetailsCard";
+import ProductDataCard from "../inventory/ProductDataCard.js";
 import ReviewBox from "../reviews/ReviewBox.js";
 import Button from "../general/Button.js";
 import ProductOptionsCard from "../inventory/ProductOptionsCard";
@@ -109,20 +110,24 @@ function InventoryItemPage(props) {
         />
       )}
 
-
-
-      {product && ( <Row className={Styles.ProductOptionsCard}>
+      {/* {product && ( <Row className={Styles.ProductOptionsCard}>
         <ProductOptionsCard 
           product = {product}
         />
          <h1>Add new card here </h1>
-      </Row> 
+      </Row>  */}
+      {/* )} */}
+
+      {product && (
+        <ProductDataCard
+          productImages={product.imgURls}
+          productOptions={product.options}
+          productDescription={product.productDescription}
+        />
       )}
 
-      {
-        /* <Row className={Styles.ProductRevenueCard}></Row> */}
-     {reviews && <ReviewBox reviews={reviews}/>}
-
+      {/* <Row className={Styles.ProductRevenueCard}></Row> */}
+      {reviews && <ReviewBox reviews={reviews} />}
     </div>
   );
 }
