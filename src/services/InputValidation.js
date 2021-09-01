@@ -148,3 +148,43 @@ export const validateFileName = (text) => {
       return { ok: false, message: error.errors[0] };
     });
 };
+
+//Validate Color Name
+
+const colorNameSchema = Yup.object().shape({
+  text: Yup.string("Please enter a string")
+    .required("Required")
+    .matches(/^[aA-zZ]+$/, "Only alphabets are allowed for this field ")
+    .max(50)
+    .nullable(),
+});
+
+export const validateColorName = (text) => {
+  return colorNameSchema
+    .validate({ text: text })
+    .then(() => {
+      return { ok: true, message: null };
+    })
+    .catch((error) => {
+      return { ok: false, message: error.errors[0] };
+    });
+};
+
+//Number Validation - Used on Option Size & Quantity
+
+const numberSchema = Yup.object().shape({
+  value: Yup.number().required().typeError("Invalid Entry"),
+});
+
+export const validateNumber = (value) => {
+  return numberSchema
+    .validate({ value: value })
+    .then(() => {
+      return { ok: true, message: null };
+    })
+    .catch((error) => {
+      return { ok: false, message: error.errors[0] };
+    });
+};
+
+

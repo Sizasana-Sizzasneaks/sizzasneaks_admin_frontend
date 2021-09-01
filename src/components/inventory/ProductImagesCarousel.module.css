@@ -1,7 +1,7 @@
 .ProductImagesCarousel {
-  /* background-color:; */
 
   width: 100%;
-  display: contents;
-  margin-bottom: 20px;
+  /* display: contents; */
+  margin-bottom: 40px;
+  padding:0px
 }

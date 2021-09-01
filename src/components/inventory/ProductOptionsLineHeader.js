@@ -7,13 +7,13 @@ function ProductOptionsLineHeader(props) {
     <Row className={Styles.Labels}>
       <hr className={Styles.TopLine} />
 
-      <Col xl={2}>
+      <Col xl={2} className={Styles.SingleFieldBanner}>
         <p>Color</p>
       </Col>
-      <Col xl={2}>
+      <Col xl={2}  className={Styles.SingleFieldBanner}>
         <p>Size</p>
       </Col>
-      <Col xl={2}>
+      <Col xl={2}  className={Styles.SingleFieldBanner}>
         <p>Quantity</p>
       </Col>
     </Row>

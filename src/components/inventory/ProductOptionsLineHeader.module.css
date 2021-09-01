@@ -1,11 +1,14 @@
-.Labels{
-    font-weight: 500;
+.Labels {
+  font-weight: 500;
 }
 
-.TopLine{
-
-    margin-bottom: 8px;
+.TopLine {
+  margin-bottom: 8px;
 }
 .LeftAlign {
-    text-align: right;
-  }
+  text-align: right;
+}
+
+.SingleFieldBanner {
+  padding: 0px;
+}

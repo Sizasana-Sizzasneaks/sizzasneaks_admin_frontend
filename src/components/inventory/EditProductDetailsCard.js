@@ -24,8 +24,10 @@ function EditProductDetailsCard(props) {
         </Col>
       </Row> */}
       <Row>
+        
         <Col>
-          <hr style={{ marginTop: "0px" }} />
+        <p className={Styles.SectionBanner}>Product Description</p>
+          <hr style={{ marginTop: "10px", marginBottom: "20px" }} />
         </Col>
       </Row>
 

@@ -9,10 +9,13 @@ import ProductImagesCarousel from "./ProductImagesCarousel.js";
 import EditProductImageItem from "./EditProductImageItem.js";
 
 import { validateBasicString } from "../../services/InputValidation.js";
+import ProductOptionsSection from "./ProductOptionsSection";
 
 function EditProductDataCard(props) {
   return (
     <Row className={Styles.ProductDataCard}>
+      <p className={Styles.SectionBanner}>Product Images</p>
+      <hr style={{ marginTop: "10px", marginBottom: "20px" }} />
       <ProductImagesCarousel>
         {props.productImages && props.productImages.length !== 0 ? (
           <>
@@ -50,20 +53,46 @@ function EditProductDataCard(props) {
         )}
       </ProductImagesCarousel>
       <Row>
+        
         <Col>
-          <p>Product Options</p>
-          <ProductOptionsLineHeader />
+          <ProductOptionsSection>
+            <ProductOptionsLineHeader />
+            {props.productOptions &&
+              props.productOptions.map((productOption) => {
+                return productOption.variants.map((variant, index) => {
+                  return index === productOption.variants.length - 1 ? (
+                    <>
+                      <ProductOptionLine
+                        color={productOption.color}
+                        size={variant.size}
+                        quantity={variant.quantity}
+                      />
+                      <EditProductOptionLine
+                        color={productOption.color}
+                        editType="variant"
+                        addVariant={props.addProductOptionVariant}
+                      />
+                    </>
+                  ) : (
+                    <ProductOptionLine
+                      color={productOption.color}
+                      size={variant.size}
+                      quantity={variant.quantity}
+                    />
+                  );
+                });
+              })}
 
-          <ProductOptionLine color="Red" size="6" quantity="16" />
-          <ProductOptionLine color="Red" size="3" quantity="5" />
-          <ProductOptionLine color="Red" size="7" quantity="80" />
-
-          <ProductOptionLine color="Black" size="6" quantity="16" />
-          <ProductOptionLine color="Black" size="3" quantity="90" />
-          <EditProductOptionLine/>
+            <EditProductOptionLine
+              updateVariant={props.addProductOptionVariant}
+              addOption={props.addProductOption}
+            />
+          </ProductOptionsSection>
         </Col>
       </Row>
       <Row>
+        <p className={Styles.SectionBanner}>Product Description</p>
+        <hr style={{ marginTop: "15px", marginBottom: "20px" }} />
         <Col>
           <InputTextArea
             value={props.productDescription}

@@ -7,13 +7,13 @@ function ProductOptionLine(props) {
     <Row className={Styles.Info}>
       <hr className={Styles.TopLine} />
 
-      <Col xl={2}>
+      <Col xl={2} className={Styles.SingleFieldBanner}>
         <p>{props.color}</p>
       </Col>
-      <Col xl={2}>
+      <Col xl={2} className={Styles.SingleFieldBanner}>
         <p>{props.size && "UK " + props.size}</p>
       </Col>
-      <Col xl={2}>
+      <Col xl={2} className={Styles.SingleFieldBanner}>
         <p>{props.quantity}</p>
       </Col>
     </Row>
