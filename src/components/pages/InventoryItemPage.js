@@ -1,7 +1,7 @@
 import React from "react";
-import { Row} from "react-bootstrap";
+import { Row } from "react-bootstrap";
 import Styles from "./InventoryItemPage.module.css";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { getProduct } from "../../api/products.js";
 import {
   getReviewsByProductId,
@@ -15,6 +15,7 @@ import ProductOptionsCard from "../inventory/ProductOptionsCard";
 
 function InventoryItemPage(props) {
   var { id } = useParams();
+  var history = useHistory();
   var [product, setProduct] = React.useState(null);
   var [reviews, setReviews] = React.useState(null);
 
@@ -83,7 +84,14 @@ function InventoryItemPage(props) {
       <Row className={Styles.EditButtonSegment}>
         <Button
           label="Edit"
-          styles={{ backgroundColor: "#FADA35", marginLeft: "auto", width:"min-content" }}
+          styles={{
+            backgroundColor: "#FADA35",
+            marginLeft: "auto",
+            width: "min-content",
+          }}
+          onClick={() => {
+            history.push("/inventory/update/" + id);
+          }}
         />
       </Row>
 
@@ -102,6 +110,7 @@ function InventoryItemPage(props) {
       )}
 
 
+
       {product && ( <Row className={Styles.ProductOptionsCard}>
         <ProductOptionsCard 
           product = {product}
@@ -113,6 +122,7 @@ function InventoryItemPage(props) {
       {
         /* <Row className={Styles.ProductRevenueCard}></Row> */}
      {reviews && <ReviewBox reviews={reviews}/>}
+
     </div>
   );
 }
