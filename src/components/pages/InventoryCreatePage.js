@@ -47,6 +47,9 @@ function InventoryCreatePage(props) {
   var [productDescriptionError, setProductDescriptionError] =
     React.useState(null);
 
+  //Product Images
+  var [productImages, setProductImages] = React.useState([]);
+
   React.useEffect(() => {
     // createNewProduct();
   }, []);
@@ -172,6 +175,20 @@ function InventoryCreatePage(props) {
         setSupplierTaxError={setSupplierTaxError}
       />
       <EditProductDataCard
+        //Product Images
+        productImages={productImages}
+        addNewProductImage={(imageObject) => {
+          setProductImages([...productImages, imageObject]);
+        }}
+        deleteProductImage={(imageObject) => {
+          function newImages(imageItem) {
+            return imageItem.imgURL !== imageObject.imgURL;
+          }
+          console.log("Got Here")
+          console.log(imageObject);
+          console.log(productImages.filter(newImages))
+          setProductImages(productImages.filter(newImages));
+        }}
         //Product Description
         productDescription={productDescription}
         setProductDescription={setProductDescription}

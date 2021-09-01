@@ -68,7 +68,9 @@ export const validateBasicString = (text) => {
 
 // Visibility Validation
 const visibilitySchema = Yup.object().shape({
-  visibility: Yup.bool().oneOf([true, false], "Must be either true or false.").typeError("Required")
+  visibility: Yup.bool()
+    .oneOf([true, false], "Must be either true or false.")
+    .typeError("Required"),
 });
 
 export const validateVisibility = (flag) => {
@@ -118,6 +120,27 @@ export const validateCategories = (categoriesInput) => {
 
   return categoriesSchema
     .validate({ categories: categoriesInput })
+    .then(() => {
+      return { ok: true, message: null };
+    })
+    .catch((error) => {
+      return { ok: false, message: error.errors[0] };
+    });
+};
+
+// File Name String
+
+const fileNameSchema = Yup.object().shape({
+  text: Yup.string("Please enter a string")
+    .matches(/^[A-Za-z0-9-]*$/, "Invalid File Name")
+    .max(28)
+    .required("Required")
+    .nullable(),
+});
+
+export const validateFileName = (text) => {
+  return fileNameSchema
+    .validate({ text: text })
     .then(() => {
       return { ok: true, message: null };
     })
