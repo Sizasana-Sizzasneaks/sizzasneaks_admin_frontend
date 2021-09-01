@@ -1,0 +1,53 @@
+
+.ProductDetailsCard {
+    background-color: white;
+    margin-top: 25px;
+    margin-bottom: 35px;
+    padding: 25px;
+  }
+  
+  .ProductDetailsHeader p {
+    font-size: 20px;
+  }
+  
+  .RightAlign p {
+    /* text-align: right; */
+  }
+
+  .ProductDetailsLabel{
+   display: flex;
+   align-items: center;
+  }
+  
+  .ProductDetailsLabel p {
+    font-weight: 400;
+    margin-bottom: 0px;
+  }
+  
+  .SingleRow{
+
+    margin-bottom: 20px;
+
+  }
+  .InputLabel {
+    margin-bottom: 5px;
+    color: rgba(00, 00, 00, 0.6);
+    font-size: 13px;
+    font-weight: 500;
+    font-family: Barlow, sans-serif;
+  }
+
+  .InputError {
+    margin-top: 2px;
+    margin-bottom: 0px;
+    margin-left: 1px;
+    color: #b00020;
+  }
+
+  .SectionBanner{
+    font-size: 20px;
+    font-weight: 400;
+    /* margin-left: -12px; */
+    /* margin-top: 20px; */
+    margin-bottom: 10px;
+  }
