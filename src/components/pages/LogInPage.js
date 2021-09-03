@@ -42,7 +42,7 @@ const LogInPage = ({ showLogin }) => {
   const history = useHistory();
   
   const handleRoute = () =>{ 
-    history.push("/dashboard");
+    history.push("/");
   }
 
   return (

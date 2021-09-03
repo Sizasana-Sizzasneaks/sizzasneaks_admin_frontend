@@ -8,6 +8,7 @@ import NavbarLog from "./components/general/Navbar Login";
 import Footer from "./components/general/Footer.js";
 import { Container } from "react-bootstrap";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import ProtectedRoute from "./components/general/ProtectedRoute.js";
 
 //Pages
 import Dashboard from "./components/pages/Dashboard.js";
@@ -15,7 +16,7 @@ import LogInPage from "./components/pages/LogInPage.js";
 import InventoryPage from "./components/pages/InventoryPage.js";
 import InventoryItemPage from "./components/pages/InventoryItemPage.js";
 import UpdateInventoryItemPage from "./components/pages/UpdateInventoryItemPage.js";
-import InventoryCreatePage from "./components/pages/InventoryCreatePage.js"
+import InventoryCreatePage from "./components/pages/InventoryCreatePage.js";
 
 //Redux Store
 import store from "./redux/index.js";
@@ -67,41 +68,34 @@ function App() {
             <div>
               <Switch>
                 <Route exact path="/log-in">
-                  {" "}
-                  {/* Natasha */}
                   <LogInPage />
                 </Route>
-                <Route exact path="/dashboard">
-                  {" "}
-                  {/* Natasha */}
-                  <Dashboard />
-                </Route>
-                <Route exact path="/inventory">
-                  {" "}
-                  {/* Natasha */}
-                  <InventoryPage />
-                </Route>
-                <Route exact path="/inventory/create">
-                  {" "}
-                  {/* Natasha */}
-                  <InventoryCreatePage />
-                </Route>
-                <Route exact path="/inventory/:id">
-                  {" "}
-                  {/* Natasha */}
-                  <InventoryItemPage />
-                </Route>
-                <Route exact path="/inventory/update/:id">
-                  {" "}
-                  {/* Natasha */}
-                  <UpdateInventoryItemPage />
-                </Route>
-                
-                <Route exact path="/">
-                  {" "}
-                  {/* Natasha */}
-                  <LogInPage />
-                </Route>
+
+                <ProtectedRoute
+                  exact
+                  path="/inventory"
+                  component={InventoryPage}
+                />
+
+                <ProtectedRoute
+                  exact
+                  path="/inventory/create"
+                  component={InventoryCreatePage}
+                />
+
+                <ProtectedRoute
+                  exact
+                  path="/inventory/:id"
+                  component={InventoryItemPage}
+                />
+
+                <ProtectedRoute
+                  exact
+                  path="/inventory/update/:id"
+                  component={UpdateInventoryItemPage}
+                />
+
+                <ProtectedRoute exact path="/" component={Dashboard} />
               </Switch>
             </div>
           </Container>
