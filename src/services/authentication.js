@@ -58,3 +58,18 @@ export const getCurrentUserIdToken = async () => {
 
   return output;
 };
+
+//Firebase Fuction for Logging Out the Current User
+export const signOutCurrentUser = () => {
+  var firebase = getFirebase();
+
+  return firebase
+    .auth()
+    .signOut()
+    .then(() => {
+      return { ok: true, message: "Sign Out Succesfull" };
+    })
+    .catch((error) => {
+      return { ok: false, message: "Sign Out Failed" };
+    });
+};

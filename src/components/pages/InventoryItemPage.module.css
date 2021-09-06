@@ -1,10 +1,9 @@
 .InventoryItemPage {
 }
 
-.EditButtonSegment{
-
-    margin-top: 16px;
-
+.EditButtonSegment {
+  display: flex;
+  margin-top: 25px;
 }
 
 .ProductFurtherDetailsCard {
@@ -21,3 +20,11 @@
   padding: 25px;
 }
 
+.BackButton {
+  color: blue;
+  display: contents;
+}
+
+.BackButton:hover {
+  cursor: pointer;
+}

@@ -32,7 +32,7 @@ const passwordSchema = Yup.object().shape({
   password: Yup.string("Enter String").required("Required"),
 });
 
-export const validatePassword = (password) => {
+export const validateLogInPassword = (password) => {
   return (
     passwordSchema
       //password is validated

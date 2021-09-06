@@ -1,6 +1,5 @@
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 
-
 .row {
   margin: 0;
   padding: 0;
@@ -53,9 +52,10 @@ nav p {
   }
 }
 
-.p-errors{
+.p-errors {
   color: crimson;
   margin-left: 270px;
+  padding: 0;
 }
 
 /* ------------------------Navbar------------------------------ */
@@ -72,12 +72,12 @@ nav p {
   margin-bottom: 0px;
 }
 
-.sub-nav{
-  font-size: 28px;
-  font-weight: bold;
+.sub-nav {
+  font-size: 26px;
+  font-weight: 400;
   margin-top: 5px;
   margin-bottom: 0px;
-  margin-left: 170px;
+  margin-left: 200px;
 }
 
 .search-bar-box {
@@ -149,28 +149,14 @@ nav p {
   padding-top: 15px;
   padding-left: 20px;
   padding-right: 20px;
+
+  font-weight: 300;
   font-size: 14px;
 }
 
 .navbarNavigationLink:hover {
   background-color: rgba(00, 00, 00, 0.16);
   cursor: pointer;
-}
-/*---------------------login-------------------------*/
-.label-style{
-  font-size: 14px;
-  font-weight: bold;
-  margin-top: 5px;
-  margin-bottom: 0px;
-  margin-left: 270px;
-}
-
-.error-prompt{
-  background-color:indianred;
-  margin-left: 270px;
-  margin-right: 270px; 
-  font-size: 14px;
-  text-align: center;
 }
 
 /* --------------------Footer------------------------- */
@@ -256,5 +242,3 @@ footer {
 .payment-container {
   margin-left: auto;
 }
-
-
