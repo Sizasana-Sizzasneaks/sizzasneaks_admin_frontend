@@ -61,11 +61,13 @@ function ProductDetailsCard(props) {
         </Col>
         <Col xl={5}></Col>
         <Col xl={2} className={Styles.ProductDetailsLabel}>
-          <p>Selling Tax:</p>
+          <p>Selling Price:</p>
         </Col>
         <Col xl={1} className={Styles.RightAlign}>
-          <p>{props.sellingTax}</p>
+          <p>{props.sellingPrice}</p>
         </Col>
+
+       
       </Row>
 
       <Row>
@@ -88,10 +90,10 @@ function ProductDetailsCard(props) {
         </Col>
         <Col xl={4}></Col>
         <Col xl={2} className={Styles.ProductDetailsLabel}>
-          <p>Selling Price:</p>
+          <p>Selling Tax:</p>
         </Col>
         <Col xl={1} className={Styles.RightAlign}>
-          <p>{props.sellingPrice}</p>
+          <p>{props.sellingTax}</p>
         </Col>
       </Row>
     </Row>

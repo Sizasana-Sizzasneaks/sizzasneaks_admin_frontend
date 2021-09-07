@@ -198,8 +198,8 @@ function EditProductDetailsCard(props) {
                 }
 
                 if (typeof props.setSellingPriceError !== "undefined") {
-                  var sellingPriceCheck = await validateFundsValue(taxAmount);
-                  props.setSellingTaxError(sellingPriceCheck);
+                  var sellingTaxCheck = await validateFundsValue(taxAmount);
+                  props.setSellingTaxError(sellingTaxCheck);
                 }
               }
               if (typeof props.setSellingPriceError !== "undefined") {
