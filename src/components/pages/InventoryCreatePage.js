@@ -140,15 +140,7 @@ function InventoryCreatePage(props) {
             // history.push("/inventory/update/" + id);
           }}
         />
-        {/* {loading && (
-          <div>
-            <CircularProgress
-              variant="indeterminate"
-              style={{ marginLeft: "20px" }}
-              size={35}
-            />
-          </div>
-        )} */}
+
         {saveState &&
           (saveState.ok ? (
             <p
@@ -228,32 +220,156 @@ function InventoryCreatePage(props) {
           console.log(productImages.filter(newImages));
           setProductImages(productImages.filter(newImages));
         }}
-        //Product Options
 
+        //Product Options
         productOptions={productOptions}
+
+        //Add Product Option
         addProductOption={(option) => {
           var newOption = {
             color: option.color,
             variants: [{ size: option.size, quantity: option.quantity }],
           };
-          setProductOptions([...productOptions, newOption]);
+          var newProductOptions = JSON.parse(JSON.stringify(productOptions));
+
+          var colorExists = false;
+          newProductOptions.forEach((oneOption) => {
+            if (
+              oneOption.color.toLowerCase() === newOption.color.toLowerCase()
+            ) {
+              colorExists = true;
+            }
+          });
+
+          if (colorExists) {
+            return { ok: false, message: "Color already exists" };
+          } else {
+            setProductOptions([...productOptions, newOption]);
+            return { ok: true };
+          }
         }}
+
+        //Add Variant To Product Option
         addProductOptionVariant={(option) => {
           console.log("Here I am");
           var newProductOptions = JSON.parse(JSON.stringify(productOptions));
 
+          var variantExists = false;
+          var output = {
+            ok: false,
+            message: "Error adding Product Variant",
+          };
           newProductOptions.forEach((oneOption) => {
             if (option.color === oneOption.color) {
-              oneOption.variants.push({
-                size: option.size,
-                quantity: option.quantity,
+              oneOption.variants.forEach((variant) => {
+                if (variant.size === option.size) {
+                  variantExists = true;
+                }
               });
+              if (!variantExists) {
+                output = {
+                  ok: true,
+                };
+                oneOption.variants.push({
+                  size: option.size,
+                  quantity: option.quantity,
+                });
+              } else {
+                output = {
+                  ok: false,
+                  message: "Size variant already exists",
+                };
+              }
             }
           });
 
           setProductOptions(newProductOptions);
+          return output;
         }}
-        updateProductOptionVariant={(option) => {}}
+        // Add Quantity to Product Option
+        addQuantity={(option, amount) => {
+          var newProductOptions = JSON.parse(JSON.stringify(productOptions));
+
+          var output = { ok: false, message: "Failed to Add" };
+          newProductOptions.forEach((singleOption) => {
+            if (singleOption.color === option.color) {
+              singleOption.variants.forEach((variant) => {
+                if (variant.size === option.size) {
+                  var possibleValue = variant.quantity + amount;
+                  if (possibleValue < 0) {
+                    output = {
+                      ok: false,
+                      message: "Quantity must be greater that 0",
+                    };
+                  } else {
+                    output = {
+                      ok: true,
+                    };
+                    variant.quantity = possibleValue;
+                  }
+                }
+              });
+            }
+          });
+
+          setProductOptions([...newProductOptions]);
+          return output;
+        }}
+        //Subtract Quantity from Option
+        subtractQuantity={(option, amount) => {
+          var newProductOptions = JSON.parse(JSON.stringify(productOptions));
+
+          var output = { ok: false, message: "Failed to Subtract" };
+          newProductOptions.forEach((singleOption) => {
+            if (singleOption.color === option.color) {
+              singleOption.variants.forEach((variant) => {
+                if (variant.size === option.size) {
+                  var possibleValue = variant.quantity - amount;
+                  if (possibleValue < 0) {
+                    output = {
+                      ok: false,
+                      message: "Quantity must be greater that 0",
+                    };
+                  } else {
+                    output = {
+                      ok: true,
+                    };
+                    variant.quantity = possibleValue;
+                  }
+                }
+              });
+            }
+          });
+
+          setProductOptions([...newProductOptions]);
+          return output;
+        }}
+        //Delete Product Option
+        deleteProductOption={(option) => {
+          var newProductOptions = JSON.parse(JSON.stringify(productOptions));
+          var emptyOption = false;
+          newProductOptions.forEach((singleOption) => {
+            if (singleOption.color === option.color) {
+              singleOption.variants = singleOption.variants.filter(
+                (variant) => {
+                  return variant.size !== option.size;
+                }
+              );
+
+              emptyOption = singleOption.variants.length === 0 ? true : false;
+            } else {
+            }
+          });
+
+          if (emptyOption) {
+            console.log("Cleaning");
+            newProductOptions = newProductOptions.filter((oneOption) => {
+              return oneOption.color !== option.color;
+            });
+          }
+
+          setProductOptions([...newProductOptions]);
+        }}
         //Product Description
         productDescription={productDescription}
         setProductDescription={setProductDescription}

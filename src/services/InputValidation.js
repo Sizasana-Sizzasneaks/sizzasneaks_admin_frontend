@@ -187,4 +187,21 @@ export const validateNumber = (value) => {
     });
 };
 
+// Basic String
+const productDescriptionSchema = Yup.object().shape({
+  text: Yup.string("Please enter a string")
+    .required("Required")
+    .max(300)
+    .nullable(),
+});
 
+export const validateProductDescriptionString = (text) => {
+  return productDescriptionSchema
+    .validate({ text: text })
+    .then(() => {
+      return { ok: true, message: null };
+    })
+    .catch((error) => {
+      return { ok: false, message: error.errors[0] };
+    });
+};

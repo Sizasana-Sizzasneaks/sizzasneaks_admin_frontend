@@ -40,29 +40,28 @@ function InventoryItemPage(props) {
     }
   }
 
-
   return (
     <div>
-      {product ? (
-        <div className={Styles.InventoryItemPage}>
-          <Row className={Styles.EditButtonSegment}>
-            <div
-              className={Styles.BackButton}
-              onClick={() => {
-                history.goBack();
+      <div className={Styles.InventoryItemPage}>
+        <Row className={Styles.EditButtonSegment}>
+          <div
+            className={Styles.BackButton}
+            onClick={() => {
+              history.goBack();
+            }}
+          >
+            <span
+              class="material-icons"
+              style={{
+                fontSize: "35px",
+                alignSelf: "center",
               }}
             >
-              <span
-                class="material-icons"
-                style={{
-                  fontSize: "35px",
-                  alignSelf: "center",
-                }}
-              >
-                arrow_back
-              </span>
-            </div>
+              arrow_back
+            </span>
+          </div>
 
+          {product && (
             <Button
               label="Edit"
               styles={{
@@ -74,40 +73,42 @@ function InventoryItemPage(props) {
                 history.push("/inventory/update/" + id);
               }}
             />
-          </Row>
+          )}
+        </Row>
+        {product ? (
+          <>
+            <ProductDetailsCard
+              productId={product._id}
+              productName={product.productName}
+              brand={product.brand}
+              showProduct={product.showProduct ? "Visible" : "Hidden"}
+              categories={product.categories}
+              supplierCost={product.supplierCost}
+              supplierTax={product.supplierTaxAmount}
+              sellingTax={product.sellingPriceTaxAmount}
+              sellingPrice={product.sellingPrice}
+            />
 
-          <ProductDetailsCard
-            productId={product._id}
-            productName={product.productName}
-            brand={product.brand}
-            showProduct={product.showProduct ? "Visible" : "Hidden"}
-            categories={product.categories}
-            supplierCost={product.supplierCost}
-            supplierTax={product.supplierTaxAmount}
-            sellingTax={product.sellingPriceTaxAmount}
-            sellingPrice={product.sellingPrice}
-          />
-
-          <ProductDataCard
-            productImages={product.imgURls}
-            productOptions={product.options}
-            productDescription={product.productDescription}
-          />
-
-          <ReviewBox product_id={id} />
-        </div>
-      ) : (
-        <div
-          style={{
-            marginTop: "150px",
-            marginBottom: "100vh",
-            alignContent: "center",
-            display: "flex",
-          }}
-        >
-          <CircularProgress size={115} style={{ margin: "0px auto" }} />
-        </div>
-      )}
+            <ProductDataCard
+              productImages={product.imgURls}
+              productOptions={product.options}
+              productDescription={product.productDescription}
+            />
+          </>
+        ) : (
+          <div
+            style={{
+              marginTop: "150px",
+              marginBottom: "100vh",
+              alignContent: "center",
+              display: "flex",
+            }}
+          >
+            <CircularProgress size={115} style={{ margin: "0px auto" }} />
+          </div>
+        )}
+        <ReviewBox product_id={id} />
+      </div>
     </div>
   );
 }

@@ -116,6 +116,7 @@ function ReviewBox(props) {
                     body={review.body}
                     createdAt={review.createdAt}
                     user={review.customer_id}
+                    replies={review.replies}
                     id={review._id}
                     deleteReview={async (review_id) => {
                       var deleteProductReviewResult = await deleteProductReview(
