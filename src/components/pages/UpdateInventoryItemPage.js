@@ -29,7 +29,7 @@ import {
 function UpdateInventoryItemPage(props) {
   var { id } = useParams();
 
-  var [formValid, setFormValid] = React.useState(false);
+  // var [formValid, setFormValid] = React.useState(true);
 
   // State
   var [saveState, setSaveState] = React.useState(null);
@@ -94,21 +94,7 @@ function UpdateInventoryItemPage(props) {
       onStart(id);
       started.current = true;
     }
-
-    checkFormValidity();
-  }, [
-    productNameError,
-    brandError,
-    visibilityError,
-    categoriesError,
-    supplierCostError,
-    supplierTaxError,
-    sellingPriceError,
-    sellingTaxError,
-    productImagesError,
-    productOptionsError,
-    productDescriptionError,
-  ]);
+  }, []);
 
   async function onStart(idValue) {
     console.log("On Start Called");
@@ -260,62 +246,76 @@ function UpdateInventoryItemPage(props) {
 
   //Check Form Fields Validity
   async function checkFormFieldsValidity() {
-    //Check ProductName
-    var productNameCheck = await validateBasicString(productName);
-    await setProductNameError(productNameCheck);
+    try {
+      console.log("Start Fields Check");
+      //Check ProductName
+      var productNameCheck = await validateBasicString(productName);
+      await setProductNameError(productNameCheck);
 
-    //Check Brand
-    var brandCheck = await validateBasicString(brand);
-    await setBrandError(brandCheck);
+      //Check Brand
+      var brandCheck = await validateBasicString(brand);
+      await setBrandError(brandCheck);
 
-    //Check Visibility
-    var visibilityCheck = await validateVisibility(visibility);
-    await setVisibilityError(visibilityCheck);
+      //Check Visibility
+      var visibilityCheck = await validateVisibility(visibility);
+      await setVisibilityError(visibilityCheck);
 
-    //Check Categories
-    var categoriesCheck = await validateCategories(categories);
-    await setCategoriesError(categoriesCheck);
+      //Check Categories
+      var categoriesCheck = await validateCategories(categories);
+      await setCategoriesError(categoriesCheck);
 
-    //Check Supplier Cost
-    var supplierCostCheck = await validateFundsValue(supplierCost);
-    await setSupplierCostError(supplierCostCheck);
+      //Check Supplier Cost
+      var supplierCostCheck = await validateFundsValue(supplierCost);
+      await setSupplierCostError(supplierCostCheck);
 
-    //Check Supplier Tax
-    var supplierTaxCheck = await validateFundsValue(supplierTax);
-    await setSupplierTaxError(supplierTaxCheck);
+      //Check Supplier Tax
+      var supplierTaxCheck = await validateFundsValue(supplierTax);
+      await setSupplierTaxError(supplierTaxCheck);
 
-    // Check Selling Price
-    var sellingPriceCheck = await validateFundsValue(sellingPrice);
-    await setSellingPriceError(sellingPriceCheck);
+      // Check Selling Price
+      var sellingPriceCheck = await validateFundsValue(sellingPrice);
+      await setSellingPriceError(sellingPriceCheck);
 
-    //Check Selling Tax
-    var sellingTaxCheck = await validateFundsValue(sellingTax);
-    await setSellingTaxError(sellingTaxCheck);
+      //Check Selling Tax
+      var sellingTaxCheck = await validateFundsValue(sellingTax);
+      await setSellingTaxError(sellingTaxCheck);
 
-    //Check Images
-    var imagesCheckOutput =
-      productImages.length < 1
-        ? { ok: false, message: "Product Must have at least One Image" }
-        : { ok: true, message: null };
-    await setProductImagesError(imagesCheckOutput);
+      //Check Images
+      var imagesCheckOutput =
+        productImages.length < 1
+          ? { ok: false, message: "Product Must have at least One Image" }
+          : { ok: true, message: null };
+      await setProductImagesError(imagesCheckOutput);
 
-    //Check Product Options
-    var optionsCheckOutput =
-      productOptions.length < 1
-        ? { ok: false, message: "Product must have at least one option" }
-        : { ok: true, message: null };
-    await setProductOptionsError(optionsCheckOutput);
+      //Check Product Options
+      var optionsCheckOutput =
+        productOptions.length < 1
+          ? { ok: false, message: "Product must have at least one option" }
+          : { ok: true, message: null };
+      await setProductOptionsError(optionsCheckOutput);
 
-    //Check Product Description
-    var productDescriptionResult = await validateProductDescriptionString(
-      productDescription
-    );
-    await setProductDescriptionError(productDescriptionResult);
+      //Check Product Description
+      var productDescriptionResult = await validateProductDescriptionString(
+        productDescription
+      );
+      await setProductDescriptionError(productDescriptionResult);
 
-    return { ok: true };
+      console.log("End Fields Check");
+
+      var flag =  checkFormValidity();
+
+      if (flag) {
+        return { ok: true };
+      } else {
+        return { ok: false };
+      }
+    } catch {
+      return { ok: false };
+    }
   }
 
-  function checkFormValidity() {
+   function checkFormValidity() {
+    console.log("Start Form Check");
     if (
       productNameError &&
       brandError &&
@@ -342,14 +342,17 @@ function UpdateInventoryItemPage(props) {
         productOptionsError.ok &&
         productDescriptionError.ok
       ) {
-        setFormValid(true); // if All Fields Check out
+        // setFormValid(true); // if All Fields Check out
+
         return true;
       } else {
-        setFormValid(false); //if some field validation is not checked
+        // setFormValid(false); //if some field validation is not checked
+        console.log("Fail 1");
         return false;
       }
     } else {
-      setFormValid(false); //if One field has not been validated Yet
+      // setFormValid(false); //if One field has not been validated Yet
+      console.log("Fail 2");
       return false;
     }
   }
@@ -358,7 +361,6 @@ function UpdateInventoryItemPage(props) {
     <div>
       <Row className={Styles.EditButtonSegment}>
         <Button
-          disabled={!formValid}
           label="Save"
           styles={{
             backgroundColor: "#FADA35",
@@ -368,14 +370,13 @@ function UpdateInventoryItemPage(props) {
           onClick={async () => {
             // history.push("/inventory/update/" + id);
             // updateInventoryItem(id);
+            setSaveState(null);
 
-            await checkFormFieldsValidity();
+            var checkFields = await checkFormFieldsValidity();
 
-            var flag = checkFormValidity();
-            console.log(flag);
-
-            if (flag) {
+            if (checkFields.ok) {
               console.log("We Updating");
+              setSaveState({ ok: true, message: "Product Updated" });
             } else {
               console.log("No Updating");
               setSaveState({ ok: false, message: "Please Check all Fields" });
@@ -410,7 +411,7 @@ function UpdateInventoryItemPage(props) {
                 " "
               )}
             >
-              Error:{saveState.message}
+              {saveState.message}
             </p>
           ))}
       </Row>
@@ -491,7 +492,7 @@ function UpdateInventoryItemPage(props) {
                       message: "Product Must have at least One Image",
                     }
                   : { ok: true, message: null };
-                  
+
               setProductImagesError(imagesCheckOutput);
             }}
             deleteProductImage={(imageObject) => {
