@@ -1,9 +1,10 @@
 import React from "react";
+
 import Styles from "./InventoryCreatePage.module.css";
 import { Row } from "react-bootstrap";
 import Button from "../general/Button.js";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory, Prompt } from "react-router-dom";
 import EditProductDetailsCard from "../inventory/EditProductDetailsCard.js";
 import EditProductDataCard from "../inventory/EditProductDataCard.js";
 import { getProduct, updateProduct } from "../../api/products.js";
@@ -29,10 +30,17 @@ import {
 function UpdateInventoryItemPage(props) {
   var { id } = useParams();
 
+  const history = useHistory();
+
+  const started = React.useRef(false);
+
   // var [formValid, setFormValid] = React.useState(true);
 
   // State
   var [saveState, setSaveState] = React.useState(null);
+  var [saveLoading, setSaveLoading] = React.useState(false);
+  var [changesNotSaved, setChangesNotSaved] = React.useState(true);
+
   var [loading, setLoading] = React.useState(true);
 
   //Product Id
@@ -83,18 +91,43 @@ function UpdateInventoryItemPage(props) {
   var [productImages, setProductImages] = React.useState([]);
   var [productImagesError, setProductImagesError] = React.useState(null);
 
-  //Product Images
+  //Product Options
   var [productOptions, setProductOptions] = React.useState([]);
   var [productOptionsError, setProductOptionsError] = React.useState(null);
-
-  const started = React.useRef(false);
 
   React.useEffect(() => {
     if (!started.current) {
       onStart(id);
+
       started.current = true;
     }
-  }, []);
+    window.addEventListener("beforeunload", alertUser);
+    checkFormFieldsValidity();
+
+    return () => {
+      window.removeEventListener("beforeunload", alertUser);
+    };
+  }, [
+    productName,
+    brand,
+    visibility,
+    categories,
+    supplierCost,
+    supplierTax,
+    sellingPrice,
+    sellingTax,
+    productImages,
+    productOptions,
+    productDescription,
+  ]);
+
+  function alertUser(event) {
+    if (changesNotSaved) {
+      event.preventDefault();
+      event.returnValue = '';
+    }
+    return '';
+  }
 
   async function onStart(idValue) {
     console.log("On Start Called");
@@ -137,6 +170,7 @@ function UpdateInventoryItemPage(props) {
           setProductImages(product.imgURls);
           setProductOptions(product.options);
           setProductDescription(product.productDescription);
+
           setLoading(false);
           return { ok: true, message: "Product Retrieved and Set to View" };
         } else {
@@ -200,54 +234,41 @@ function UpdateInventoryItemPage(props) {
   }
 
   async function updateInventoryItem(product_id) {
-    // Make sure all input validation is true then build product data for sending
     // Remember - Mongoose adds _id field for all objects added through the mongoose api - antisipate that change and if it really has any effect on the data
 
-    setSaveState(null);
-    setLoading(true);
-    var categoryData = prepareCategories();
-    console.log(categoryData);
-    var product = {
-      productName: productName,
-      productDescription: productDescription,
-      brand: brand,
-      categories: categoryData,
-      options: productOptions,
-      imgURls: productImages,
-      showProduct: visibility, // was true
-      supplierTaxAmount: supplierTax,
-      supplierCost: supplierCost,
-      sellingPriceTaxAmount: sellingTax,
-      sellingPrice: sellingPrice,
-      applicableTax: ["VAT"],
-      available: true,
-    };
-
     if (typeof product_id !== "undefined") {
+      var categoryData = prepareCategories();
+
+      var product = {
+        productName: productName,
+        productDescription: productDescription,
+        brand: brand,
+        categories: categoryData,
+        options: productOptions,
+        imgURls: productImages,
+        showProduct: visibility, // was true
+        supplierTaxAmount: supplierTax,
+        supplierCost: supplierCost,
+        sellingPriceTaxAmount: sellingTax,
+        sellingPrice: sellingPrice,
+        applicableTax: ["VAT"],
+        available: true,
+      };
+
       var updateProductResult = await updateProduct(
         product_id,
         product //put productData
       );
 
-      if (updateProductResult.ok === true) {
-        console.log("Product Successfully Updated");
-        setLoading(false);
-        setSaveState({ ok: true, message: "Product Updated" });
-        console.log(updateProductResult);
-      } else {
-        setLoading(false);
-        setSaveState(updateProductResult);
-        console.log(updateProductResult);
-      }
+      return updateProductResult;
     } else {
-      console.log("Product Id is Undefined");
+      return { ok: false, message: "Product ID is undefined" };
     }
   }
 
   //Check Form Fields Validity
   async function checkFormFieldsValidity() {
     try {
-      console.log("Start Fields Check");
       //Check ProductName
       var productNameCheck = await validateBasicString(productName);
       await setProductNameError(productNameCheck);
@@ -300,22 +321,13 @@ function UpdateInventoryItemPage(props) {
       );
       await setProductDescriptionError(productDescriptionResult);
 
-      console.log("End Fields Check");
-
-      var flag =  checkFormValidity();
-
-      if (flag) {
-        return { ok: true };
-      } else {
-        return { ok: false };
-      }
+      return { ok: true };
     } catch {
       return { ok: false };
     }
   }
 
-   function checkFormValidity() {
-    console.log("Start Form Check");
+  function checkFormValidity() {
     if (
       productNameError &&
       brandError &&
@@ -342,17 +354,11 @@ function UpdateInventoryItemPage(props) {
         productOptionsError.ok &&
         productDescriptionError.ok
       ) {
-        // setFormValid(true); // if All Fields Check out
-
         return true;
       } else {
-        // setFormValid(false); //if some field validation is not checked
-        console.log("Fail 1");
         return false;
       }
     } else {
-      // setFormValid(false); //if One field has not been validated Yet
-      console.log("Fail 2");
       return false;
     }
   }
@@ -360,40 +366,86 @@ function UpdateInventoryItemPage(props) {
   return (
     <div>
       <Row className={Styles.EditButtonSegment}>
-        <Button
-          label="Save"
-          styles={{
-            backgroundColor: "#FADA35",
-            marginLeft: "0px",
-            width: "min-content",
-          }}
-          onClick={async () => {
-            // history.push("/inventory/update/" + id);
-            // updateInventoryItem(id);
-            setSaveState(null);
-
-            var checkFields = await checkFormFieldsValidity();
-
-            if (checkFields.ok) {
-              console.log("We Updating");
-              setSaveState({ ok: true, message: "Product Updated" });
-            } else {
-              console.log("No Updating");
-              setSaveState({ ok: false, message: "Please Check all Fields" });
-            }
-          }}
+        <Prompt
+          when={changesNotSaved}
+          message="Changes made have not yet been stored, are you sure that you want to leave this page?"
         />
-        <Button
-          label="Discard"
-          styles={{
-            backgroundColor: "#E3E3E3",
-            marginLeft: "20px",
-            width: "min-content",
-          }}
-          onClick={() => {
-            // history.push("/inventory/update/" + id);
-          }}
-        />
+        {!loading && (
+          <>
+            <Button
+              label="Save"
+              disabled={!checkFormValidity()}
+              styles={{
+                backgroundColor: "#FADA35",
+                marginLeft: "0px",
+                width: "min-content",
+              }}
+              onClick={async () => {
+                setSaveState(null);
+                setSaveLoading(true);
+
+                if (checkFormValidity()) {
+                  var updateProductResult = await updateInventoryItem(
+                    productId
+                  );
+                  setSaveLoading(false);
+                  if (updateProductResult.ok === true) {
+                    setSaveState({ ok: true, message: "Product Updated" });
+                    setChangesNotSaved(false);
+
+                    setTimeout(() => {
+                      history.goBack();
+                    }, 1000);
+                  } else {
+                    setSaveState(updateProductResult);
+                  }
+                } else {
+                  setSaveLoading(false);
+                  setSaveState({
+                    ok: false,
+                    message: "Please check all input fields",
+                  });
+                }
+              }}
+            />
+            <Button
+              label="Discard"
+              styles={{
+                backgroundColor: "#E3E3E3",
+                marginLeft: "20px",
+                width: "min-content",
+              }}
+              onClick={async () => {
+                setSaveState(null);
+                setSaveLoading(true);
+                // Discard Changes
+                var changeAvailabilityState =
+                  await changeProductAvailabilityState(productId, true);
+
+                setSaveLoading(false);
+                setSaveState({ ok: true, message: "Changes Discarded" });
+                setChangesNotSaved(false);
+
+                setTimeout(() => {
+                  history.goBack();
+                }, 1000);
+              }}
+            />
+          </>
+        )}
+
+        {saveLoading && (
+          <div
+            style={{
+              width: "max-content",
+              marginLeft: "8px",
+              alignItems: "center",
+              display: "flex",
+            }}
+          >
+            <CircularProgress size={26} />
+          </div>
+        )}
 
         {saveState &&
           (saveState.ok ? (
@@ -519,6 +571,7 @@ function UpdateInventoryItemPage(props) {
             //Product Options
             productOptions={productOptions}
             productOptionsError={productOptionsError}
+            
             //Add Product Option
             addProductOption={(option) => {
               var newOption = {

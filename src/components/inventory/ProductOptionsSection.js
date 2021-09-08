@@ -7,7 +7,9 @@ function ProductOptionsSection(props) {
     <Row className={Styles.ProductOptionsSection}>
       <p className={Styles.SectionBanner}>Product Options</p>
       {props.productOptionsError && !props.productOptionsError.ok && (
-        <p>{props.productOptionsError.message}</p>
+        <p className={Styles.ErrorMessage}>
+          {props.productOptionsError.message}
+        </p>
       )}
       {props.children}
     </Row>

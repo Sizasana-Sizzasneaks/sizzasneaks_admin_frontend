@@ -16,7 +16,9 @@ function EditProductDataCard(props) {
     <Row className={Styles.ProductDataCard}>
       <p className={Styles.SectionBanner}>Product Images</p>
       {props.productImagesError && !props.productImagesError.ok && (
-        <p>{props.productImagesError.message}</p>
+        <p className={Styles.ErrorMessage}>
+          {props.productImagesError.message}
+        </p>
       )}
       <hr style={{ marginTop: "10px", marginBottom: "20px" }} />
       <ProductImagesCarousel>
@@ -57,7 +59,9 @@ function EditProductDataCard(props) {
       </ProductImagesCarousel>
       <Row>
         <Col>
-          <ProductOptionsSection productOptionsError={props.productOptionsError}>
+          <ProductOptionsSection
+            productOptionsError={props.productOptionsError}
+          >
             <ProductOptionsLineHeader />
             {props.productOptions &&
               props.productOptions.map((productOption) => {
