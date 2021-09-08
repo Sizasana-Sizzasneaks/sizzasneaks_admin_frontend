@@ -29,6 +29,8 @@ import {
 function UpdateInventoryItemPage(props) {
   var { id } = useParams();
 
+  const started = React.useRef(false);
+
   // var [formValid, setFormValid] = React.useState(true);
 
   // State
@@ -87,8 +89,6 @@ function UpdateInventoryItemPage(props) {
   var [productOptions, setProductOptions] = React.useState([]);
   var [productOptionsError, setProductOptionsError] = React.useState(null);
 
-  const started = React.useRef(false);
-
   React.useEffect(() => {
     if (!started.current) {
       onStart(id);
@@ -125,18 +125,19 @@ function UpdateInventoryItemPage(props) {
         //Product Item is at index 0 of date
         if (!getProductResult.data[0].available) {
           var product = getProductResult.data[0];
-          setProductId(product._id);
-          setProductName(product.productName);
-          setBrand(product.brand);
-          setVisibility(product.showProduct);
-          setCategories(prepareCategoriesDisplay(product.categories));
-          setSupplierCost(product.supplierCost);
-          setSupplierTax(product.supplierTaxAmount);
-          setSellingTax(product.sellingPriceTaxAmount);
-          setSellingPrice(product.sellingPrice);
-          setProductImages(product.imgURls);
-          setProductOptions(product.options);
-          setProductDescription(product.productDescription);
+          await setProductId(product._id);
+          await setProductName(product.productName);
+          await setBrand(product.brand);
+          await setVisibility(product.showProduct);
+          await setCategories(prepareCategoriesDisplay(product.categories));
+          await setSupplierCost(product.supplierCost);
+          await setSupplierTax(product.supplierTaxAmount);
+          await setSellingTax(product.sellingPriceTaxAmount);
+          await setSellingPrice(product.sellingPrice);
+          await setProductImages(product.imgURls);
+          await setProductOptions(product.options);
+          await setProductDescription(product.productDescription);
+          await checkFormFieldsValidity();
           setLoading(false);
           return { ok: true, message: "Product Retrieved and Set to View" };
         } else {
@@ -302,19 +303,13 @@ function UpdateInventoryItemPage(props) {
 
       console.log("End Fields Check");
 
-      var flag =  checkFormValidity();
-
-      if (flag) {
-        return { ok: true };
-      } else {
-        return { ok: false };
-      }
+      return { ok: true };
     } catch {
       return { ok: false };
     }
   }
 
-   function checkFormValidity() {
+  function checkFormValidity() {
     console.log("Start Form Check");
     if (
       productNameError &&
@@ -342,16 +337,12 @@ function UpdateInventoryItemPage(props) {
         productOptionsError.ok &&
         productDescriptionError.ok
       ) {
-        // setFormValid(true); // if All Fields Check out
-
         return true;
       } else {
-        // setFormValid(false); //if some field validation is not checked
         console.log("Fail 1");
         return false;
       }
     } else {
-      // setFormValid(false); //if One field has not been validated Yet
       console.log("Fail 2");
       return false;
     }
@@ -367,14 +358,16 @@ function UpdateInventoryItemPage(props) {
             marginLeft: "0px",
             width: "min-content",
           }}
-          onClick={async () => {
+          onClick={ () => {
             // history.push("/inventory/update/" + id);
             // updateInventoryItem(id);
             setSaveState(null);
 
-            var checkFields = await checkFormFieldsValidity();
+            var checkFields =  checkFormFieldsValidity();
 
-            if (checkFields.ok) {
+            var flag =  checkFormValidity();
+
+            if (flag) {
               console.log("We Updating");
               setSaveState({ ok: true, message: "Product Updated" });
             } else {
