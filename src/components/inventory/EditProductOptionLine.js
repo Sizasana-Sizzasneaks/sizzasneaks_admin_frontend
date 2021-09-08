@@ -216,6 +216,7 @@ function EditProductOptionLine(props) {
                   setQuantityAddError(null);
                 }
               } else {
+                
               }
             }}
           />
@@ -290,6 +291,7 @@ function EditProductOptionLine(props) {
                 ? "ADD NEW VARIANT"
                 : "ADD NEW OPTION"
             }
+            disabled={!checkFormValidity()}
             styles={{
               padding: "8px 13px",
               backgroundColor: "#FADA35",
@@ -297,13 +299,7 @@ function EditProductOptionLine(props) {
               float: "right",
             }}
             onClick={async () => {
-              await checkInputFields();
-
-              var formValidityCheck = checkFormValidity();
-
-              if (formValidityCheck) {
-                console.log("Adding");
-
+              if (checkFormValidity()) {
                 if (typeof props.addOption !== "undefined") {
                   var addOptionResult = await props.addOption({
                     color,
