@@ -47,11 +47,7 @@ function EditProductOptionLine(props) {
 
   function checkFormValidity() {
     if (colorError && sizeError && quantityError) {
-      if (
-        colorError.ok === true &&
-        sizeError.ok === true &&
-        quantityError.ok === true
-      ) {
+      if (colorError.ok && sizeError.ok && quantityError.ok) {
         return true;
       } else {
         return false;
@@ -216,7 +212,6 @@ function EditProductOptionLine(props) {
                   setQuantityAddError(null);
                 }
               } else {
-                
               }
             }}
           />
