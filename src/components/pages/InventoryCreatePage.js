@@ -4,13 +4,25 @@ import { Row } from "react-bootstrap";
 import Button from "../general/Button.js";
 import EditProductDetailsCard from "../inventory/EditProductDetailsCard.js";
 import EditProductDataCard from "../inventory/EditProductDataCard.js";
+import { useHistory, Prompt } from "react-router-dom";
 
 import { createProduct } from "../../api/products.js";
 import CircularProgress from "@material-ui/core/CircularProgress";
+
+import {
+  validateBasicString,
+  validateVisibility,
+  validateCategories,
+  validateFundsValue,
+  validateProductDescriptionString,
+} from "../../services/InputValidation.js";
+
 function InventoryCreatePage(props) {
+  const history = useHistory();
   // State
   var [saveState, setSaveState] = React.useState(null);
-  var [loading, setLoading] = React.useState(true);
+  var [loading, setLoading] = React.useState(false);
+  var [changesNotSaved, setChangesNotSaved] = React.useState(true);
 
   //Product Name State
   var [productName, setProductName] = React.useState(null);
@@ -55,19 +67,56 @@ function InventoryCreatePage(props) {
 
   //Product Images
   var [productImages, setProductImages] = React.useState([]);
+  var [productImagesError, setProductImagesError] = React.useState(null);
 
-  //Product Images
+  //Product Options
   var [productOptions, setProductOptions] = React.useState([]);
+  var [productOptionsError, setProductOptionsError] = React.useState(null);
 
   React.useEffect(() => {
-    // createNewProduct();
-  }, []);
+    window.addEventListener("beforeunload", alertUser);
 
+    return () => {
+      window.removeEventListener("beforeunload", alertUser);
+    };
+  }, [
+    productName,
+    brand,
+    visibility,
+    categories,
+    supplierCost,
+    supplierTax,
+    sellingPrice,
+    sellingTax,
+    productImages,
+    productOptions,
+    productDescription,
+  ]);
+
+  function clearFields() {
+    setProductName("");
+    setBrand("");
+    setVisibility(null);
+    setCategories({ women: false, men: false, kids: false });
+    setSupplierCost(null);
+    setSupplierTax(null);
+    setSellingTax(null);
+    setSellingPrice(null);
+    setProductImages(null);
+    setProductOptions(null);
+    setProductDescription("");
+  }
+
+  function alertUser(event) {
+    if (changesNotSaved) {
+      event.preventDefault();
+      event.returnValue = "";
+    }
+    return "";
+  }
   async function createNewProduct() {
-    setSaveState(null);
-    setLoading(true);
     var categoryData = prepareCategories();
-    console.log(categoryData);
+
     var product = {
       productName: productName,
       productDescription: productDescription,
@@ -86,16 +135,7 @@ function InventoryCreatePage(props) {
 
     var createProductResult = await createProduct(product);
 
-    if (createProductResult.ok === true) {
-      console.log("Product Created");
-      setLoading(false);
-      setSaveState({ ok: true, message: "Product Created" });
-    } else {
-      setLoading(false);
-      setSaveState(createProductResult);
-      console.log("Failure To Create Product");
-      console.log(createProductResult);
-    }
+    return createProductResult;
   }
 
   function prepareCategories() {
@@ -114,19 +154,145 @@ function InventoryCreatePage(props) {
     return categoriesArray;
   }
 
+  //Check Form Fields Validity
+  async function checkFormFieldsValidity() {
+    try {
+      //Check ProductName
+      var productNameCheck = await validateBasicString(productName);
+      await setProductNameError(productNameCheck);
+
+      //Check Brand
+      var brandCheck = await validateBasicString(brand);
+      await setBrandError(brandCheck);
+
+      //Check Visibility
+      var visibilityCheck = await validateVisibility(visibility);
+      await setVisibilityError(visibilityCheck);
+
+      //Check Categories
+      var categoriesCheck = await validateCategories(categories);
+      await setCategoriesError(categoriesCheck);
+
+      //Check Supplier Cost
+      var supplierCostCheck = await validateFundsValue(supplierCost);
+      await setSupplierCostError(supplierCostCheck);
+
+      //Check Supplier Tax
+      var supplierTaxCheck = await validateFundsValue(supplierTax);
+      await setSupplierTaxError(supplierTaxCheck);
+
+      // Check Selling Price
+      var sellingPriceCheck = await validateFundsValue(sellingPrice);
+      await setSellingPriceError(sellingPriceCheck);
+
+      //Check Selling Tax
+      var sellingTaxCheck = await validateFundsValue(sellingTax);
+      await setSellingTaxError(sellingTaxCheck);
+
+      //Check Images
+      var imagesCheckOutput =
+        productImages.length < 1
+          ? { ok: false, message: "Product Must have at least One Image" }
+          : { ok: true, message: null };
+      await setProductImagesError(imagesCheckOutput);
+
+      //Check Product Options
+      var optionsCheckOutput =
+        productOptions.length < 1
+          ? { ok: false, message: "Product must have at least one option" }
+          : { ok: true, message: null };
+      await setProductOptionsError(optionsCheckOutput);
+
+      //Check Product Description
+      var productDescriptionResult = await validateProductDescriptionString(
+        productDescription
+      );
+      await setProductDescriptionError(productDescriptionResult);
+
+      return { ok: true };
+    } catch {
+      return { ok: false };
+    }
+  }
+
+  function checkFormValidity() {
+    if (
+      productNameError &&
+      brandError &&
+      visibilityError &&
+      categoriesError &&
+      supplierCostError &&
+      supplierTaxError &&
+      sellingPriceError &&
+      sellingTaxError &&
+      productImagesError &&
+      productOptionsError &&
+      productDescriptionError
+    ) {
+      if (
+        productNameError.ok &&
+        brandError.ok &&
+        visibilityError.ok &&
+        categoriesError.ok &&
+        supplierCostError.ok &&
+        supplierTaxError.ok &&
+        sellingPriceError.ok &&
+        sellingTaxError.ok &&
+        productImagesError.ok &&
+        productOptionsError.ok &&
+        productDescriptionError.ok
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
   return (
     <div>
       <Row className={Styles.EditButtonSegment}>
+        <Prompt
+          when={changesNotSaved}
+          message="Changes made have not yet been stored, are you sure that you want to leave this page?"
+        />
         <Button
           label="Save"
+          disabled={!checkFormValidity()}
           styles={{
             backgroundColor: "#FADA35",
             marginLeft: "0px",
             width: "min-content",
           }}
-          onClick={() => {
-            // history.push("/inventory/update/" + id);
-            createNewProduct();
+          onClick={async () => {
+            setSaveState(null);
+            setLoading(true);
+
+            if (checkFormValidity()) {
+              var createNewProductResult = await createNewProduct();
+
+              setLoading(false);
+              if (createNewProductResult.ok) {
+                setSaveState({ ok: true, message: "Product Created" });
+                clearFields();
+                setChangesNotSaved(false);
+
+                setTimeout(() => {
+                  history.push("/inventory");
+                }, 1000);
+              } else {
+                setSaveState(createNewProductResult);
+              }
+            } else {
+              setLoading(false);
+              checkFormFieldsValidity();
+              setSaveState({
+                ok: false,
+                message: "Please check all input fields",
+              });
+            }
           }}
         />
         <Button
@@ -137,10 +303,28 @@ function InventoryCreatePage(props) {
             width: "min-content",
           }}
           onClick={() => {
-            // history.push("/inventory/update/" + id);
+            setSaveState(null);
+            setLoading(true);
+            setChangesNotSaved(false);
+
+            setTimeout(() => {
+              history.goBack();
+            }, 1000);
           }}
         />
 
+        {loading && (
+          <div
+            style={{
+              width: "max-content",
+              marginLeft: "8px",
+              alignItems: "center",
+              display: "flex",
+            }}
+          >
+            <CircularProgress size={26} />
+          </div>
+        )}
         {saveState &&
           (saveState.ok ? (
             <p
@@ -157,7 +341,7 @@ function InventoryCreatePage(props) {
                 " "
               )}
             >
-              Error:{saveState.message}
+              {saveState.message}
             </p>
           ))}
       </Row>
@@ -208,22 +392,47 @@ function InventoryCreatePage(props) {
       <EditProductDataCard
         //Product Images
         productImages={productImages}
+        productImagesError={productImagesError}
         addNewProductImage={(imageObject) => {
-          setProductImages([...productImages, imageObject]);
+          var outputImages = [...productImages, imageObject];
+
+          setProductImages(outputImages);
+
+          //Check Images
+          var imagesCheckOutput =
+            outputImages.length < 1
+              ? {
+                  ok: false,
+                  message: "Product Must have at least One Image",
+                }
+              : { ok: true, message: null };
+
+          setProductImagesError(imagesCheckOutput);
         }}
         deleteProductImage={(imageObject) => {
           function newImages(imageItem) {
             return imageItem.imgURL !== imageObject.imgURL;
           }
-          console.log("Got Here");
-          console.log(imageObject);
-          console.log(productImages.filter(newImages));
-          setProductImages(productImages.filter(newImages));
-        }}
 
+          console.log(imageObject);
+
+          var outputImages = productImages.filter(newImages);
+
+          setProductImages(outputImages);
+
+          //Check Images
+          var imagesCheckOutput =
+            outputImages.length < 1
+              ? {
+                  ok: false,
+                  message: "Product Must have at least One Image",
+                }
+              : { ok: true, message: null };
+          setProductImagesError(imagesCheckOutput);
+        }}
         //Product Options
         productOptions={productOptions}
-
+        productOptionsError={productOptionsError}
         //Add Product Option
         addProductOption={(option) => {
           var newOption = {
@@ -244,11 +453,24 @@ function InventoryCreatePage(props) {
           if (colorExists) {
             return { ok: false, message: "Color already exists" };
           } else {
-            setProductOptions([...productOptions, newOption]);
+            var outputObject = [...productOptions, newOption];
+
+            setProductOptions(outputObject);
+
+            //Check Product Options
+            var optionsCheckOutput =
+              outputObject.length < 1
+                ? {
+                    ok: false,
+                    message: "Product Must have at least One Option",
+                  }
+                : { ok: true, message: null };
+
+            setProductOptionsError(optionsCheckOutput);
+
             return { ok: true };
           }
         }}
-
         //Add Variant To Product Option
         addProductOptionVariant={(option) => {
           console.log("Here I am");
@@ -368,7 +590,19 @@ function InventoryCreatePage(props) {
             });
           }
 
-          setProductOptions([...newProductOptions]);
+          var outputOptions = [...newProductOptions];
+
+          setProductOptions(outputOptions);
+
+          //Check Product Options
+          var optionsCheckOutput =
+            outputOptions.length < 1
+              ? {
+                  ok: false,
+                  message: "Product Must have at least One Option",
+                }
+              : { ok: true, message: null };
+          setProductOptionsError(optionsCheckOutput);
         }}
         //Product Description
         productDescription={productDescription}

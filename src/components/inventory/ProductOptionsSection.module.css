@@ -9,4 +9,16 @@
     margin-left: -12px;
     /* margin-top: 20px; */
     margin-bottom: 20px;
+    width: max-content;
   }
+
+  .ErrorMessage {
+    width: max-content;
+    margin-bottom: 0px;
+    margin-top: 3px;
+    color: red;
+    display: flex;
+    align-self: baseline;
+    margin-left: 12px;
+  }
+  
