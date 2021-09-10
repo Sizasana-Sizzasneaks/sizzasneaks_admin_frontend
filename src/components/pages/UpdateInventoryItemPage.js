@@ -383,7 +383,7 @@ function UpdateInventoryItemPage(props) {
 
       //Check Product Options
       var optionsCheckOutput =
-        productOptions.length < 1
+        newImages.length < 1
           ? { ok: false, message: "Product must have at least one option" }
           : { ok: true, message: null };
       await setProductOptionsError(optionsCheckOutput);
