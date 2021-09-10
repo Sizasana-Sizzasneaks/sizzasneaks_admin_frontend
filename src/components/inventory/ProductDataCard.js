@@ -51,24 +51,9 @@ function ProductDataCard(props) {
       <Row>
         <p className={Styles.SectionBanner}>Product Description</p>
         <hr style={{ marginTop: "15px", marginBottom: "20px" }} />
-        <Col>
-          <InputTextArea
-            value={props.productDescription}
-            label="Product Description"
-            wrapperStyle={{ width: "auto", height: "120px" }}
-            entireComponentStyle={{ width: "100%" }}
-            onChange={async (value) => {
-              if (typeof props.setProductDescription !== "undefined") {
-                props.setProductDescription(value);
-              }
 
-              if (typeof props.setProductDescriptionError !== "undefined") {
-                var productDescriptionResult = await validateBasicString(value);
-                props.setProductDescriptionError(productDescriptionResult);
-              }
-            }}
-            error={props.productDescriptionError}
-          />
+        <Col>
+          <p>{props.productDescription}</p>
         </Col>
       </Row>
     </Row>

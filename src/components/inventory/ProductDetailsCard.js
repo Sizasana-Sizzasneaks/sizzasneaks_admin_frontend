@@ -1,6 +1,7 @@
 import React from "react";
 import { Row, Col } from "react-bootstrap";
 import Styles from "./ProductDetailsCard.module.css";
+import BoxSelector from "../general/BoxSelector.js";
 
 function ProductDetailsCard(props) {
   return (
@@ -60,26 +61,39 @@ function ProductDetailsCard(props) {
         </Col>
         <Col xl={5}></Col>
         <Col xl={2} className={Styles.ProductDetailsLabel}>
-          <p>Selling Tax:</p>
+          <p>Selling Price:</p>
         </Col>
         <Col xl={1} className={Styles.RightAlign}>
-          <p>{props.sellingTax}</p>
+          <p>{props.sellingPrice}</p>
         </Col>
+
+       
       </Row>
 
       <Row>
         <Col xl={2} className={Styles.ProductDetailsLabel}>
           <p>Category:</p>
         </Col>
-        <Col xl={2}>
-          <p>{props.categories}</p>
+        <Col xl={3}>
+          <BoxSelector
+            label="Women"
+            selected={props.categories.indexOf("WOMEN") !== -1 ? true : false}
+          />
+          <BoxSelector
+            label="Men"
+            selected={props.categories.indexOf("MEN") !== -1 ? true : false}
+          />
+          <BoxSelector
+            label="Kids"
+            selected={props.categories.indexOf("KIDS") !== -1 ? true : false}
+          />
         </Col>
-        <Col xl={5}></Col>
+        <Col xl={4}></Col>
         <Col xl={2} className={Styles.ProductDetailsLabel}>
-          <p>Selling Price:</p>
+          <p>Selling Tax:</p>
         </Col>
         <Col xl={1} className={Styles.RightAlign}>
-          <p>{props.sellingPrice}</p>
+          <p>{props.sellingTax}</p>
         </Col>
       </Row>
     </Row>

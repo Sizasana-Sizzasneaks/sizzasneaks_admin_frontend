@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 //App Components
 import Navbar from "./components/general/Navbar.js";
-import NavbarLog from "./components/general/Navbar Login";
+import NavbarLogIn from "./components/general/NavbarLogIn.js";
 import Footer from "./components/general/Footer.js";
 import { Container } from "react-bootstrap";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -20,9 +20,11 @@ import InventoryCreatePage from "./components/pages/InventoryCreatePage.js";
 
 //Redux Store
 import store from "./redux/index.js";
+import { useSelector } from "react-redux";
 import { isLoaded, isEmpty } from "react-redux-firebase";
 
 function App() {
+  var isUserEmpty = useSelector((state) => state.firebase.auth.isEmpty);
   var [loading, setLoading] = React.useState(true);
 
   const subscription = store.subscribe(appStart);
@@ -63,7 +65,8 @@ function App() {
         </div>
       ) : (
         <Router>
-          <Navbar />
+          {isUserEmpty ? <NavbarLogIn /> : <Navbar />}
+
           <Container fluid="xl" style={{ padding: "0" }}>
             <div>
               <Switch>

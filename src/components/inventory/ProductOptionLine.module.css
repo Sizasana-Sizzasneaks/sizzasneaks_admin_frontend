@@ -1,20 +1,28 @@
 .Info {
-    font-weight: 300;
-  }
-  
-  .Info:hover {
-      cursor: pointer;
-    }
-  
-  .TopLine {
-    margin-bottom: 8px;
-  }
-  
-  .LeftAlign {
-    text-align: right;
-  }
-  
-  .SingleFieldBanner {
-    padding: 0px;
-  }
-  
+  font-weight: 300;
+}
+
+.Info:hover {
+  cursor: pointer;
+}
+
+.TopLine {
+  margin-bottom: 8px;
+}
+
+.LeftAlign {
+  text-align: right;
+}
+
+.SingleFieldBanner {
+  padding: 0px;
+}
+
+.AddErrorText {
+  color: red;
+  margin-bottom: 0px;
+}
+
+.DeleteBox {
+  margin-left: auto;
+}

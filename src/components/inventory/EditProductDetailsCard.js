@@ -24,11 +24,24 @@ function EditProductDetailsCard(props) {
         </Col>
       </Row> */}
       <Row>
-        
-        <Col>
-        <p className={Styles.SectionBanner}>Product Description</p>
-          <hr style={{ marginTop: "10px", marginBottom: "20px" }} />
-        </Col>
+        {props.productId ? (
+          <>
+            <Col xl={2}>
+              <p className={Styles.SectionBanner} style={{ fontWeight: "400" }}>
+                ProductID:
+              </p>
+            </Col>
+            <Col xl={2}>
+              <p className={Styles.SectionBanner}>{props.productId}</p>
+            </Col>
+            <hr style={{ marginTop: "10px", marginBottom: "20px" }} />
+          </>
+        ) : (
+          <Col>
+            <p className={Styles.SectionBanner}>Product Description</p>
+            <hr style={{ marginTop: "10px", marginBottom: "20px" }} />
+          </Col>
+        )}
       </Row>
 
       <Row className={Styles.SingleRow}>
@@ -74,8 +87,20 @@ function EditProductDetailsCard(props) {
               var cleanValue =
                 Math.round((numberValue + Number.EPSILON) * 100) / 100;
 
+              var taxAmount =
+                Math.round((cleanValue * 0.15 + Number.EPSILON) * 100) / 100;
+
               if (typeof props.setSupplierCost !== "undefined") {
                 props.setSupplierCost(cleanValue);
+
+                if (typeof props.setSupplierTax !== "undefined") {
+                  props.setSupplierTax(taxAmount);
+                }
+
+                if (typeof props.setSupplierTaxError !== "undefined") {
+                  var supplierTaxCheck = await validateFundsValue(taxAmount);
+                  props.setSupplierTaxError(supplierTaxCheck);
+                }
               }
               if (typeof props.setSupplierCostError !== "undefined") {
                 var supplierCostCheck = await validateFundsValue(cleanValue);
@@ -114,28 +139,7 @@ function EditProductDetailsCard(props) {
           <InputField
             value={props.supplierTax}
             inputStyle={{ textAlign: "right" }}
-            onChange={async (value) => {
-              var newValue = value
-                .replace(/[^0-9.]/g, "")
-                .replace(/(\..*)\./g, "$1");
-              if (typeof props.setSupplierTax !== "undefined") {
-                props.setSupplierTax(newValue);
-              }
-            }}
-            onBlur={async (value) => {
-              var numberValue = parseFloat(value, 10);
-
-              var cleanValue =
-                Math.round((numberValue + Number.EPSILON) * 100) / 100;
-
-              if (typeof props.setSupplierTax !== "undefined") {
-                props.setSupplierTax(cleanValue);
-              }
-              if (typeof props.setSupplierTaxError !== "undefined") {
-                var supplierTaxCheck = await validateFundsValue(cleanValue);
-                props.setSupplierTaxError(supplierTaxCheck);
-              }
-            }}
+            wrapperStyle={{ borderStyle: "none" }}
             error={props.supplierTaxError}
           />
         </Col>
@@ -162,18 +166,19 @@ function EditProductDetailsCard(props) {
         </Col>
         <Col xl={2}></Col>
         <Col xl={2} className={Styles.ProductDetailsLabel}>
-          <p>Selling Tax:</p>
+          <p>Selling Price:</p>
         </Col>
         <Col xl={3} className={Styles.RightAlign}>
           <InputField
-            value={props.sellingTax}
+            value={props.sellingPrice}
             inputStyle={{ textAlign: "right" }}
             onChange={async (value) => {
               var newValue = value
                 .replace(/[^0-9.]/g, "")
                 .replace(/(\..*)\./g, "$1");
-              if (typeof props.setSellingTax !== "undefined") {
-                props.setSellingTax(newValue);
+
+              if (typeof props.setSellingPrice !== "undefined") {
+                props.setSellingPrice(newValue);
               }
             }}
             onBlur={async (value) => {
@@ -182,15 +187,27 @@ function EditProductDetailsCard(props) {
               var cleanValue =
                 Math.round((numberValue + Number.EPSILON) * 100) / 100;
 
-              if (typeof props.setSellingTax !== "undefined") {
-                props.setSellingTax(cleanValue);
+              var taxAmount =
+                Math.round((cleanValue * 0.15 + Number.EPSILON) * 100) / 100;
+
+              if (typeof props.setSellingPrice !== "undefined") {
+                props.setSellingPrice(cleanValue);
+
+                if (typeof props.setSellingTax !== "undefined") {
+                  props.setSellingTax(taxAmount);
+                }
+
+                if (typeof props.setSellingPriceError !== "undefined") {
+                  var sellingTaxCheck = await validateFundsValue(taxAmount);
+                  props.setSellingTaxError(sellingTaxCheck);
+                }
               }
               if (typeof props.setSellingPriceError !== "undefined") {
                 var sellingPriceCheck = await validateFundsValue(cleanValue);
-                props.setSellingTaxError(sellingPriceCheck);
+                props.setSellingPriceError(sellingPriceCheck);
               }
             }}
-            error={props.sellingTaxError}
+            error={props.sellingPriceError}
           />
         </Col>
       </Row>
@@ -246,37 +263,16 @@ function EditProductDetailsCard(props) {
         </Col>
         {}
         <Col xl={2}></Col>
+
         <Col xl={2} className={Styles.ProductDetailsLabel}>
-          <p>Selling Price:</p>
+          <p>Selling Tax:</p>
         </Col>
         <Col xl={3} className={Styles.RightAlign}>
           <InputField
-            value={props.sellingPrice}
+            value={props.sellingTax}
             inputStyle={{ textAlign: "right" }}
-            onChange={async (value) => {
-              var newValue = value
-                .replace(/[^0-9.]/g, "")
-                .replace(/(\..*)\./g, "$1");
-
-              if (typeof props.setSellingPrice !== "undefined") {
-                props.setSellingPrice(newValue);
-              }
-            }}
-            onBlur={async (value) => {
-              var numberValue = parseFloat(value, 10);
-
-              var cleanValue =
-                Math.round((numberValue + Number.EPSILON) * 100) / 100;
-
-              if (typeof props.setSellingPrice !== "undefined") {
-                props.setSellingPrice(cleanValue);
-              }
-              if (typeof props.setSellingPriceError !== "undefined") {
-                var sellingPriceCheck = await validateFundsValue(cleanValue);
-                props.setSellingPriceError(sellingPriceCheck);
-              }
-            }}
-            error={props.sellingPriceError}
+            wrapperStyle={{ borderStyle: "none" }}
+            error={props.sellingTaxError}
           />
         </Col>
       </Row>

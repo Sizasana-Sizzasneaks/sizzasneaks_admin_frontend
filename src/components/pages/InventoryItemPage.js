@@ -13,16 +13,15 @@ import ProductDataCard from "../inventory/ProductDataCard.js";
 import ReviewBox from "../reviews/ReviewBox.js";
 import Button from "../general/Button.js";
 import ProductOptionsCard from "../inventory/ProductOptionsCard";
+import { CircularProgress } from "@material-ui/core";
 
 function InventoryItemPage(props) {
   var { id } = useParams();
   var history = useHistory();
   var [product, setProduct] = React.useState(null);
-  var [reviews, setReviews] = React.useState(null);
 
   React.useEffect(() => {
     getProductItem(id);
-    getProductReviews(id);
   }, [id]);
 
   async function getProductItem(product_id) {
@@ -41,93 +40,75 @@ function InventoryItemPage(props) {
     }
   }
 
-  async function getProductReviews(product_id) {
-    if (typeof product_id !== "undefined") {
-      var getReviewsResult = await getReviewsByProductId(product_id);
-      if (getReviewsResult.ok === true) {
-        //Reviews are at .data.reviews - its an Array
-        //rating average is at .data.ratingAverage - its an Integer
-        //reviewCount is at .data.reviewCount - its an Integer
-        setReviews(getReviewsResult.data);
-        console.log(getReviewsResult.data);
-      } else {
-        console.log(getReviewsResult);
-      }
-    } else {
-      console.log("Product Id is Undefined");
-    }
-  }
-
-  async function deleteProductReview(review_id) {
-    if (typeof review_id !== "undefined") {
-      var deleteReviewResult = await deleteReviewByReviewId(review_id);
-
-      if (deleteReviewResult.ok === true) {
-        //Delete Of review Successful
-        //Notify User by Displaying message on screen
-        //Then refresh product Reviews
-        console.log("Delete was Successful");
-        console.log(deleteReviewResult);
-      } else {
-        //Delete Of review Not Successful
-        //Notify User by Displaying message on screen
-        //Dont bother refreshing product Reviews
-        console.log("Delete was Not Successful");
-        console.log(deleteReviewResult);
-      }
-    } else {
-      console.log("Review ID is Undefined");
-    }
-  }
-
   return (
-    <div className={Styles.InventoryItemPage}>
-      <Row className={Styles.EditButtonSegment}>
-        <Button
-          label="Edit"
-          styles={{
-            backgroundColor: "#FADA35",
-            marginLeft: "auto",
-            width: "min-content",
-          }}
-          onClick={() => {
-            history.push("/inventory/update/" + id);
-          }}
-        />
-      </Row>
+    <div>
+      <div className={Styles.InventoryItemPage}>
+        <Row className={Styles.EditButtonSegment}>
+          <div
+            className={Styles.BackButton}
+            onClick={() => {
+              history.goBack();
+            }}
+          >
+            <span
+              class="material-icons"
+              style={{
+                fontSize: "35px",
+                alignSelf: "center",
+              }}
+            >
+              arrow_back
+            </span>
+          </div>
 
-      {product && (
-        <ProductDetailsCard
-          productId={product._id}
-          productName={product.productName}
-          brand={product.brand}
-          showProduct={product.showProduct ? "Visible" : "Hidden"}
-          Category={product.categories}
-          supplierCost={product.supplierCost}
-          supplierTax={product.supplierTaxAmount}
-          sellingTax={product.sellingPriceTaxAmount}
-          sellingPrice={product.sellingPrice}
-        />
-      )}
+          {product && (
+            <Button
+              label="Edit"
+              styles={{
+                backgroundColor: "#FADA35",
+                marginLeft: "auto",
+                width: "min-content",
+              }}
+              onClick={() => {
+                history.push("/inventory/update/" + id);
+              }}
+            />
+          )}
+        </Row>
+        {product ? (
+          <>
+            <ProductDetailsCard
+              productId={product._id}
+              productName={product.productName}
+              brand={product.brand}
+              showProduct={product.showProduct ? "Visible" : "Hidden"}
+              categories={product.categories}
+              supplierCost={product.supplierCost}
+              supplierTax={product.supplierTaxAmount}
+              sellingTax={product.sellingPriceTaxAmount}
+              sellingPrice={product.sellingPrice}
+            />
 
-      {/* {product && ( <Row className={Styles.ProductOptionsCard}>
-        <ProductOptionsCard 
-          product = {product}
-        />
-         <h1>Add new card here </h1>
-      </Row>  */}
-      {/* )} */}
-
-      {product && (
-        <ProductDataCard
-          productImages={product.imgURls}
-          productOptions={product.options}
-          productDescription={product.productDescription}
-        />
-      )}
-
-      {/* <Row className={Styles.ProductRevenueCard}></Row> */}
-      {reviews && <ReviewBox reviews={reviews} />}
+            <ProductDataCard
+              productImages={product.imgURls}
+              productOptions={product.options}
+              productDescription={product.productDescription}
+            />
+          </>
+        ) : (
+          <div
+            style={{
+              marginTop: "150px",
+              marginBottom: "100vh",
+              alignContent: "center",
+              display: "flex",
+            }}
+          >
+            <CircularProgress size={115} style={{ margin: "0px auto" }} />
+          </div>
+        )}
+        <ReviewBox product_id={id} />
+      </div>
     </div>
   );
 }
