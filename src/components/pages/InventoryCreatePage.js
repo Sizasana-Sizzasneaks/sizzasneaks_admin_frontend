@@ -5,7 +5,7 @@ import Button from "../general/Button.js";
 import EditProductDetailsCard from "../inventory/EditProductDetailsCard.js";
 import EditProductDataCard from "../inventory/EditProductDataCard.js";
 import { useHistory, Prompt } from "react-router-dom";
-
+import firebase from "../../config/firebaseConfig.js";
 import { createProduct } from "../../api/products.js";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
@@ -67,6 +67,8 @@ function InventoryCreatePage(props) {
 
   //Product Images
   var [productImages, setProductImages] = React.useState([]);
+  var [initialImages, setInitialImages] = React.useState([]);
+  var [newImages, setNewImages] = React.useState([]);
   var [productImagesError, setProductImagesError] = React.useState(null);
 
   //Product Options
@@ -114,7 +116,83 @@ function InventoryCreatePage(props) {
     }
     return "";
   }
+
+  async function uploadImages() {
+    var completeImages = [];
+
+    for (var i = 0; i < newImages.length; i++) {
+      var completedImageResult = await uploadImage(newImages[i]);
+      // console.log(completedImageResult);
+      if (completedImageResult.ok) {
+        completeImages.push(completedImageResult.data);
+      } else {
+        return { ok: false, message: "Failed to upload New Image No." + i };
+      }
+    }
+
+    return { ok: true, data: completeImages };
+  }
+
+  function uploadImage(imageItem) {
+    return new Promise((resolve, reject) => {
+      try {
+        //Root Ref
+        var outputImageItem = {};
+        var storageRef = firebase.storage().ref();
+
+        //Create
+        var metadata = {
+          name: imageItem.fileName,
+          contentType: imageItem.fileType,
+        };
+
+        //change to correct dynamic type/
+        var imagesRef = storageRef.child(
+          "images/" + imageItem.fileName + imageItem.fileType
+        );
+
+        var imageUpload = imagesRef.put(imageItem.file, metadata);
+
+        //Handle Image Upload
+        imageUpload.on(
+          "state_changed",
+          (snapshot) => {},
+          (error) => {
+            // Handle unsuccessful uploads
+            console.log("Error");
+            console.log(error);
+            reject({ ok: false, message: "Unsuccessful to Upload" });
+          },
+          () => {
+            imageUpload.snapshot.ref.getDownloadURL().then((downloadURL) => {
+              outputImageItem = {
+                fileName: imageItem.fileName,
+                fileType: imageItem.fileType,
+                imgURL: downloadURL,
+              };
+              resolve({ ok: true, data: outputImageItem });
+            });
+          }
+        );
+      } catch (error) {
+        console.log(error);
+        reject({
+          ok: false,
+          message: "Unexpected Error When Uploading an Images",
+        });
+      }
+    });
+  }
+
   async function createNewProduct() {
+    setSaveState({ok: true, message: "Uploading Images.."});
+    var imagesToUploadResult = await uploadImages();
+    if (!imagesToUploadResult.ok) {
+      return { ok: false, message: "Failed to Upload Images" };
+    }
+
+    console.log("Image Upload Worked");
+    console.log(imagesToUploadResult.data);
     var categoryData = prepareCategories();
 
     var product = {
@@ -123,7 +201,7 @@ function InventoryCreatePage(props) {
       brand: brand,
       categories: categoryData,
       options: productOptions,
-      imgURls: productImages,
+      imgURls: imagesToUploadResult.data,
       showProduct: visibility, // was true
       supplierTaxAmount: supplierTax,
       supplierCost: supplierCost,
@@ -191,7 +269,7 @@ function InventoryCreatePage(props) {
 
       //Check Images
       var imagesCheckOutput =
-        productImages.length < 1
+        newImages.length < 1
           ? { ok: false, message: "Product Must have at least One Image" }
           : { ok: true, message: null };
       await setProductImagesError(imagesCheckOutput);
@@ -249,6 +327,24 @@ function InventoryCreatePage(props) {
     } else {
       return false;
     }
+  }
+
+  function checkIfFileNameAlreadyExists(newFileName) {
+    var output = false;
+
+    initialImages.forEach((initialImage) => {
+      if (initialImage.fileName === newFileName) {
+        output = true;
+      }
+    });
+
+    newImages.forEach((newImage) => {
+      if (newImage.fileName === newFileName) {
+        output = true;
+      }
+    });
+
+    return output;
   }
 
   return (
@@ -391,12 +487,18 @@ function InventoryCreatePage(props) {
       />
       <EditProductDataCard
         //Product Images
-        productImages={productImages}
+        productImages={newImages}
         productImagesError={productImagesError}
         addNewProductImage={(imageObject) => {
-          var outputImages = [...productImages, imageObject];
+          //Check That filename is unique, if not changes fileName and tr again.
+          imageObject.fileName = imageObject.fileName.toLowerCase();
+          while (checkIfFileNameAlreadyExists(imageObject.fileName)) {
+            imageObject.fileName = imageObject.fileName + "1";
+          }
 
-          setProductImages(outputImages);
+          //Then add New Image Object to new Images
+          var outputImages = [...newImages, imageObject];
+          setNewImages(outputImages);
 
           //Check Images
           var imagesCheckOutput =
@@ -410,15 +512,13 @@ function InventoryCreatePage(props) {
           setProductImagesError(imagesCheckOutput);
         }}
         deleteProductImage={(imageObject) => {
-          function newImages(imageItem) {
-            return imageItem.imgURL !== imageObject.imgURL;
+          function getNewImages(imageItem) {
+            return imageItem.fileName !== imageObject.fileName;
           }
 
-          console.log(imageObject);
+          var outputImages = newImages.filter(getNewImages);
 
-          var outputImages = productImages.filter(newImages);
-
-          setProductImages(outputImages);
+          setNewImages(outputImages);
 
           //Check Images
           var imagesCheckOutput =

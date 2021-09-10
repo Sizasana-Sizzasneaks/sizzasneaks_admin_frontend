@@ -7,6 +7,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { useParams, useHistory, Prompt } from "react-router-dom";
 import EditProductDetailsCard from "../inventory/EditProductDetailsCard.js";
 import EditProductDataCard from "../inventory/EditProductDataCard.js";
+import firebase from "../../config/firebaseConfig.js";
 import { getProduct, updateProduct } from "../../api/products.js";
 
 import {
@@ -88,7 +89,8 @@ function UpdateInventoryItemPage(props) {
     React.useState(null);
 
   //Product Images
-  var [productImages, setProductImages] = React.useState([]);
+  var [initialImages, setInitialImages] = React.useState([]);
+  var [newImages, setNewImages] = React.useState([]);
   var [productImagesError, setProductImagesError] = React.useState(null);
 
   //Product Options
@@ -116,7 +118,7 @@ function UpdateInventoryItemPage(props) {
     supplierTax,
     sellingPrice,
     sellingTax,
-    productImages,
+    newImages,
     productOptions,
     productDescription,
   ]);
@@ -124,9 +126,9 @@ function UpdateInventoryItemPage(props) {
   function alertUser(event) {
     if (changesNotSaved) {
       event.preventDefault();
-      event.returnValue = '';
+      event.returnValue = "";
     }
-    return '';
+    return "";
   }
 
   async function onStart(idValue) {
@@ -167,7 +169,8 @@ function UpdateInventoryItemPage(props) {
           setSupplierTax(product.supplierTaxAmount);
           setSellingTax(product.sellingPriceTaxAmount);
           setSellingPrice(product.sellingPrice);
-          setProductImages(product.imgURls);
+          setInitialImages(product.imgURls);
+          setNewImages(product.imgURls);
           setProductOptions(product.options);
           setProductDescription(product.productDescription);
 
@@ -233,34 +236,104 @@ function UpdateInventoryItemPage(props) {
     }
   }
 
+  function compareImageData(firstArray, secondArray) {
+    var outputArray = [];
+
+    for (var i = 0; i < firstArray.length; i++) {
+      if (
+        secondArray.some((image) => image.fileName === firstArray[i].fileName)
+      ) {
+      } else {
+        outputArray.push(firstArray[i]);
+      }
+    }
+
+    return outputArray;
+  }
+
+  function replaceNewImages(firstArray, newImagesArray) {
+    var outputArray = firstArray.map(
+      (item) =>
+        newImagesArray.find((image) => image.fileName === item.fileName) || item
+    );
+
+    return outputArray;
+  }
+
+  function deleteImage(imageURL) {
+    return new Promise((resolve, reject) => {
+      try {
+        var storageRef = firebase.storage();
+
+        //Delete image By it URL
+        var imgRef = storageRef.refFromURL(imageURL);
+
+        // Delete the file
+        imgRef
+          .delete()
+          .then(() => {
+            resolve({ ok: true });
+          })
+          .catch((error) => {
+            resolve({ ok: false, message: "Failed to Delete Image" });
+          });
+      } catch (error) {
+        resolve({ ok: false, message: "Error when trying to delete an image" });
+      }
+    });
+  }
+  async function removeImages(images) {
+    for (var i = 0; i < images.length; i++) {
+      await deleteImage(images[i]);
+    }
+    return { ok: true };
+  }
+
   async function updateInventoryItem(product_id) {
     // Remember - Mongoose adds _id field for all objects added through the mongoose api - antisipate that change and if it really has any effect on the data
 
     if (typeof product_id !== "undefined") {
-      var categoryData = prepareCategories();
+      setSaveState({ok: true, message: "Updating Images.."});
+      //Find Images to Deletes
+      var imagesToDelete = compareImageData(initialImages, newImages);
+      // Delete Images
+      var deleteImages = await removeImages(imagesToDelete);
 
-      var product = {
-        productName: productName,
-        productDescription: productDescription,
-        brand: brand,
-        categories: categoryData,
-        options: productOptions,
-        imgURls: productImages,
-        showProduct: visibility, // was true
-        supplierTaxAmount: supplierTax,
-        supplierCost: supplierCost,
-        sellingPriceTaxAmount: sellingTax,
-        sellingPrice: sellingPrice,
-        applicableTax: ["VAT"],
-        available: true,
-      };
+      //Find Images to Upload
+      var imagesToUpload = compareImageData(newImages, initialImages);
+      // Upload Images
+      var imageUploadResult = await uploadImages(imagesToUpload);
+      if (!imageUploadResult.ok) {
+        return { ok: false, message: "Failed to Upload Images" };
+      } else {
+        //Build Image data to be Uploaded.
+        var imagesToSave = replaceNewImages(newImages, imageUploadResult.data);
 
-      var updateProductResult = await updateProduct(
-        product_id,
-        product //put productData
-      );
+        var categoryData = prepareCategories();
 
-      return updateProductResult;
+        var product = {
+          productName: productName,
+          productDescription: productDescription,
+          brand: brand,
+          categories: categoryData,
+          options: productOptions,
+          imgURls: imagesToSave,
+          showProduct: visibility, // was true
+          supplierTaxAmount: supplierTax,
+          supplierCost: supplierCost,
+          sellingPriceTaxAmount: sellingTax,
+          sellingPrice: sellingPrice,
+          applicableTax: ["VAT"],
+          available: true,
+        };
+
+        var updateProductResult = await updateProduct(
+          product_id,
+          product //put productData
+        );
+
+        return updateProductResult;
+      }
     } else {
       return { ok: false, message: "Product ID is undefined" };
     }
@@ -303,7 +376,7 @@ function UpdateInventoryItemPage(props) {
 
       //Check Images
       var imagesCheckOutput =
-        productImages.length < 1
+        newImages.length < 1
           ? { ok: false, message: "Product Must have at least One Image" }
           : { ok: true, message: null };
       await setProductImagesError(imagesCheckOutput);
@@ -325,6 +398,90 @@ function UpdateInventoryItemPage(props) {
     } catch {
       return { ok: false };
     }
+  }
+
+  async function uploadImages(images) {
+    var completeImages = [];
+
+    for (var i = 0; i < images.length; i++) {
+      var completedImageResult = await uploadImage(images[i]);
+      if (completedImageResult.ok) {
+        completeImages.push(completedImageResult.data);
+      } else {
+        return { ok: false, message: "Failed to upload New Image No." + i };
+      }
+    }
+
+    return { ok: true, data: completeImages };
+  }
+
+  function uploadImage(imageItem) {
+    return new Promise((resolve, reject) => {
+      try {
+        //Root Ref
+        var outputImageItem = {};
+        var storageRef = firebase.storage().ref();
+
+        //Create
+        var metadata = {
+          name: imageItem.fileName,
+          contentType: imageItem.fileType,
+        };
+
+        //change to correct dynamic type/
+        var imagesRef = storageRef.child(
+          "images/" + imageItem.fileName + imageItem.fileType
+        );
+
+        var imageUpload = imagesRef.put(imageItem.file, metadata);
+
+        //Handle Image Upload
+        imageUpload.on(
+          "state_changed",
+          (snapshot) => {},
+          (error) => {
+            // Handle unsuccessful uploads
+            console.log("Error");
+            console.log(error);
+            reject({ ok: false, message: "Unsuccessful to Upload" });
+          },
+          () => {
+            imageUpload.snapshot.ref.getDownloadURL().then((downloadURL) => {
+              outputImageItem = {
+                fileName: imageItem.fileName,
+                fileType: imageItem.fileType,
+                imgURL: downloadURL,
+              };
+              resolve({ ok: true, data: outputImageItem });
+            });
+          }
+        );
+      } catch (error) {
+        console.log(error);
+        reject({
+          ok: false,
+          message: "Unexpected Error When Uploading an Images",
+        });
+      }
+    });
+  }
+
+  function checkIfFileNameAlreadyExists(newFileName) {
+    var output = false;
+
+    initialImages.forEach((initialImage) => {
+      if (initialImage.fileName === newFileName) {
+        output = true;
+      }
+    });
+
+    newImages.forEach((newImage) => {
+      if (newImage.fileName === newFileName) {
+        output = true;
+      }
+    });
+
+    return output;
   }
 
   function checkFormValidity() {
@@ -529,12 +686,18 @@ function UpdateInventoryItemPage(props) {
           />
           <EditProductDataCard
             //Product Images
-            productImages={productImages}
+            productImages={newImages}
             productImagesError={productImagesError}
             addNewProductImage={(imageObject) => {
-              var outputImages = [...productImages, imageObject];
+              //Check That filename is unique, if not changes fileName and tr again.
+              imageObject.fileName = imageObject.fileName.toLowerCase();
+              while (checkIfFileNameAlreadyExists(imageObject.fileName)) {
+                imageObject.fileName = imageObject.fileName + "1";
+              }
 
-              setProductImages(outputImages);
+              //Then add New Image Object to new Images
+              var outputImages = [...newImages, imageObject];
+              setNewImages(outputImages);
 
               //Check Images
               var imagesCheckOutput =
@@ -548,15 +711,13 @@ function UpdateInventoryItemPage(props) {
               setProductImagesError(imagesCheckOutput);
             }}
             deleteProductImage={(imageObject) => {
-              function newImages(imageItem) {
-                return imageItem.imgURL !== imageObject.imgURL;
+              function getNewImages(imageItem) {
+                return imageItem.fileName !== imageObject.fileName;
               }
 
-              console.log(imageObject);
-
-              var outputImages = productImages.filter(newImages);
-
-              setProductImages(outputImages);
+              var outputImages = newImages.filter(getNewImages);
+              setNewImages([]);
+              setNewImages(outputImages);
 
               //Check Images
               var imagesCheckOutput =
@@ -571,7 +732,6 @@ function UpdateInventoryItemPage(props) {
             //Product Options
             productOptions={productOptions}
             productOptionsError={productOptionsError}
-            
             //Add Product Option
             addProductOption={(option) => {
               var newOption = {

@@ -12,6 +12,34 @@ import { validateProductDescriptionString } from "../../services/InputValidation
 import ProductOptionsSection from "./ProductOptionsSection";
 
 function EditProductDataCard(props) {
+  // function displayImages() {
+  //   var images = [];
+
+  //   props.productImages.forEach((productImage, index) => {
+  //     images.push(
+  //       <EditProductImageItem
+  //         fileName={productImage.fileName}
+  //         fileType={productImage.fileType}
+  //         imgURL={productImage.imgURL}
+  //         file={productImage.file}
+  //         deleteProductImage={props.deleteProductImage}
+  //         empty={false}
+  //         key={index}
+  //       />
+  //     );
+  //   });
+
+  //   images.push(
+  //     <EditProductImageItem
+  //       addNewProductImage={props.addNewProductImage}
+  //       empty={true}
+  //       key={images.length}
+  //     />
+  //   );
+
+  //   return images;
+  // }
+
   return (
     <Row className={Styles.ProductDataCard}>
       <p className={Styles.SectionBanner}>Product Images</p>
@@ -31,12 +59,15 @@ function EditProductDataCard(props) {
                     fileName={productImage.fileName}
                     fileType={productImage.fileType}
                     imgURL={productImage.imgURL}
+                    file={productImage.file}
                     deleteProductImage={props.deleteProductImage}
                     empty={false}
+                    key={index}
                   />
                   <EditProductImageItem
                     addNewProductImage={props.addNewProductImage}
                     empty={true}
+                    key={index + 1}
                   />
                 </>
               ) : (
@@ -44,8 +75,10 @@ function EditProductDataCard(props) {
                   fileName={productImage.fileName}
                   fileType={productImage.fileType}
                   imgURL={productImage.imgURL}
+                  file={productImage.file}
                   deleteProductImage={props.deleteProductImage}
                   empty={false}
+                  key={index}
                 />
               );
             })}
@@ -54,6 +87,7 @@ function EditProductDataCard(props) {
           <EditProductImageItem
             addNewProductImage={props.addNewProductImage}
             empty={true}
+            key={0}
           />
         )}
       </ProductImagesCarousel>
