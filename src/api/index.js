@@ -1,5 +1,5 @@
 //The main URL domain where the backend application is being served from.
-export const BACKEND_ROUTE = "http://localhost:5000";
+export const BACKEND_ROUTE = "https://sizasneaks-backend.herokuapp.com/";
 
 //The full route that leads to user account manipulation.
 export const USER_ROUTE = BACKEND_ROUTE + "/user";
