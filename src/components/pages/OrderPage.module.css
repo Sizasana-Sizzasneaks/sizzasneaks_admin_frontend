@@ -1,0 +1,24 @@
+.InventoryPageCard {
+    background-color: white;
+    margin-top: 35px;
+    margin-bottom: 35px;
+    padding: 25px;
+  }
+  
+  .InventoryBanner {
+    font-size: 40px;
+    margin-bottom: 0px;
+  }
+  
+  
+  
+  .Divider {
+    border-style: solid;
+    border-width: 1.5px;
+    border-color: black;
+  }
+  
+  .InventoryPageBody{
+    margin-top: 60px;
+  }
+  

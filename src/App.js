@@ -17,6 +17,7 @@ import InventoryPage from "./components/pages/InventoryPage.js";
 import InventoryItemPage from "./components/pages/InventoryItemPage.js";
 import UpdateInventoryItemPage from "./components/pages/UpdateInventoryItemPage.js";
 import InventoryCreatePage from "./components/pages/InventoryCreatePage.js";
+import OrderPage from "./components/pages/OrderPage.js";
 
 //Redux Store
 import store from "./redux/index.js";
@@ -55,7 +56,7 @@ function App() {
         >
           <p
             className="logo-banner"
-            style={{ marginBottom: "40px", fontSize: "60px" }}
+            style={{ marginBottom: "40px", fontSize: "60px", color: "black" }}
           >
             SIZZASNEAKS
           </p>
@@ -93,6 +94,13 @@ function App() {
                   exact
                   path="/inventory/update/:id"
                   component={UpdateInventoryItemPage}
+                />
+{/* 
+route for the orders in the navigation */}
+                <ProtectedRoute
+                 exact
+                 path="/orders"
+                 component={OrderPage}
                 />
 
                 <ProtectedRoute exact path="/" component={Dashboard} />
