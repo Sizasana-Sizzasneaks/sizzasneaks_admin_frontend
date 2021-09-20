@@ -10,3 +10,5 @@ export const PRODUCTS_ROUTE = BACKEND_ROUTE + "/products";
 //the full route that leads to product reviews manipulation.
 export const REVIEWS_ROUTE = BACKEND_ROUTE + "/reviews";
 
+export const ORDERS_ROUTE = BACKEND_ROUTE + "/orders";
+

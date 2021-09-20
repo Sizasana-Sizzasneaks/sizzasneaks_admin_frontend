@@ -18,6 +18,9 @@ import InventoryItemPage from "./components/pages/InventoryItemPage.js";
 import UpdateInventoryItemPage from "./components/pages/UpdateInventoryItemPage.js";
 import InventoryCreatePage from "./components/pages/InventoryCreatePage.js";
 
+//Test
+import TestOrders from "./components/pages/TestOrders.js";
+
 //Redux Store
 import store from "./redux/index.js";
 import { useSelector } from "react-redux";
@@ -73,6 +76,12 @@ function App() {
                 <Route exact path="/log-in">
                   <LogInPage />
                 </Route>
+
+                <ProtectedRoute
+                  exact
+                  path="/test_orders"
+                  component={TestOrders}
+                />
 
                 <ProtectedRoute
                   exact
