@@ -13,7 +13,6 @@ function EditProductImageItem(props) {
   var [empty, setEmpty] = React.useState(props.empty);
   var [uploading, setUploading] = React.useState(false);
   var [uploadProgress, setUploadProgress] = React.useState(0);
-  var [imageUrl, setImageUrl] = React.useState(props.imgURL || null);
   var [uploadError, setUploadError] = React.useState(null);
   var [deleteError, setDeleteError] = React.useState(null);
   var [fileName, setFileName] = React.useState(props.fileName || null);
@@ -21,100 +20,6 @@ function EditProductImageItem(props) {
   var [fileNameError, setFileNameError] = React.useState(null);
   var [file, setFile] = React.useState(null);
   var [fileError, setFileError] = React.useState(null);
-
-  function uploadImage() {
-    try {
-      //Upload Image
-      //Root Ref
-      var storageRef = firebase.storage().ref();
-
-      //Create
-      var metadata = {
-        name: fileName,
-        contentType: fileType,
-      };
-
-      //change to correct dynamic type/
-      var imagesRef = storageRef.child("images/" + fileName + fileType);
-      setUploading(true);
-
-      var imageUpload = imagesRef.put(file, metadata);
-
-      //Handle Image Upload
-      imageUpload.on(
-        "state_changed",
-        (snapshot) => {
-          var progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setUploadProgress(progress);
-          switch (snapshot.state) {
-            case firebase.storage.TaskState.PAUSED: // or 'paused'
-              setUploadError({ ok: false, message: "Upload Paused" });
-              break;
-            case firebase.storage.TaskState.RUNNING: // or 'running'
-              setUploadError({ ok: true, message: "Upload Running" });
-              break;
-          }
-        },
-        (error) => {
-          // Handle unsuccessful uploads
-          console.log("Error");
-          console.log(error);
-        },
-        () => {
-          // Handle successful uploads on complete
-          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-          imageUpload.snapshot.ref.getDownloadURL().then((downloadURL) => {
-            setUploading(false);
-            setImageUrl(downloadURL);
-            setEmpty(false);
-            if (typeof props.addNewProductImage !== "undefined") {
-              props.addNewProductImage({
-                fileName,
-                fileType,
-                imgURL: downloadURL,
-              });
-            }
-          });
-        }
-      );
-    } catch (error) {
-      console.log("Error in Upload Function");
-      console.log(error);
-    }
-  }
-
-  function deleteImage() {
-    var storageRef = firebase.storage();
-
-    //Delete image By it URL
-    var imgRef = storageRef.refFromURL(imageUrl);
-
-    // Delete the file
-    imgRef
-      .delete()
-      .then(() => {
-        setEmpty(true);
-        setFileName("");
-        setFileType("");
-        setFileNameError(null);
-        setFileError(null);
-        setFile(null);
-
-        if (typeof props.deleteProductImage !== "undefined") {
-          props.deleteProductImage({
-            fileName,
-            fileType,
-            imgURL: imageUrl,
-          });
-        }
-      })
-      .catch((error) => {
-        //Set Delete Error to Show
-        console.log("Delete Error");
-        console.log(error);
-      });
-  }
 
   async function checkInputFields() {
     var validateFileNameResult = await validateFileName(fileName);
@@ -174,7 +79,10 @@ function EditProductImageItem(props) {
           </>
         ) : (
           <Col className={Styles.ImageBox}>
-            <img src={imageUrl} alt={fileName} />
+            <img
+              src={props.imgURL || URL.createObjectURL(props.file)}
+              alt={fileName}
+            />
           </Col>
         )}
       </Row>
@@ -210,6 +118,7 @@ function EditProductImageItem(props) {
                 accept=".jpg,.jpeg,.png"
                 onChange={async (event) => {
                   console.log(event.target.files[0]);
+
                   setFile(event.target.files[0]);
                   setFileType(event.target.files[0].type);
                   var checkFileTypeResult = await checkFileType(
@@ -235,7 +144,7 @@ function EditProductImageItem(props) {
               )}
 
               <Button
-                label="Upload"
+                label="ADD"
                 styles={{
                   padding: "5px 10px",
                   backgroundColor: "#FADA35",
@@ -246,8 +155,16 @@ function EditProductImageItem(props) {
                   var formValidityCheck = await checkFormValidity();
 
                   if (formValidityCheck) {
-                    console.log("Upload");
-                    uploadImage();
+                    //Add Image to New Images
+                    // uploadImage();
+
+                    if (typeof props.addNewProductImage !== "undefined") {
+                      props.addNewProductImage({
+                        fileName,
+                        fileType,
+                        file,
+                      });
+                    }
                   } else {
                     console.log("No Upload");
                   }
@@ -261,8 +178,11 @@ function EditProductImageItem(props) {
                 className={Styles.ImageDeleteButton}
                 style={{ marginLeft: "auto" }}
                 onClick={() => {
-                  if (!empty) {
-                    deleteImage();
+                  if (typeof props.deleteProductImage !== "undefined") {
+                    props.deleteProductImage({
+                      fileName,
+                      fileType,
+                    });
                   }
 
                   console.log("Image Delete");

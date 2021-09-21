@@ -1,0 +1,33 @@
+.LabelStyle {
+  font-size: 14px;
+  font-weight: 400;
+  margin-top: 5px;
+  margin-bottom: 0px;
+  padding: 0;
+}
+
+.ErrorPrompt {
+  background-color: indianred;
+  margin-left: 270px;
+  margin-right: 270px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.TextError {
+  color: crimson;
+  padding: 0;
+  margin-bottom: 18px;
+}
+
+.LabelBox {
+  margin: 0 auto;
+  width: 400px;
+  padding: 0;
+}
+
+.InputErrorBox {
+  margin: 0 auto;
+  width: 400px;
+  padding: 0;
+}
