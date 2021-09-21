@@ -1,21 +1,23 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import { Row, Col } from "react-bootstrap";
-import Styles from "./OrderPage.module.css"; 
+import Styles from "./OrderPage.module.css";
 
 import { LinearProgress } from "@material-ui/core";
 import BoxSelector from "../general/BoxSelector";
 import SearchInputField from "../general/SearchInputField";
 import OrderItemLineHeader from "../orders/OrderItemLineHeader.js";
 import OrderItemLine from "../orders/OrderItemLine.js";
-import { getOrders } from "../../api/orders.js";
+import { getOrders, getOrder } from "../../api/orders.js";
+import { convertDateToString } from "../../services/dateManipulationFunctions.js";
+
 //import { getProducts } from "../../api/products.js";
 //------------------------------------------------------------------------
 
 function OrderPage(props) {
   const history = useHistory();
   var [loading, setLoading] = React.useState(true);
-//  var [products, setProducts] = React.useState(null); //remove
+  //  var [products, setProducts] = React.useState(null); //remove
   var [orders, setOrders] = React.useState(null);
   var [error, setError] = React.useState(null);
 
@@ -34,7 +36,7 @@ function OrderPage(props) {
   // var [productName, setProductName] = React.useState("");
 
   var [search, setSearch] = React.useState({
-    searchBy: "",
+    searchBy: "ALL",
     value: "",
   });
 
@@ -43,7 +45,6 @@ function OrderPage(props) {
     setSelected(search);
   }, [search]);
 
-  
   function setSelected(search) {
     switch (search.searchBy) {
       case "ALL":
@@ -77,6 +78,17 @@ function OrderPage(props) {
         break;
 
       case "DELIVERED":
+        setShowAll(true);
+        setShowNew(false);
+        setShowShipped(false);
+        setShowDelivered(false);
+        setShowCancelled(false);
+        setOrderId("");
+        setDate("");
+        break;
+
+      case "CANCELLED":
+        if (search.value === false) {
           setShowAll(true);
           setShowNew(false);
           setShowShipped(false);
@@ -84,27 +96,16 @@ function OrderPage(props) {
           setShowCancelled(false);
           setOrderId("");
           setDate("");
-          break;
-
-      case "CANCELLED":
-            if (search.value === false) {
-            setShowAll(true);
-            setShowNew(false);
-            setShowShipped(false);
-            setShowDelivered(false);
-            setShowCancelled(false);
-            setOrderId("");
-            setDate("");
-            } else {
-              setShowAll(true);
-              setShowNew(true);
-              setShowShipped(false);
-              setShowDelivered(false);
-              setShowCancelled(false);
-              setOrderId("");
-              setDate("");
-            }
-            break;
+        } else {
+          setShowAll(true);
+          setShowNew(true);
+          setShowShipped(false);
+          setShowDelivered(false);
+          setShowCancelled(false);
+          setOrderId("");
+          setDate("");
+        }
+        break;
 
       case "ORDERID":
         setShowAll(true);
@@ -205,20 +206,30 @@ function OrderPage(props) {
   }, [search]);
 
   async function getOrdersMade(searchBy, value) {
+    setOrders(null); //clear already exisitng orders
+    setLoading(true); //should load
+    setError(null); // if there was an error, it should not be there
     // Search Instructions
     //Search by order id - set searchby = "ORDERID"
     // Search orders shipped (showShipped) - set searchby = SHIPPED
     // Search orders canceled (showCancalled) - set searchby = CANCELLED
     // Search orders delivered(showDelivered) - set searchby = DELIVERED
-     // Search for New Products - Set searchBy = "NEW" & set Value to ""
-
-    //-----------
-   
-    // Search by productName - Set searchBy = "SEARCH"
     // Search for New Products - Set searchBy = "NEW" & set Value to ""
-   // -----------
 
-//----------------
+    var getOrdersResult = await getOrders(searchBy, value);
+    setLoading(false); //signal that awaut getOrders has worked
+
+    if (getOrdersResult.ok) {
+      setOrders(getOrdersResult.data);
+      console.log("Worked");
+      console.log(getOrdersResult);
+    } else {
+      setError(getOrdersResult);
+      console.log("Failed");
+      console.log(getOrdersResult);
+    }
+
+    //----------------
     // // THe search query must be supplied using the "value" parameter
     // setProducts(null);
     // setError(null);
@@ -239,9 +250,9 @@ function OrderPage(props) {
     //   setLoading(false);
     //   setError(getProductsResult);
     // }
-//---------------------
+    //---------------------
 
-     // THe search query must be supplied using the "value" parameter
+    // THe search query must be supplied using the "value" parameter
     //  setOrders(null);
     //  setError(null);
     //  setLoading(true);
@@ -249,7 +260,7 @@ function OrderPage(props) {
     //    searchBy: searchBy,
     //    value: value,
     //  });
- 
+
     //  if (getOrderResult.ok === true) {
     //    //Getting Orders Failed
     //    setLoading(false);
@@ -297,19 +308,18 @@ function OrderPage(props) {
               label="Shipped"
               selected={showShipped}
               select={() => {
-                setSearch({ searchBy: "SHIPPED", value: true }); 
+                setSearch({ searchBy: "SHIPPED", value: true });
               }}
             />
             <BoxSelector
               label="Delivered"
               selected={showDelivered}
               select={() => {
-                setSearch({ searchBy: "DELIVERED", value: false }); 
+                setSearch({ searchBy: "DELIVERED", value: false });
               }}
             />
-
-<BoxSelector
-              label="CancelLed"
+            <BoxSelector
+              label="Cancelled"
               selected={showCancelled}
               select={() => {
                 setSearch({ searchBy: "CANCELLED", value: false }); //FIX HERE
@@ -317,20 +327,20 @@ function OrderPage(props) {
             />
           </Col>
         </Row>
-        <Row >
+        <Row>
           <Col>
             {" "}
             <SearchInputField
               value={orderId}
-              placeHolderText="Search By Order ID"  //FIX HERE
+              placeHolderText="Search By Order ID" //FIX HERE
               onChange={(value) => {
                 setOrderId(value);
                 setSearch({ searchBy: "ORDERID", value: value });
               }}
             />
-            <SearchInputField 
+            <SearchInputField
               value={date}
-              placeHolderText="Date"   //FIX HERE
+              placeHolderText="Date" //FIX HERE
               onChange={(value) => {
                 setDate(value);
                 setSearch({ searchBy: "SEARCH", value: value });
@@ -340,7 +350,6 @@ function OrderPage(props) {
         </Row>
       </Row>
       <Row className={Styles.InventoryPageBody}>
-
         <OrderItemLineHeader />
 
         {/* {error && <p>{error.message}</p>}
@@ -349,7 +358,7 @@ function OrderPage(props) {
         {products &&
           products.map((product) => {
             return ( */}
-               {/* <InventoryItemLine
+        {/* <InventoryItemLine
                 productId={product._id}
                 productName={product.productName}
                 brand={product.brand}
@@ -360,24 +369,29 @@ function OrderPage(props) {
                 }}
               /> */}
 
-              {error && <p>{error.message}</p>}
-            {loading && <LinearProgress />}
+        {error && <p>{error.message}</p>}
+        {loading && <LinearProgress />}
 
-           {orders &&
-            orders.map((order) => {
+        {orders &&
+          orders.map((order) => {
+            var totalCost = 0;
+
+            order.orderItems.forEach((element) => {
+              totalCost = totalCost + element.sellingPriceAmount;
+            });
             return (
-
               <OrderItemLine
-              orderId={order._id}
-              quantity = {order.quantity}
-              customerId={order.customerId}
-              totalCost = {order.totalCost}
-              date = {order.showDate}
-            
-              pushToOrderPage={() => {
-                history.push("/orders/" + order._id);
-              }}
-            />
+                orderId={order._id}
+                quantity={order.orderItems.length}
+                customerId={order.customer_id}
+                totalCost={totalCost}
+                date={convertDateToString(order.createdAt)} //make function
+                //puts what the function returns
+
+                pushToOrderPage={() => {
+                  history.push("/orders/" + order._id);
+                }}
+              />
             );
           })}
       </Row>

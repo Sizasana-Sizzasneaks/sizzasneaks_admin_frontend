@@ -26,14 +26,12 @@ function OrderItemLine(props) {
       </Col>
       <Col xl={2}></Col>
 
-      <Col xl={2} className={Styles.LeftAlign}>
+      <Col xl={1} className={Styles.LeftAlign}>
         <p>{"R " + props.totalCost}</p>
       </Col>
 
-      <Col xl={1} className={Styles.LeftAlign}>
-        {/* Displays the visibility of a product based on the boolean variable 
-        <p>{props.visibility ? "Visible" : "Hidden"}</p> */}
-
+      <Col xl={2} className={Styles.LeftAlign}>
+       
         {/* Displays date */}
         <p>{props.date}</p>
       </Col>
