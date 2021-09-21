@@ -74,8 +74,8 @@ function Navbar() {
           <div style={{ display: "flex", height: "100%" }}>
             <div style={{ height: "100%", display: "inline-block" }}>
 
-              <NavabarNavigationLink label="Dashboard" route="" />
-              <NavabarNavigationLink label="Orders" route="orders" />
+              <NavbarNavigationLink label="Dashboard" route="" />
+              <NavbarNavigationLink label="Orders" route="orders" />
 
 
              
