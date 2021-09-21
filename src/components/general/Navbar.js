@@ -73,8 +73,13 @@ function Navbar() {
         >
           <div style={{ display: "flex", height: "100%" }}>
             <div style={{ height: "100%", display: "inline-block" }}>
-              <NavbarNavigationLink label="Dashboard" route="" />
-              <NavbarNavigationLink label="Orders" route="Coming Soon" />
+
+              <NavabarNavigationLink label="Dashboard" route="" />
+              <NavabarNavigationLink label="Orders" route="orders" />
+
+
+             
+
               <NavbarNavigationLink label="Inventory" route="inventory" />
             </div>
             <div
@@ -86,8 +91,8 @@ function Navbar() {
             >
               <NavbarNavigationLink
                 label="Add New Product Item"
-                route="inventory/create"
-              />
+                route="inventory/create" />
+            
             </div>
           </div>
         </Container>
