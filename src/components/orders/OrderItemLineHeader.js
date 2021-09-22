@@ -12,14 +12,23 @@ function OrderItemLineHeader(props) {
       <Col xl={1}>
         <p>Quantity</p>
       </Col>
-      <Col xl={2}>
-        <p>CustomerID</p>
-      </Col>
-      <Col xl={3}></Col>
-      <Col xl={1} className={Styles.LeftAlign}>
+      <Col xl={2} >
         <p>Total Cost</p>
       </Col>
-      <Col xl={2} className={Styles.LeftAlign}>
+      <Col xl={1}>
+        <p>Paid</p>
+      </Col>
+      <Col xl={1}>
+        <p>Shipped</p>
+      </Col>
+      <Col xl={1}>
+        <p>Delivered</p>
+      </Col>
+      <Col xl={1}>
+      <p>Cancelled</p>
+      </Col>
+      
+      <Col xl={2} >
         <p>Date</p>
       </Col>
     </Row>

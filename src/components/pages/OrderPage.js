@@ -2,10 +2,12 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import { Row, Col } from "react-bootstrap";
 import Styles from "./OrderPage.module.css";
+import { formatToNormalDate } from "../../services/dateManipulationFunctions.js";
 
 import { LinearProgress } from "@material-ui/core";
 import BoxSelector from "../general/BoxSelector";
-import SearchInputField from "../general/SearchInputField";
+import SearchInputField from "../general/SearchInputField.js";
+import DateInputField from "../general/DateInputField.js";
 import OrderItemLineHeader from "../orders/OrderItemLineHeader.js";
 import OrderItemLine from "../orders/OrderItemLine.js";
 import { getOrders, getOrder } from "../../api/orders.js";
@@ -15,6 +17,11 @@ import { convertDateToString } from "../../services/dateManipulationFunctions.js
 //------------------------------------------------------------------------
 
 function OrderPage(props) {
+  var formatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "ZAR",
+  });
+
   const history = useHistory();
   var [loading, setLoading] = React.useState(true);
   //  var [products, setProducts] = React.useState(null); //remove
@@ -24,11 +31,16 @@ function OrderPage(props) {
   //Selectors
   var [showAll, setShowAll] = React.useState(true);
   var [showNew, setShowNew] = React.useState(false);
+  var [showPaid, setShowPaid] = React.useState(false);
+  var [showNotPaid, setShowNotPaid] = React.useState(false);
   var [showShipped, setShowShipped] = React.useState(false);
+  var [showNotShipped, setShowNotShipped] = React.useState(false);
   var [showDelivered, setShowDelivered] = React.useState(false);
+  var [showNotDelivered, setShowNotDelivered] = React.useState(false);
   var [showCancelled, setShowCancelled] = React.useState(false);
+  var [showNotCancelled, setShowNotCancelled] = React.useState(false);
   var [orderId, setOrderId] = React.useState("");
-  var [date, setDate] = React.useState("");
+  var [date, setDate] = React.useState(formatToNormalDate(new Date()));
 
   // var [showVisible, setShowVisible] = React.useState(false); //remove
   // var [showHidden, setShowHidden] = React.useState(false); //remove
@@ -36,8 +48,8 @@ function OrderPage(props) {
   // var [productName, setProductName] = React.useState("");
 
   var [search, setSearch] = React.useState({
-    searchBy: "ALL",
-    value: "",
+    searchBy: "DATE",
+    value: new Date().toISOString(),
   });
 
   React.useEffect(() => {
@@ -49,88 +61,113 @@ function OrderPage(props) {
     switch (search.searchBy) {
       case "ALL":
         setShowAll(true);
-        setShowNew(false);
+        setShowPaid(false);
+        setShowNotPaid(false);
         setShowShipped(false);
+        setShowNotShipped(false);
         setShowDelivered(false);
+        setShowNotDelivered(false);
         setShowCancelled(false);
+        setShowNotCancelled(false);
         setOrderId("");
         setDate("");
         break;
 
-      case "NEW":
-        setShowAll(true);
-        setShowNew(false);
+      case "PAID":
+        setShowAll(false);
+        setShowPaid(search.value);
+        setShowNotPaid(!search.value);
         setShowShipped(false);
+        setShowNotShipped(false);
         setShowDelivered(false);
+        setShowNotDelivered(false);
         setShowCancelled(false);
+        setShowNotCancelled(false);
         setOrderId("");
         setDate("");
         break;
 
       case "SHIPPED":
-        setShowAll(true);
-        setShowNew(false);
-        setShowShipped(false);
+        setShowAll(false);
+        setShowPaid(false);
+        setShowNotPaid(false);
+        setShowShipped(search.value);
+        setShowNotShipped(!search.value);
         setShowDelivered(false);
+        setShowNotDelivered(false);
         setShowCancelled(false);
+        setShowNotCancelled(false);
         setOrderId("");
         setDate("");
         break;
 
       case "DELIVERED":
-        setShowAll(true);
-        setShowNew(false);
+        setShowAll(false);
+        setShowPaid(false);
+        setShowNotPaid(false);
         setShowShipped(false);
-        setShowDelivered(false);
+        setShowNotShipped(false);
+        setShowDelivered(search.value);
+        setShowNotDelivered(!search.value);
         setShowCancelled(false);
+        setShowNotCancelled(false);
         setOrderId("");
         setDate("");
         break;
 
       case "CANCELLED":
-        if (search.value === false) {
-          setShowAll(true);
-          setShowNew(false);
-          setShowShipped(false);
-          setShowDelivered(false);
-          setShowCancelled(false);
-          setOrderId("");
-          setDate("");
-        } else {
-          setShowAll(true);
-          setShowNew(true);
-          setShowShipped(false);
-          setShowDelivered(false);
-          setShowCancelled(false);
-          setOrderId("");
-          setDate("");
-        }
-        break;
-
-      case "ORDERID":
-        setShowAll(true);
-        setShowNew(false);
+        setShowAll(false);
+        setShowPaid(false);
+        setShowNotPaid(false);
         setShowShipped(false);
+        setShowNotShipped(false);
         setShowDelivered(false);
-        setShowCancelled(false);
-        setDate("");
-        break;
-
-      case "SEARCH":
-        setShowAll(true);
-        setShowNew(false);
-        setShowShipped(false);
-        setShowDelivered(false);
-        setShowCancelled(false);
+        setShowNotDelivered(false);
+        setShowCancelled(search.value);
+        setShowNotCancelled(!search.value);
         setOrderId("");
         setDate("");
         break;
+
+      case "ORDERID":
+        setShowAll(false);
+        setShowPaid(false);
+        setShowNotPaid(false);
+        setShowShipped(false);
+        setShowNotShipped(false);
+        setShowDelivered(false);
+        setShowNotDelivered(false);
+        setShowCancelled(false);
+        setShowNotCancelled(false);
+        setDate("");
+        break;
+
+      case "DATE":
+        setShowAll(false);
+        setShowPaid(false);
+        setShowNotPaid(false);
+        setShowShipped(false);
+        setShowNotShipped(false);
+        setShowDelivered(false);
+        setShowNotDelivered(false);
+        setShowCancelled(false);
+        setShowNotCancelled(false);
+        setOrderId("");
+        break;
+
       default:
         setShowAll(true);
-        setShowNew(false);
+        setShowPaid(false);
+        setShowNotPaid(false);
         setShowShipped(false);
+        setShowNotShipped(false);
         setShowDelivered(false);
+        setShowNotDelivered(false);
         setShowCancelled(false);
+        setShowNotCancelled(false);
+        setOrderId("");
+        setDate("");
+        break;
     }
   }
 
@@ -298,10 +335,17 @@ function OrderPage(props) {
               }}
             />
             <BoxSelector
-              label="New"
-              selected={showNew}
+              label="Paid"
+              selected={showPaid}
               select={() => {
-                setSearch({ searchBy: "NEW", value: "" });
+                setSearch({ searchBy: "PAID", value: true });
+              }}
+            />
+            <BoxSelector
+              label="Not Paid"
+              selected={showNotPaid}
+              select={() => {
+                setSearch({ searchBy: "PAID", value: false });
               }}
             />
             <BoxSelector
@@ -312,8 +356,22 @@ function OrderPage(props) {
               }}
             />
             <BoxSelector
+              label="Not Shipped"
+              selected={showNotShipped}
+              select={() => {
+                setSearch({ searchBy: "SHIPPED", value: false });
+              }}
+            />
+            <BoxSelector
               label="Delivered"
               selected={showDelivered}
+              select={() => {
+                setSearch({ searchBy: "DELIVERED", value: true });
+              }}
+            />
+            <BoxSelector
+              label="Not Delivered"
+              selected={showNotDelivered}
               select={() => {
                 setSearch({ searchBy: "DELIVERED", value: false });
               }}
@@ -321,6 +379,13 @@ function OrderPage(props) {
             <BoxSelector
               label="Cancelled"
               selected={showCancelled}
+              select={() => {
+                setSearch({ searchBy: "CANCELLED", value: true }); //FIX HERE
+              }}
+            />
+            <BoxSelector
+              label="Not Cancelled"
+              selected={showNotCancelled}
               select={() => {
                 setSearch({ searchBy: "CANCELLED", value: false }); //FIX HERE
               }}
@@ -338,12 +403,23 @@ function OrderPage(props) {
                 setSearch({ searchBy: "ORDERID", value: value });
               }}
             />
-            <SearchInputField
+            <DateInputField
               value={date}
               placeHolderText="Date" //FIX HERE
               onChange={(value) => {
-                setDate(value);
-                setSearch({ searchBy: "SEARCH", value: value });
+                if (value !== "") {
+                  console.log(value);
+                  setDate(value);
+                  var ISOString = new Date(value).toISOString();
+
+                  setSearch({
+                    searchBy: "DATE",
+                    value: ISOString,
+                  });
+                } else {
+                  setDate(value);
+                  setSearch({ searchBy: "ALL", value: "" });
+                }
               }}
             />
           </Col>
@@ -383,8 +459,11 @@ function OrderPage(props) {
               <OrderItemLine
                 orderId={order._id}
                 quantity={order.orderItems.length}
-                customerId={order.customer_id}
-                totalCost={totalCost}
+                totalCost={formatter.format(totalCost)}
+                paymentComplete={order.paymentComplete}
+                hasShipped={order.hasShipped}
+                hasBeenDelivered={order.hasBeenDelivered}
+                isCancelled={order.isCancelled}
                 date={convertDateToString(order.createdAt)} //make function
                 //puts what the function returns
 
