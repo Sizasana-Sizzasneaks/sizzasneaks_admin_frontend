@@ -1,57 +1,82 @@
-
 .OrderDetailsCard {
-    background-color: white;
-    margin-top: 25px;
-    margin-bottom: 35px;
-    padding: 25px;
-    border-style: solid;
-    border-width: 1.5px;
-  }
-  
-  .OrderDetailsHeader p {
-    font-size: 20px;
-  }
-  
-  .RightAlign p {
-    text-align: right;
-  }
-  
-  .OrderDetailsLabel p {
-    font-weight: 400;
-  }
-  
-  .TopRow {
-    font-weight: 500;
-    font-size: 23px;
-  }
+  background-color: white;
+  margin-top: 25px;
+  margin-bottom: 35px;
+  padding: 25px;
+  border-style: solid;
+  border-width: 1.5px;
+  border-radius: 3px;
+}
 
-  .CardRow{
-    font-weight: 500;
-    font-size: 18px;
-    margin-top: 22px;
-  }
+.OrderDetailsHeader p {
+  font-size: 20px;
+}
 
-  
-  .TextRow{
-    font-weight: 300;
-    font-size: 18px;
-    margin-top: 22px;
-  }
+.RightAlign p {
+  text-align: right;
+}
 
-  .ShippingAddress p {
-    margin-bottom: 4px;
-  }
+.OrderDetailsLabel p {
+  font-weight: 400;
+}
 
-  .OrderStatus p {
-    margin-bottom: 8px;
-  }
+.TopRow {
+  font-weight: 500;
+  font-size: 25px;
+}
 
-  .TimeValues p{
-    text-align:right;
+.CardRow {
+  font-weight: 500;
+  font-size: 18px;
+  margin-top: 22px;
+}
 
-  }
+.CardRow p {
+  margin-bottom: 0px;
+}
 
-  .TimeValues div{
-    padding:0px;
+.TextRow {
+  font-weight: 300;
+  font-size: 18px;
+}
 
-  }
+.TextRow p {
+  margin-bottom: 0px;
+}
+
+.SummaryLine {
+  font-weight: 500;
+  font-size: 19px;
+}
+
+.SummaryLine p {
+  margin-bottom: 0px;
+}
+
+.BottomDivider {
+  margin-bottom: 15px;
+}
+
+.ShippingAddress p {
+  margin-bottom: 4px;
+}
+
+.OrderStatus p {
+  margin-bottom: 8px;
+}
+
+.OrderStatusBanner {
+  padding: 0px 12px;
+}
+
+.TimeValues p {
+  text-align: right;
+}
+
+.TimeValues div {
+  padding: 0px;
+}
+
+.TopLine {
+  margin-bottom: 8px;
+}

@@ -31,6 +31,7 @@ function OrderItemLineHeader(props) {
       <Col xl={2} >
         <p>Date</p>
       </Col>
+      <hr className={Styles.TopLine} />
     </Row>
   );
 }

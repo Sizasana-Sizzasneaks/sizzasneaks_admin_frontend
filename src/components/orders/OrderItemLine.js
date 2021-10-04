@@ -14,7 +14,6 @@ function OrderItemLine(props) { //props is an object
         }
       }}
     >
-      <hr className={Styles.TopLine} />
       <Col xl={3}>
         <p>{props.orderId}</p>
       </Col>
@@ -41,6 +40,7 @@ function OrderItemLine(props) { //props is an object
         {/* Displays date */}
         <p>{props.date}</p>
       </Col>
+      <hr className={Styles.TopLine} />
     </Row>
   );
 }
