@@ -1,0 +1,57 @@
+
+.OrderDetailsCard {
+    background-color: white;
+    margin-top: 25px;
+    margin-bottom: 35px;
+    padding: 25px;
+    border-style: solid;
+    border-width: 1.5px;
+  }
+  
+  .OrderDetailsHeader p {
+    font-size: 20px;
+  }
+  
+  .RightAlign p {
+    text-align: right;
+  }
+  
+  .OrderDetailsLabel p {
+    font-weight: 400;
+  }
+  
+  .TopRow {
+    font-weight: 500;
+    font-size: 23px;
+  }
+
+  .CardRow{
+    font-weight: 500;
+    font-size: 18px;
+    margin-top: 22px;
+  }
+
+  
+  .TextRow{
+    font-weight: 300;
+    font-size: 18px;
+    margin-top: 22px;
+  }
+
+  .ShippingAddress p {
+    margin-bottom: 4px;
+  }
+
+  .OrderStatus p {
+    margin-bottom: 8px;
+  }
+
+  .TimeValues p{
+    text-align:right;
+
+  }
+
+  .TimeValues div{
+    padding:0px;
+
+  }

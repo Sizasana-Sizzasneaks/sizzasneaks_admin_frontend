@@ -2,16 +2,16 @@ import React from "react";
 import Styles from "./OrderItemLine.module.css";
 import { Row, Col } from "react-bootstrap";
 
-function OrderItemLine(props) {
+function OrderItemLine(props) { //props is an object
   return (
     <Row
       className={Styles.Info}
       onClick={() => {
-        //Checks if this property is defined
-        // if (typeof props.pushToOrderPage !== "undefined") {
-        //   //Calls the function supplied to this property.
-        //   props.pushToOrderPage();
-        // }
+        // Checks if this property is defined
+        if (typeof props.pushToOrderPage !== "undefined") {
+          //Calls the function supplied to this property.
+          props.pushToOrderPage();
+        }
       }}
     >
       <hr className={Styles.TopLine} />

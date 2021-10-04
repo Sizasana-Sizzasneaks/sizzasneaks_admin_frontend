@@ -13,11 +13,14 @@ import ProtectedRoute from "./components/general/ProtectedRoute.js";
 //Pages
 import Dashboard from "./components/pages/Dashboard.js";
 import LogInPage from "./components/pages/LogInPage.js";
+
 import InventoryPage from "./components/pages/InventoryPage.js";
 import InventoryItemPage from "./components/pages/InventoryItemPage.js";
 import UpdateInventoryItemPage from "./components/pages/UpdateInventoryItemPage.js";
 import InventoryCreatePage from "./components/pages/InventoryCreatePage.js";
+
 import OrderPage from "./components/pages/OrderPage.js";
+import OrderItemPage from "./components/pages/OrderItemPage.js";
 
 //Test
 import TestOrders from "./components/pages/TestOrders.js";
@@ -114,6 +117,12 @@ route for the orders in the navigation */}
                  path="/orders"
                  component={OrderPage}
                 />
+
+                <ProtectedRoute
+                  exact
+                  path="/orders/:id"
+                  component={OrderItemPage}
+                />    
 
                 <ProtectedRoute exact path="/" component={Dashboard} />
               </Switch>

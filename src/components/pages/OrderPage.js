@@ -12,7 +12,7 @@ import OrderItemLineHeader from "../orders/OrderItemLineHeader.js";
 import OrderItemLine from "../orders/OrderItemLine.js";
 import { getOrders, getOrder } from "../../api/orders.js";
 import { convertDateToString } from "../../services/dateManipulationFunctions.js";
-
+import OrderDetailsCard  from "../orders/OrderDetailsCard.js";
 //import { getProducts } from "../../api/products.js";
 //------------------------------------------------------------------------
 
@@ -24,7 +24,6 @@ function OrderPage(props) {
 
   const history = useHistory();
   var [loading, setLoading] = React.useState(true);
-  //  var [products, setProducts] = React.useState(null); //remove
   var [orders, setOrders] = React.useState(null);
   var [error, setError] = React.useState(null);
 
@@ -42,10 +41,8 @@ function OrderPage(props) {
   var [orderId, setOrderId] = React.useState("");
   var [date, setDate] = React.useState(formatToNormalDate(new Date()));
 
-  // var [showVisible, setShowVisible] = React.useState(false); //remove
-  // var [showHidden, setShowHidden] = React.useState(false); //remove
-  // var [productId, setProductId] = React.useState("");  //here
-  // var [productName, setProductName] = React.useState("");
+  //Selected Order
+  var [selectedOrder, setSelectedOrder] = React.useState(null);
 
   var [search, setSearch] = React.useState({
     searchBy: "DATE",
@@ -170,73 +167,6 @@ function OrderPage(props) {
         break;
     }
   }
-
-  // React.useEffect(() => {
-  //   getProductInventory(search.searchBy, search.value);
-  //   setSelected(search);
-  // }, [search]);
-
-  // function setSelected(search) {
-  //   switch (search.searchBy) {
-  //     case "ALL":
-  //       setShowAll(true);
-  //       setShowNew(false);
-  //       setShowVisible(false);
-  //       setShowHidden(false);
-  //       setProductId("");
-  //       setProductName("");
-  //       break;
-  //     case "NEW":
-  //       setShowAll(false);
-  //       setShowNew(true);
-  //       setShowVisible(false);
-  //       setShowHidden(false);
-  //       setProductId("");
-  //       setProductName("");
-  //       break;
-  //     case "VISIBILITY":
-  //       if (search.value === true) {
-  //         setShowAll(false);
-  //         setShowNew(false);
-  //         setShowVisible(true);
-  //         setShowHidden(false);
-  //         setProductId("");
-  //         setProductName("");
-  //       } else {
-  //         setShowAll(false);
-  //         setShowNew(false);
-  //         setShowVisible(false);
-  //         setShowHidden(true);
-  //         setProductId("");
-  //         setProductName("");
-  //       }
-  //       break;
-  //     case "PRODUCTID":
-  //       setShowAll(false);
-  //       setShowNew(false);
-  //       setShowVisible(false);
-  //       setShowHidden(false);
-  //       setProductName("");
-  //       break;
-
-  //     case "SEARCH":
-  //       setShowAll(false);
-  //       setShowNew(false);
-  //       setShowVisible(false);
-  //       setShowHidden(false);
-  //       setProductId("");
-  //       break;
-  //     default:
-  //       setShowAll(false);
-  //       setShowNew(false);
-  //       setShowVisible(false);
-  //       setShowHidden(false);
-  //   }
-  // }
-
-  // React.useEffect(() => {
-  //   getProductInventory(search.searchBy, search.value);
-  // }, [search]);
 
   React.useEffect(() => {
     getOrdersMade(search.searchBy, search.value);
@@ -428,23 +358,6 @@ function OrderPage(props) {
       <Row className={Styles.InventoryPageBody}>
         <OrderItemLineHeader />
 
-        {/* {error && <p>{error.message}</p>}
-        {loading && <LinearProgress />}
-
-        {products &&
-          products.map((product) => {
-            return ( */}
-        {/* <InventoryItemLine
-                productId={product._id}
-                productName={product.productName}
-                brand={product.brand}
-                sellingPrice={product.sellingPrice}
-                visibility={product.showProduct}
-                pushToProductPage={() => {
-                  history.push("/inventory/" + product._id);
-                }}
-              /> */}
-
         {error && <p>{error.message}</p>}
         {loading && <LinearProgress />}
 
@@ -453,25 +366,50 @@ function OrderPage(props) {
             var totalCost = 0;
 
             order.orderItems.forEach((element) => {
-              totalCost = totalCost + element.sellingPriceAmount;
+              totalCost = totalCost + (element.sellingPriceAmount * element.quantity);
             });
-            return (
-              <OrderItemLine
-                orderId={order._id}
-                quantity={order.orderItems.length}
-                totalCost={formatter.format(totalCost)}
-                paymentComplete={order.paymentComplete}
-                hasShipped={order.hasShipped}
-                hasBeenDelivered={order.hasBeenDelivered}
-                isCancelled={order.isCancelled}
-                date={convertDateToString(order.createdAt)} //make function
-                //puts what the function returns
 
-                pushToOrderPage={() => {
-                  history.push("/orders/" + order._id);
-                }}
-              />
-            );
+            if (order._id !== selectedOrder) {
+              return (
+                <OrderItemLine
+                  orderId={order._id}
+                  quantity={order.orderItems.length}
+                  totalCost={formatter.format(totalCost)}
+                  paymentComplete={order.paymentComplete}
+                  hasShipped={order.hasShipped}
+                  hasBeenDelivered={order.hasBeenDelivered}
+                  isCancelled={order.isCancelled}
+                  date={convertDateToString(order.createdAt)} //make function
+                  //puts what the function returns
+
+                  pushToOrderPage={() => {
+                    // history.push("/orders/" + order._id);
+                    setSelectedOrder(
+                      order._id
+                    )
+                  }}
+                />
+              );
+            } else {
+              return (
+                <OrderDetailsCard
+                  orderId={order._id}
+                  orderItems={order.orderItems}
+                  shippingAddress={order.shippingAddress}
+                  totalCost={formatter.format(totalCost)}
+                  paymentComplete={order.paymentComplete}
+                  paymentTime={order.paymentComplete ? convertDateToString(order.paymentTime): "Not Paid"}
+                  hasShipped={order.hasShipped}
+                  shippedTime={order.hasShipped ? convertDateToString(order.shippedTime) : "Not Shipped"}
+                  hasBeenDelivered={order.hasBeenDelivered}
+                  deliveredTime={order.hasBeenDelivered ? convertDateToString(order.deliveredTime) : "Not Delivered"}
+                  isCancelled={order.isCancelled}
+                  cancelTime={order.isCancelled ? convertDateToString(order.cancelTime) : "Not cancelled"}
+                  cancelDescription={order.cancelDescription}
+                  date={convertDateToString(order.createdAt)}
+                />
+              );
+            }
           })}
       </Row>
     </div>
