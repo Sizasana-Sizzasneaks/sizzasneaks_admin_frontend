@@ -10,9 +10,10 @@ import SearchInputField from "../general/SearchInputField.js";
 import DateInputField from "../general/DateInputField.js";
 import OrderItemLineHeader from "../orders/OrderItemLineHeader.js";
 import OrderItemLine from "../orders/OrderItemLine.js";
-import { getOrders, getOrder } from "../../api/orders.js";
+import { getOrders, updateOrder, cancelOrder } from "../../api/orders.js";
 import { convertDateToString } from "../../services/dateManipulationFunctions.js";
-import OrderDetailsCard  from "../orders/OrderDetailsCard.js";
+import OrderDetailsCard from "../orders/OrderDetailsCard.js";
+import { REVIEWS_ROUTE } from "../../api";
 //import { getProducts } from "../../api/products.js";
 //------------------------------------------------------------------------
 
@@ -173,6 +174,7 @@ function OrderPage(props) {
   }, [search]);
 
   async function getOrdersMade(searchBy, value) {
+    setSelectedOrder(null);
     setOrders(null); //clear already exisitng orders
     setLoading(true); //should load
     setError(null); // if there was an error, it should not be there
@@ -195,50 +197,59 @@ function OrderPage(props) {
       console.log("Failed");
       console.log(getOrdersResult);
     }
+  }
 
-    //----------------
-    // // THe search query must be supplied using the "value" parameter
-    // setProducts(null);
-    // setError(null);
-    // setLoading(true);
-    // var getProductsResult = await getProducts({
-    //   searchBy: searchBy,
-    //   value: value,
-    // });
+  async function setShipped(orderIdValue) {
+    var updateOrderResult = await updateOrder(orderIdValue, {
+      hasShipped: true,
+      shippedTime: new Date(),
+    });
 
-    // if (getProductsResult.ok === true) {
-    //   //Getting Products Failed
-    //   setLoading(false);
-    //   setError(null);
-    //   setProducts(getProductsResult.data);
-    // } else {
-    //   //Getting Products Failed
-    //   setProducts(null);
-    //   setLoading(false);
-    //   setError(getProductsResult);
-    // }
-    //---------------------
+    if (updateOrderResult.ok) {
+      refreshOrders();
+      console.log(updateOrderResult);
+      return { ok: true };
+    } else {
+      console.log(updateOrderResult);
+      return { ok: false };
+    }
+  }
 
-    // THe search query must be supplied using the "value" parameter
-    //  setOrders(null);
-    //  setError(null);
-    //  setLoading(true);
-    //  var getOrderResult = await getOrders({ //from the API
-    //    searchBy: searchBy,
-    //    value: value,
-    //  });
+  async function setDelivered(orderIdValue) {
+    var updateOrderResult = await updateOrder(orderIdValue, {
+      hasBeenDelivered: true,
+      deliveredTime: new Date(),
+    });
 
-    //  if (getOrderResult.ok === true) {
-    //    //Getting Orders Failed
-    //    setLoading(false);
-    //    setError(null);
-    //    setOrders(getOrderResult.data);
-    //  } else {
-    //    //Getting Orders Failed
-    //    setOrders(null);
-    //    setLoading(false);
-    //    setError(getOrderResult);
-    //  }
+    if (updateOrderResult.ok) {
+      refreshOrders();
+      console.log(updateOrderResult);
+      return { ok: true };
+    } else {
+      console.log(updateOrderResult);
+      return { ok: false };
+    }
+  }
+
+  async function setCancelled(orderIdValue, cancelDescription) {
+    var cancelOrderResult = await cancelOrder(orderIdValue, cancelDescription);
+
+    if (cancelOrderResult.ok) {
+      refreshOrders();
+      console.log(cancelOrderResult);
+      return { ok: true };
+    } else {
+      console.log(cancelOrderResult);
+      return { ok: false };
+    }
+  }
+
+  async function refreshOrders() {
+    var getOrdersResult = await getOrders(search.searchBy, search.value);
+
+    if (getOrdersResult.ok) {
+      setOrders(getOrdersResult.data);
+    }
   }
 
   return (
@@ -366,7 +377,8 @@ function OrderPage(props) {
             var totalCost = 0;
 
             order.orderItems.forEach((element) => {
-              totalCost = totalCost + (element.sellingPriceAmount * element.quantity);
+              totalCost =
+                totalCost + element.sellingPriceAmount * element.quantity;
             });
 
             if (order._id !== selectedOrder) {
@@ -384,9 +396,7 @@ function OrderPage(props) {
 
                   pushToOrderPage={() => {
                     // history.push("/orders/" + order._id);
-                    setSelectedOrder(
-                      order._id
-                    )
+                    setSelectedOrder(order._id);
                   }}
                 />
               );
@@ -398,15 +408,34 @@ function OrderPage(props) {
                   shippingAddress={order.shippingAddress}
                   totalCost={formatter.format(totalCost)}
                   paymentComplete={order.paymentComplete}
-                  paymentTime={order.paymentComplete ? convertDateToString(order.paymentTime): "Not Paid"}
+                  paymentTime={
+                    order.paymentComplete
+                      ? convertDateToString(order.paymentTime)
+                      : "Not Paid"
+                  }
                   hasShipped={order.hasShipped}
-                  shippedTime={order.hasShipped ? convertDateToString(order.shippedTime) : "Not Shipped"}
+                  shippedTime={
+                    order.hasShipped
+                      ? convertDateToString(order.shippedTime)
+                      : "Not Shipped"
+                  }
                   hasBeenDelivered={order.hasBeenDelivered}
-                  deliveredTime={order.hasBeenDelivered ? convertDateToString(order.deliveredTime) : "Not Delivered"}
+                  deliveredTime={
+                    order.hasBeenDelivered
+                      ? convertDateToString(order.deliveredTime)
+                      : "Not Delivered"
+                  }
                   isCancelled={order.isCancelled}
-                  cancelTime={order.isCancelled ? convertDateToString(order.cancelTime) : "Not cancelled"}
+                  cancelTime={
+                    order.isCancelled
+                      ? convertDateToString(order.cancelTime)
+                      : "Not cancelled"
+                  }
                   cancelDescription={order.cancelDescription}
                   date={convertDateToString(order.createdAt)}
+                  setCancelled={setCancelled}
+                  setShipped={setShipped}
+                  setDelivered={setDelivered}
                 />
               );
             }

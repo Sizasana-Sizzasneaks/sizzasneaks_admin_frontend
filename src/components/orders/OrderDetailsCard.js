@@ -1,14 +1,25 @@
 import React from "react";
 import { Row, Col } from "react-bootstrap";
 import Styles from "./OrderDetailsCard.module.css";
-import BoxSelector from "../general/BoxSelector.js";
+import { CircularProgress } from "@material-ui/core";
+import InputTextArea from "../general/InputTextArea.js";
 
+import { validateProductDescriptionString } from "../../services/InputValidation.js";
 function OrderDetailsCard(props) {
   var formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "ZAR",
   });
 
+  //Loading State For Order Update
+  var [loadShipp, setLoadShipp] = React.useState(false);
+  var [loadDeliver, setLoadDeliver] = React.useState(false);
+  var [loadCancel, setLoadCancel] = React.useState(false);
+  var [cancelDescription, setCancelDescription] = React.useState(null);
+
+  var [showCancelBox, setShowCancelBox] = React.useState(false);
+  var [cancelDescriptionError, setCancelDescriptionError] =
+    React.useState(null);
   return (
     <>
       <Row className={Styles.OrderDetailsCard}>
@@ -148,55 +159,256 @@ function OrderDetailsCard(props) {
 
           <Col className={Styles.OrderStatus}>
             <Row>
-                  <Col>
-                  <p
-                style={{
-                  fontWeight: "400",
-                  fontSize: "20px",
-                  marginBottom: "8px",
-                }}
-              >
-                Order Status
-              </p>
-                  </Col>
-            
+              <Col>
+                <p
+                  style={{
+                    fontWeight: "400",
+                    fontSize: "20px",
+                    marginBottom: "8px",
+                  }}
+                >
+                  Order Status
+                </p>
+              </Col>
             </Row>
 
             <Row>
-              <Row>
-                <Col> <p>Paid:</p></Col>
-                <Col> <p>{props.paymentComplete ? "True" : "False"}</p></Col>
-                <Col> <p>{props.paymentComplete ? props.paymentTime : ""}</p></Col>
+              <Row
+                className={
+                  props.paymentComplete
+                    ? [
+                        Styles.OrderStatusRow,
+                        Styles.OrderStatusRowComplete,
+                      ].join(" ")
+                    : Styles.OrderStatusRow
+                }
+              >
+                <Col xl={3}>
+                  {" "}
+                  <p>Paid:</p>
+                </Col>
+                <Col xl={1}>
+                  {" "}
+                  <p>{props.paymentComplete ? "Done" : "False"}</p>
+                </Col>
+                <Col xl={8} style={{ textAlign: "right" }}>
+                  {" "}
+                  <p>{props.paymentComplete ? props.paymentTime : ""}</p>
+                </Col>
               </Row>
 
-              <Row>
-                <Col><p>Shipped:</p></Col>
-                <Col><p>
-                    {props.hasShipped ? (
-                      "True"
-                    ) : (
-                      <div>
-                        Set<p></p>
+              <Row
+                className={
+                  props.hasShipped
+                    ? [
+                        Styles.OrderStatusRow,
+                        Styles.OrderStatusRowComplete,
+                      ].join(" ")
+                    : Styles.OrderStatusRow
+                }
+              >
+                <Col xl={3}>
+                  <p>Shipped:</p>
+                </Col>
+                <Col xl={1}>
+                  {loadShipp ? (
+                    <div className={Styles.loadingBox}>
+                      <CircularProgress size={20} />
+                    </div>
+                  ) : (
+                    <p>
+                      {props.hasShipped ? (
+                        "Done"
+                      ) : (
+                        <div
+                          className={Styles.SetFlag}
+                          onClick={async () => {
+                            if (
+                              typeof props.setShipped !== "undefined" &&
+                              props.paymentComplete
+                            ) {
+                              setLoadShipp(true);
+                              await props.setShipped(props.orderId);
+                              setLoadShipp(false);
+                            }
+                          }}
+                        >
+                          <p>Set</p>
+                        </div>
+                      )}
+                    </p>
+                  )}
+                </Col>
+
+                <Col xl={8} style={{ textAlign: "right" }}>
+                  {" "}
+                  <p>{props.hasShipped ? props.shippedTime : ""}</p>{" "}
+                </Col>
+              </Row>
+
+              <Row
+                className={
+                  props.hasBeenDelivered
+                    ? [
+                        Styles.OrderStatusRow,
+                        Styles.OrderStatusRowComplete,
+                      ].join(" ")
+                    : Styles.OrderStatusRow
+                }
+              >
+                <Col xl={3}>
+                  {" "}
+                  <p>Delivered:</p>
+                </Col>
+                <Col xl={1}>
+                  {" "}
+                  {loadDeliver ? (
+                    <div className={Styles.loadingBox}>
+                      <CircularProgress size={20} />
+                    </div>
+                  ) : (
+                    <p>
+                      {props.hasBeenDelivered ? (
+                        "Done"
+                      ) : (
+                        <div
+                          className={Styles.SetFlag}
+                          onClick={async () => {
+                            if (
+                              typeof props.setDelivered !== "undefined" &&
+                              props.hasShipped
+                            ) {
+                              setLoadDeliver(true);
+                              await props.setDelivered(props.orderId);
+                              setLoadDeliver(false);
+                            }
+                          }}
+                        >
+                          <p>Set</p>
+                        </div>
+                      )}
+                    </p>
+                  )}
+                </Col>
+                <Col xl={8} style={{ textAlign: "right" }}>
+                  {" "}
+                  <p>{props.hasBeenDelivered ? props.deliveredTime : ""}</p>
+                </Col>
+              </Row>
+
+              <Row
+                className={
+                  props.isCancelled
+                    ? [
+                        Styles.OrderStatusRow,
+                        Styles.OrderStatusRowCancelled,
+                      ].join(" ")
+                    : Styles.OrderStatusRow
+                }
+              >
+                <Row>
+                  <Col xl={3}>
+                    <p>Cancelled:</p>
+                  </Col>
+                  <Col xl={1}>
+                    {" "}
+                    {loadCancel ? (
+                      <div className={Styles.loadingBox}>
+                        <CircularProgress size={20} />
                       </div>
+                    ) : (
+                      <p>
+                        {props.isCancelled ? (
+                          "Done"
+                        ) : (
+                          <div
+                            className={Styles.SetFlag}
+                            onClick={async () => {
+                              setShowCancelBox(!showCancelBox);
+                            }}
+                          >
+                            <p>Set</p>
+                          </div>
+                        )}
+                      </p>
                     )}
-                  </p></Col>
+                  </Col>
+                  <Col xl={8} style={{ textAlign: "right" }}>
+                    {" "}
+                    <p>{props.isCancelled ? props.cancelTime : ""}</p>
+                  </Col>
+                </Row>
 
-                <Col> <p>{props.hasShipped ? props.shippedTime : ""}</p> </Col>
+                {showCancelBox && (
+                  <>
+                    {" "}
+                    <Row style={{ marginTop: "5px" }}>
+                      <InputTextArea
+                        value={cancelDescription}
+                        placeholder="Cancel Description"
+                        entireComponentStyle={{ width: "100%" }}
+                        wrapperStyle={{ width: "100%", height: "60px" }}
+                        onChange={(value) => {
+                          setCancelDescription(value);
+                        }}
+                        onBlur={async (value) => {
+                          var validateCancelDescription =
+                            await validateProductDescriptionString(
+                              cancelDescription
+                            );
+                          setCancelDescriptionError(validateCancelDescription);
+                        }}
+                        error={cancelDescriptionError}
+                      />
+                    </Row>
+                    <Row>
+                      <div
+                        className={Styles.cancelFlag}
+                        onClick={async () => {
+                          var validateCancelDescription =
+                            await validateProductDescriptionString(
+                              cancelDescription
+                            );
+
+                          if (!validateCancelDescription.ok) {
+                            setCancelDescriptionError(
+                              validateCancelDescription
+                            );
+                          } else {
+                            setCancelDescription(null);
+                            setCancelDescriptionError(null);
+                            setShowCancelBox(false);
+                            if (typeof props.setCancelled !== "undefined") {
+                              setLoadCancel(true);
+                              await props.setCancelled(
+                                props.orderId,
+                                cancelDescription
+                              );
+                              setLoadCancel(false);
+                            }
+                          }
+                        }}
+                      >
+                        <p>Cancel Order</p>
+                      </div>
+                    </Row>
+                  </>
+                )}
               </Row>
 
-              <Row>
-                <Col> <p>Delivered:</p></Col>
-                <Col> <p>{props.hasBeenDelivered ? "True" : "False"}</p></Col>
-                <Col> <p>{props.hasBeenDelivered ? props.deliveredTime : ""}</p></Col>
-              </Row>
+              {props.cancelDescription && (
+                <Row className={Styles.OrderStatusRow}>
+                  <Col xl={3}>
+                    <p>Cancel Description:</p>
+                  </Col>
 
-              <Row>
-                <Col><p>Cancelled:</p></Col>
-                <Col> <p>{props.isCancelled ? "True" : "False"}</p></Col>
-                <Col> <p>{props.isCancelled ? props.cancelTime : ""}</p></Col>
-              </Row>
+                  <Col xl={9} style={{ textAlign: "right" }}>
+                    {" "}
+                    <p>{props.cancelDescription}</p>
+                  </Col>
+                </Row>
+              )}
             </Row>
-
           </Col>
         </Row>
       </Row>
