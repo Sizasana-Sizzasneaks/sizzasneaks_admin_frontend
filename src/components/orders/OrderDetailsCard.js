@@ -324,7 +324,9 @@ function OrderDetailsCard(props) {
                           <div
                             className={Styles.SetFlag}
                             onClick={async () => {
-                              setShowCancelBox(!showCancelBox);
+                              if (props.hasBeenDelivered) {
+                                setShowCancelBox(!showCancelBox);
+                              }
                             }}
                           >
                             <p>Set</p>
@@ -378,7 +380,10 @@ function OrderDetailsCard(props) {
                             setCancelDescription(null);
                             setCancelDescriptionError(null);
                             setShowCancelBox(false);
-                            if (typeof props.setCancelled !== "undefined") {
+                            if (
+                              typeof props.setCancelled !== "undefined" &&
+                              props.hasBeenDelivered
+                            ) {
                               setLoadCancel(true);
                               await props.setCancelled(
                                 props.orderId,
