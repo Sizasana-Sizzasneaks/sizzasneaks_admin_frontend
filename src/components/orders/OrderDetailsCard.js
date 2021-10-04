@@ -147,8 +147,9 @@ function OrderDetailsCard(props) {
           <Col></Col>
 
           <Col className={Styles.OrderStatus}>
-            <Row className={Styles.OrderStatusBanner}>
-              <p
+            <Row>
+                  <Col>
+                  <p
                 style={{
                   fontWeight: "400",
                   fontSize: "20px",
@@ -157,31 +158,20 @@ function OrderDetailsCard(props) {
               >
                 Order Status
               </p>
+                  </Col>
+            
             </Row>
 
             <Row>
-              <Col xl={3}>
-                <Row>
-                  <p>Paid:</p>
-                </Row>
-                <Row>
-                  <p>Shipped:</p>
-                </Row>
-                <Row>
-                  <p>Delivered:</p>
-                </Row>
+              <Row>
+                <Col> <p>Paid:</p></Col>
+                <Col> <p>{props.paymentComplete ? "True" : "False"}</p></Col>
+                <Col> <p>{props.paymentComplete ? props.paymentTime : ""}</p></Col>
+              </Row>
 
-                <Row>
-                  <p>Cancelled:</p>
-                </Row>
-              </Col>
-              {/* if payment was made time is displayed */}
-              <Col xl={3}>
-                <Row>
-                  <p>{props.paymentComplete ? "True" : "False"}</p>
-                </Row>
-                <Row>
-                  <p>
+              <Row>
+                <Col><p>Shipped:</p></Col>
+                <Col><p>
                     {props.hasShipped ? (
                       "True"
                     ) : (
@@ -189,31 +179,24 @@ function OrderDetailsCard(props) {
                         Set<p></p>
                       </div>
                     )}
-                  </p>
-                </Row>
-                <Row>
-                  <p>{props.hasBeenDelivered ? "True" : "False"}</p>
-                </Row>
-                <Row>
-                  <p>{props.isCancelled ? "True" : "False"}</p>
-                </Row>
-              </Col>
+                  </p></Col>
 
-              <Col className={Styles.TimeValues} xl={6}>
-                <Row>
-                  <p>{props.paymentComplete ? props.paymentTime : ""}</p>
-                </Row>
-                <Row>
-                  <p>{props.hasShipped ? props.shippedTime : ""}</p>
-                </Row>
-                <Row>
-                  <p>{props.hasBeenDelivered ? props.deliveredTime : ""}</p>
-                </Row>
-                <Row>
-                  <p>{props.isCancelled ? props.cancelTime : ""}</p>
-                </Row>
-              </Col>
+                <Col> <p>{props.hasShipped ? props.shippedTime : ""}</p> </Col>
+              </Row>
+
+              <Row>
+                <Col> <p>Delivered:</p></Col>
+                <Col> <p>{props.hasBeenDelivered ? "True" : "False"}</p></Col>
+                <Col> <p>{props.hasBeenDelivered ? props.deliveredTime : ""}</p></Col>
+              </Row>
+
+              <Row>
+                <Col><p>Cancelled:</p></Col>
+                <Col> <p>{props.isCancelled ? "True" : "False"}</p></Col>
+                <Col> <p>{props.isCancelled ? props.cancelTime : ""}</p></Col>
+              </Row>
             </Row>
+
           </Col>
         </Row>
       </Row>
