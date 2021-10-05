@@ -8,7 +8,7 @@ import DropDownInput from "../general/DropDownInput.js";
 import {
   validateBasicString,
   validateFundsValue,
-  validateVisibility,
+  validateVisibility, //
   validateCategories,
 } from "../../services/InputValidation.js";
 

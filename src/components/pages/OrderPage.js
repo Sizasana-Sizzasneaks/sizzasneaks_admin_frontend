@@ -2,42 +2,52 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import { Row, Col } from "react-bootstrap";
 import Styles from "./OrderPage.module.css";
+import { formatToNormalDate } from "../../services/dateManipulationFunctions.js";
 
 import { LinearProgress } from "@material-ui/core";
 import BoxSelector from "../general/BoxSelector";
-import SearchInputField from "../general/SearchInputField";
+import SearchInputField from "../general/SearchInputField.js";
+import DateInputField from "../general/DateInputField.js";
 import OrderItemLineHeader from "../orders/OrderItemLineHeader.js";
 import OrderItemLine from "../orders/OrderItemLine.js";
-import { getOrders, getOrder } from "../../api/orders.js";
+import { getOrders, updateOrder, cancelOrder } from "../../api/orders.js";
 import { convertDateToString } from "../../services/dateManipulationFunctions.js";
-
+import OrderDetailsCard from "../orders/OrderDetailsCard.js";
+import { REVIEWS_ROUTE } from "../../api";
 //import { getProducts } from "../../api/products.js";
 //------------------------------------------------------------------------
 
 function OrderPage(props) {
+  var formatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "ZAR",
+  });
+
   const history = useHistory();
   var [loading, setLoading] = React.useState(true);
-  //  var [products, setProducts] = React.useState(null); //remove
   var [orders, setOrders] = React.useState(null);
   var [error, setError] = React.useState(null);
 
   //Selectors
   var [showAll, setShowAll] = React.useState(true);
   var [showNew, setShowNew] = React.useState(false);
+  var [showPaid, setShowPaid] = React.useState(false);
+  var [showNotPaid, setShowNotPaid] = React.useState(false);
   var [showShipped, setShowShipped] = React.useState(false);
+  var [showNotShipped, setShowNotShipped] = React.useState(false);
   var [showDelivered, setShowDelivered] = React.useState(false);
+  var [showNotDelivered, setShowNotDelivered] = React.useState(false);
   var [showCancelled, setShowCancelled] = React.useState(false);
+  var [showNotCancelled, setShowNotCancelled] = React.useState(false);
   var [orderId, setOrderId] = React.useState("");
-  var [date, setDate] = React.useState("");
+  var [date, setDate] = React.useState(formatToNormalDate(new Date()));
 
-  // var [showVisible, setShowVisible] = React.useState(false); //remove
-  // var [showHidden, setShowHidden] = React.useState(false); //remove
-  // var [productId, setProductId] = React.useState("");  //here
-  // var [productName, setProductName] = React.useState("");
+  //Selected Order
+  var [selectedOrder, setSelectedOrder] = React.useState(null);
 
   var [search, setSearch] = React.useState({
-    searchBy: "ALL",
-    value: "",
+    searchBy: "DATE",
+    value: new Date().toISOString(),
   });
 
   React.useEffect(() => {
@@ -49,163 +59,122 @@ function OrderPage(props) {
     switch (search.searchBy) {
       case "ALL":
         setShowAll(true);
-        setShowNew(false);
+        setShowPaid(false);
+        setShowNotPaid(false);
         setShowShipped(false);
+        setShowNotShipped(false);
         setShowDelivered(false);
+        setShowNotDelivered(false);
         setShowCancelled(false);
+        setShowNotCancelled(false);
         setOrderId("");
         setDate("");
         break;
 
-      case "NEW":
-        setShowAll(true);
-        setShowNew(false);
+      case "PAID":
+        setShowAll(false);
+        setShowPaid(search.value);
+        setShowNotPaid(!search.value);
         setShowShipped(false);
+        setShowNotShipped(false);
         setShowDelivered(false);
+        setShowNotDelivered(false);
         setShowCancelled(false);
+        setShowNotCancelled(false);
         setOrderId("");
         setDate("");
         break;
 
       case "SHIPPED":
-        setShowAll(true);
-        setShowNew(false);
-        setShowShipped(false);
+        setShowAll(false);
+        setShowPaid(false);
+        setShowNotPaid(false);
+        setShowShipped(search.value);
+        setShowNotShipped(!search.value);
         setShowDelivered(false);
+        setShowNotDelivered(false);
         setShowCancelled(false);
+        setShowNotCancelled(false);
         setOrderId("");
         setDate("");
         break;
 
       case "DELIVERED":
-        setShowAll(true);
-        setShowNew(false);
+        setShowAll(false);
+        setShowPaid(false);
+        setShowNotPaid(false);
         setShowShipped(false);
-        setShowDelivered(false);
+        setShowNotShipped(false);
+        setShowDelivered(search.value);
+        setShowNotDelivered(!search.value);
         setShowCancelled(false);
+        setShowNotCancelled(false);
         setOrderId("");
         setDate("");
         break;
 
       case "CANCELLED":
-        if (search.value === false) {
-          setShowAll(true);
-          setShowNew(false);
-          setShowShipped(false);
-          setShowDelivered(false);
-          setShowCancelled(false);
-          setOrderId("");
-          setDate("");
-        } else {
-          setShowAll(true);
-          setShowNew(true);
-          setShowShipped(false);
-          setShowDelivered(false);
-          setShowCancelled(false);
-          setOrderId("");
-          setDate("");
-        }
-        break;
-
-      case "ORDERID":
-        setShowAll(true);
-        setShowNew(false);
+        setShowAll(false);
+        setShowPaid(false);
+        setShowNotPaid(false);
         setShowShipped(false);
+        setShowNotShipped(false);
         setShowDelivered(false);
-        setShowCancelled(false);
-        setDate("");
-        break;
-
-      case "SEARCH":
-        setShowAll(true);
-        setShowNew(false);
-        setShowShipped(false);
-        setShowDelivered(false);
-        setShowCancelled(false);
+        setShowNotDelivered(false);
+        setShowCancelled(search.value);
+        setShowNotCancelled(!search.value);
         setOrderId("");
         setDate("");
         break;
+
+      case "ORDERID":
+        setShowAll(false);
+        setShowPaid(false);
+        setShowNotPaid(false);
+        setShowShipped(false);
+        setShowNotShipped(false);
+        setShowDelivered(false);
+        setShowNotDelivered(false);
+        setShowCancelled(false);
+        setShowNotCancelled(false);
+        setDate("");
+        break;
+
+      case "DATE":
+        setShowAll(false);
+        setShowPaid(false);
+        setShowNotPaid(false);
+        setShowShipped(false);
+        setShowNotShipped(false);
+        setShowDelivered(false);
+        setShowNotDelivered(false);
+        setShowCancelled(false);
+        setShowNotCancelled(false);
+        setOrderId("");
+        break;
+
       default:
         setShowAll(true);
-        setShowNew(false);
+        setShowPaid(false);
+        setShowNotPaid(false);
         setShowShipped(false);
+        setShowNotShipped(false);
         setShowDelivered(false);
+        setShowNotDelivered(false);
         setShowCancelled(false);
+        setShowNotCancelled(false);
+        setOrderId("");
+        setDate("");
+        break;
     }
   }
-
-  // React.useEffect(() => {
-  //   getProductInventory(search.searchBy, search.value);
-  //   setSelected(search);
-  // }, [search]);
-
-  // function setSelected(search) {
-  //   switch (search.searchBy) {
-  //     case "ALL":
-  //       setShowAll(true);
-  //       setShowNew(false);
-  //       setShowVisible(false);
-  //       setShowHidden(false);
-  //       setProductId("");
-  //       setProductName("");
-  //       break;
-  //     case "NEW":
-  //       setShowAll(false);
-  //       setShowNew(true);
-  //       setShowVisible(false);
-  //       setShowHidden(false);
-  //       setProductId("");
-  //       setProductName("");
-  //       break;
-  //     case "VISIBILITY":
-  //       if (search.value === true) {
-  //         setShowAll(false);
-  //         setShowNew(false);
-  //         setShowVisible(true);
-  //         setShowHidden(false);
-  //         setProductId("");
-  //         setProductName("");
-  //       } else {
-  //         setShowAll(false);
-  //         setShowNew(false);
-  //         setShowVisible(false);
-  //         setShowHidden(true);
-  //         setProductId("");
-  //         setProductName("");
-  //       }
-  //       break;
-  //     case "PRODUCTID":
-  //       setShowAll(false);
-  //       setShowNew(false);
-  //       setShowVisible(false);
-  //       setShowHidden(false);
-  //       setProductName("");
-  //       break;
-
-  //     case "SEARCH":
-  //       setShowAll(false);
-  //       setShowNew(false);
-  //       setShowVisible(false);
-  //       setShowHidden(false);
-  //       setProductId("");
-  //       break;
-  //     default:
-  //       setShowAll(false);
-  //       setShowNew(false);
-  //       setShowVisible(false);
-  //       setShowHidden(false);
-  //   }
-  // }
-
-  // React.useEffect(() => {
-  //   getProductInventory(search.searchBy, search.value);
-  // }, [search]);
 
   React.useEffect(() => {
     getOrdersMade(search.searchBy, search.value);
   }, [search]);
 
   async function getOrdersMade(searchBy, value) {
+    setSelectedOrder(null);
     setOrders(null); //clear already exisitng orders
     setLoading(true); //should load
     setError(null); // if there was an error, it should not be there
@@ -228,50 +197,59 @@ function OrderPage(props) {
       console.log("Failed");
       console.log(getOrdersResult);
     }
+  }
 
-    //----------------
-    // // THe search query must be supplied using the "value" parameter
-    // setProducts(null);
-    // setError(null);
-    // setLoading(true);
-    // var getProductsResult = await getProducts({
-    //   searchBy: searchBy,
-    //   value: value,
-    // });
+  async function setShipped(orderIdValue) {
+    var updateOrderResult = await updateOrder(orderIdValue, {
+      hasShipped: true,
+      shippedTime: new Date(),
+    });
 
-    // if (getProductsResult.ok === true) {
-    //   //Getting Products Failed
-    //   setLoading(false);
-    //   setError(null);
-    //   setProducts(getProductsResult.data);
-    // } else {
-    //   //Getting Products Failed
-    //   setProducts(null);
-    //   setLoading(false);
-    //   setError(getProductsResult);
-    // }
-    //---------------------
+    if (updateOrderResult.ok) {
+      refreshOrders();
+      console.log(updateOrderResult);
+      return { ok: true };
+    } else {
+      console.log(updateOrderResult);
+      return { ok: false };
+    }
+  }
 
-    // THe search query must be supplied using the "value" parameter
-    //  setOrders(null);
-    //  setError(null);
-    //  setLoading(true);
-    //  var getOrderResult = await getOrders({ //from the API
-    //    searchBy: searchBy,
-    //    value: value,
-    //  });
+  async function setDelivered(orderIdValue) {
+    var updateOrderResult = await updateOrder(orderIdValue, {
+      hasBeenDelivered: true,
+      deliveredTime: new Date(),
+    });
 
-    //  if (getOrderResult.ok === true) {
-    //    //Getting Orders Failed
-    //    setLoading(false);
-    //    setError(null);
-    //    setOrders(getOrderResult.data);
-    //  } else {
-    //    //Getting Orders Failed
-    //    setOrders(null);
-    //    setLoading(false);
-    //    setError(getOrderResult);
-    //  }
+    if (updateOrderResult.ok) {
+      refreshOrders();
+      console.log(updateOrderResult);
+      return { ok: true };
+    } else {
+      console.log(updateOrderResult);
+      return { ok: false };
+    }
+  }
+
+  async function setCancelled(orderIdValue, cancelDescription) {
+    var cancelOrderResult = await cancelOrder(orderIdValue, cancelDescription);
+
+    if (cancelOrderResult.ok) {
+      refreshOrders();
+      console.log(cancelOrderResult);
+      return { ok: true };
+    } else {
+      console.log(cancelOrderResult);
+      return { ok: false };
+    }
+  }
+
+  async function refreshOrders() {
+    var getOrdersResult = await getOrders(search.searchBy, search.value);
+
+    if (getOrdersResult.ok) {
+      setOrders(getOrdersResult.data);
+    }
   }
 
   return (
@@ -298,10 +276,17 @@ function OrderPage(props) {
               }}
             />
             <BoxSelector
-              label="New"
-              selected={showNew}
+              label="Paid"
+              selected={showPaid}
               select={() => {
-                setSearch({ searchBy: "NEW", value: "" });
+                setSearch({ searchBy: "PAID", value: true });
+              }}
+            />
+            <BoxSelector
+              label="Not Paid"
+              selected={showNotPaid}
+              select={() => {
+                setSearch({ searchBy: "PAID", value: false });
               }}
             />
             <BoxSelector
@@ -312,8 +297,22 @@ function OrderPage(props) {
               }}
             />
             <BoxSelector
+              label="Not Shipped"
+              selected={showNotShipped}
+              select={() => {
+                setSearch({ searchBy: "SHIPPED", value: false });
+              }}
+            />
+            <BoxSelector
               label="Delivered"
               selected={showDelivered}
+              select={() => {
+                setSearch({ searchBy: "DELIVERED", value: true });
+              }}
+            />
+            <BoxSelector
+              label="Not Delivered"
+              selected={showNotDelivered}
               select={() => {
                 setSearch({ searchBy: "DELIVERED", value: false });
               }}
@@ -321,6 +320,13 @@ function OrderPage(props) {
             <BoxSelector
               label="Cancelled"
               selected={showCancelled}
+              select={() => {
+                setSearch({ searchBy: "CANCELLED", value: true }); //FIX HERE
+              }}
+            />
+            <BoxSelector
+              label="Not Cancelled"
+              selected={showNotCancelled}
               select={() => {
                 setSearch({ searchBy: "CANCELLED", value: false }); //FIX HERE
               }}
@@ -338,12 +344,23 @@ function OrderPage(props) {
                 setSearch({ searchBy: "ORDERID", value: value });
               }}
             />
-            <SearchInputField
+            <DateInputField
               value={date}
               placeHolderText="Date" //FIX HERE
               onChange={(value) => {
-                setDate(value);
-                setSearch({ searchBy: "SEARCH", value: value });
+                if (value !== "") {
+                  console.log(value);
+                  setDate(value);
+                  var ISOString = new Date(value).toISOString();
+
+                  setSearch({
+                    searchBy: "DATE",
+                    value: ISOString,
+                  });
+                } else {
+                  setDate(value);
+                  setSearch({ searchBy: "ALL", value: "" });
+                }
               }}
             />
           </Col>
@@ -351,23 +368,6 @@ function OrderPage(props) {
       </Row>
       <Row className={Styles.InventoryPageBody}>
         <OrderItemLineHeader />
-
-        {/* {error && <p>{error.message}</p>}
-        {loading && <LinearProgress />}
-
-        {products &&
-          products.map((product) => {
-            return ( */}
-        {/* <InventoryItemLine
-                productId={product._id}
-                productName={product.productName}
-                brand={product.brand}
-                sellingPrice={product.sellingPrice}
-                visibility={product.showProduct}
-                pushToProductPage={() => {
-                  history.push("/inventory/" + product._id);
-                }}
-              /> */}
 
         {error && <p>{error.message}</p>}
         {loading && <LinearProgress />}
@@ -377,22 +377,68 @@ function OrderPage(props) {
             var totalCost = 0;
 
             order.orderItems.forEach((element) => {
-              totalCost = totalCost + element.sellingPriceAmount;
+              totalCost =
+                totalCost + element.sellingPriceAmount * element.quantity;
             });
-            return (
-              <OrderItemLine
-                orderId={order._id}
-                quantity={order.orderItems.length}
-                customerId={order.customer_id}
-                totalCost={totalCost}
-                date={convertDateToString(order.createdAt)} //make function
-                //puts what the function returns
 
-                pushToOrderPage={() => {
-                  history.push("/orders/" + order._id);
-                }}
-              />
-            );
+            if (order._id !== selectedOrder) {
+              return (
+                <OrderItemLine
+                  orderId={order._id}
+                  quantity={order.orderItems.length}
+                  totalCost={formatter.format(totalCost)}
+                  paymentComplete={order.paymentComplete}
+                  hasShipped={order.hasShipped}
+                  hasBeenDelivered={order.hasBeenDelivered}
+                  isCancelled={order.isCancelled}
+                  date={convertDateToString(order.createdAt)} //make function
+                  //puts what the function returns
+
+                  pushToOrderPage={() => {
+                    // history.push("/orders/" + order._id);
+                    setSelectedOrder(order._id);
+                  }}
+                />
+              );
+            } else {
+              return (
+                <OrderDetailsCard
+                  orderId={order._id}
+                  orderItems={order.orderItems}
+                  shippingAddress={order.shippingAddress}
+                  totalCost={formatter.format(totalCost)}
+                  paymentComplete={order.paymentComplete}
+                  paymentTime={
+                    order.paymentComplete
+                      ? convertDateToString(order.paymentTime)
+                      : "Not Paid"
+                  }
+                  hasShipped={order.hasShipped}
+                  shippedTime={
+                    order.hasShipped
+                      ? convertDateToString(order.shippedTime)
+                      : "Not Shipped"
+                  }
+                  hasBeenDelivered={order.hasBeenDelivered}
+                  deliveredTime={
+                    order.hasBeenDelivered
+                      ? convertDateToString(order.deliveredTime)
+                      : "Not Delivered"
+                  }
+                  isCancelled={order.isCancelled}
+                  cancelTime={
+                    order.isCancelled
+                      ? convertDateToString(order.cancelTime)
+                      : "Not cancelled"
+                  }
+                  cancelDescription={order.cancelDescription}
+                  date={convertDateToString(order.createdAt)}
+                  setCancelled={setCancelled}
+                  setShipped={setShipped}
+                  setDelivered={setDelivered}
+                />
+              );
+            }
           })}
       </Row>
     </div>
