@@ -66,7 +66,7 @@ function OrderDetailsCard(props) {
             <>
               <Row className={Styles.TextRow}>
                 <Col xl={2}>
-                  <p>Product Name</p>
+                <p>{item.productName}</p>
                 </Col>
 
                 <Col xl={2}>
@@ -84,7 +84,11 @@ function OrderDetailsCard(props) {
 
                 <Col xl={4}>
                   <p style={{ textAlign: "right" }}>
-                    {formatter.format(item.sellingPriceAmount * item.quantity)}
+                    {formatter.format(
+                      (item.sellingPriceAmount -
+                        item.sellingPriceAmount * 0.15) *
+                        item.quantity
+                    )}
                   </p>
                 </Col>
               </Row>
@@ -96,6 +100,37 @@ function OrderDetailsCard(props) {
             </>
           );
         })}
+        <Row className={Styles.TaxDeliveryLine}>
+          <Col xl={6}>
+            <p>Tax Amount</p>
+          </Col>
+
+          <Col xl={6}>
+            <p style={{ textAlign: "right" }}>{props.totalTax}</p>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <hr />
+          </Col>
+        </Row>
+
+        <Row className={Styles.TaxDeliveryLine}>
+          <Col xl={6}>
+            <p>Delivery Charge</p>
+          </Col>
+
+          <Col xl={6}>
+            <p style={{ textAlign: "right" }}>
+              {formatter.format(props.shippingCost)}
+            </p>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <hr />
+          </Col>
+        </Row>
 
         <Row className={Styles.SummaryLine}>
           <Col xl={4}>

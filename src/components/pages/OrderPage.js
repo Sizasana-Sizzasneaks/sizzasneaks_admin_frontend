@@ -381,11 +381,21 @@ function OrderPage(props) {
                 totalCost + element.sellingPriceAmount * element.quantity;
             });
 
+            totalCost = totalCost + order.shippingCost;
+
+            var totalTax = 0;
+
+            order.orderItems.forEach((item) => {
+              totalTax =
+                totalTax + item.sellingPriceAmount * 0.15 * item.quantity;
+            });
+
             if (order._id !== selectedOrder) {
               return (
                 <OrderItemLine
                   orderId={order._id}
                   quantity={order.orderItems.length}
+                  
                   totalCost={formatter.format(totalCost)}
                   paymentComplete={order.paymentComplete}
                   hasShipped={order.hasShipped}
@@ -406,6 +416,8 @@ function OrderPage(props) {
                   orderId={order._id}
                   orderItems={order.orderItems}
                   shippingAddress={order.shippingAddress}
+                  shippingCost={order.shippingCost}
+                  totalTax={formatter.format(totalTax)}
                   totalCost={formatter.format(totalCost)}
                   paymentComplete={order.paymentComplete}
                   paymentTime={

@@ -46,10 +46,18 @@
 
 .SummaryLine {
   font-weight: 500;
-  font-size: 19px;
+  font-size: 20px;
 }
 
 .SummaryLine p {
+  margin-bottom: 0px;
+}
+.TaxDeliveryLine {
+  font-weight: 500;
+  font-size: 18px;
+}
+
+.TaxDeliveryLine p {
   margin-bottom: 0px;
 }
 
