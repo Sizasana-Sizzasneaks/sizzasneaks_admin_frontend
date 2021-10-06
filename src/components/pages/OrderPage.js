@@ -47,7 +47,7 @@ function OrderPage(props) {
 
   var [search, setSearch] = React.useState({
     searchBy: "DATE",
-    value: new Date().toISOString(),
+    value: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
   });
 
   React.useEffect(() => {
@@ -395,7 +395,6 @@ function OrderPage(props) {
                 <OrderItemLine
                   orderId={order._id}
                   quantity={order.orderItems.length}
-                  
                   totalCost={formatter.format(totalCost)}
                   paymentComplete={order.paymentComplete}
                   hasShipped={order.hasShipped}
