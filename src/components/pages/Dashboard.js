@@ -1,25 +1,37 @@
 import React from "react";
-import { Button } from "@material-ui/core";
-import Box from "@material-ui/core/Box";
+import Styles from "./Dashboard.module.css";
+import { Row, Col } from "react-bootstrap";
+import { CircularProgress } from "@material-ui/core";
+
+import TopProductsCard from "../revenue/TopProductsCard.js";
 
 function Dashboard() {
-  const bstyle = { margin: "15px 0", backgroundColor: "#02ced1" };
-  return (
-    <div>
-      <Box align="center">
-        <h1>Welcome Back Admin01!</h1>
-        <br></br>
+  let [loadingRevenueChart, setLoadingRevenueChart] = React.useState(false);
 
-        <Button
-          type="submit"
-          color="primary"
-          style={bstyle}
-          variant="contained"
-        >
-          Log Out
-        </Button>
-      </Box>
-    </div>
+  React.useEffect(() => {
+    //getRevenueData();
+  }, []);
+
+  function getRevenueData() {
+    //Get Revenue Data
+  }
+
+  return (
+    <Row className={Styles.EntirePage}>
+      <Col xl={8} style={{ paddingLeft: "0px", paddingRight: "50px" }}>
+        <div className={Styles.Card}>
+          {loadingRevenueChart && (
+            <div className={Styles.LoadingBox}>
+              <CircularProgress size={110} />
+            </div>
+          )}
+        </div>
+      </Col>
+
+      <Col xl={4} style={{ paddingLeft: "0px", paddingRight: "0px" }}>
+        <TopProductsCard />
+      </Col>
+    </Row>
   );
 }
 
