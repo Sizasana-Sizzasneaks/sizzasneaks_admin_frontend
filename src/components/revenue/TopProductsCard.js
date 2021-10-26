@@ -10,10 +10,13 @@ function TopProductsCard() {
   let history = useHistory();
   let [loadingTopProducts, setLoadingTopProducts] = React.useState(false);
   let [topProducts, setTopProducts] = React.useState(null);
-  let [topProductsError, setTopProductsError] = React.useState(null);
+  let [topProductsError, setTopProductsError] = React.useState({
+    ok: false,
+    message: "Error",
+  });
 
   React.useEffect(() => {
-    getTopProducts();
+    // getTopProducts();
   }, []);
 
   async function getTopProducts() {
@@ -38,6 +41,22 @@ function TopProductsCard() {
       {loadingTopProducts && (
         <div className={Styles.LoadingBox}>
           <CircularProgress size={90} />
+        </div>
+      )}
+
+      {topProductsError && (
+        <div className={Styles.ErrorBox}>
+          <Row>
+            <span
+              class="material-icons"
+              style={{ color: "red", display: "block" }}
+            >
+              error
+            </span>
+          </Row>
+          <Row>
+            <p>{topProductsError.message}</p>
+          </Row>
         </div>
       )}
 
