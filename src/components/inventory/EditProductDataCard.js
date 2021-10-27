@@ -1,6 +1,8 @@
 import React from "react";
 import { Row, Col } from "react-bootstrap";
 import Styles from "./EditProductDataCard.module.css";
+
+import { randomString } from "../../services/randomString.js";
 import InputTextArea from "../general/InputTextArea.js";
 import ProductOptionsLineHeader from "./ProductOptionsLineHeader.js";
 import ProductOptionLine from "./ProductOptionLine.js";
@@ -12,34 +14,6 @@ import { validateProductDescriptionString } from "../../services/InputValidation
 import ProductOptionsSection from "./ProductOptionsSection";
 
 function EditProductDataCard(props) {
-  // function displayImages() {
-  //   var images = [];
-
-  //   props.productImages.forEach((productImage, index) => {
-  //     images.push(
-  //       <EditProductImageItem
-  //         fileName={productImage.fileName}
-  //         fileType={productImage.fileType}
-  //         imgURL={productImage.imgURL}
-  //         file={productImage.file}
-  //         deleteProductImage={props.deleteProductImage}
-  //         empty={false}
-  //         key={index}
-  //       />
-  //     );
-  //   });
-
-  //   images.push(
-  //     <EditProductImageItem
-  //       addNewProductImage={props.addNewProductImage}
-  //       empty={true}
-  //       key={images.length}
-  //     />
-  //   );
-
-  //   return images;
-  // }
-
   return (
     <Row className={Styles.ProductDataCard}>
       <p className={Styles.SectionBanner}>Product Images</p>
@@ -62,12 +36,12 @@ function EditProductDataCard(props) {
                     file={productImage.file}
                     deleteProductImage={props.deleteProductImage}
                     empty={false}
-                    key={index}
+                    key={productImage._id || randomString(10)}
                   />
                   <EditProductImageItem
                     addNewProductImage={props.addNewProductImage}
                     empty={true}
-                    key={index + 1}
+                    key={productImage._id ? productImage._id + randomString(5) : randomString(9)}
                   />
                 </>
               ) : (
@@ -78,7 +52,7 @@ function EditProductDataCard(props) {
                   file={productImage.file}
                   deleteProductImage={props.deleteProductImage}
                   empty={false}
-                  key={index}
+                  key={productImage._id || randomString(7)}
                 />
               );
             })}

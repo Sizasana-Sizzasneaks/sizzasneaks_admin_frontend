@@ -8,15 +8,12 @@ import { useHistory } from "react-router-dom";
 
 function TopProductsCard() {
   let history = useHistory();
-  let [loadingTopProducts, setLoadingTopProducts] = React.useState(false);
+  let [loadingTopProducts, setLoadingTopProducts] = React.useState(true);
   let [topProducts, setTopProducts] = React.useState(null);
-  let [topProductsError, setTopProductsError] = React.useState({
-    ok: false,
-    message: "Error",
-  });
+  let [topProductsError, setTopProductsError] = React.useState(null);
 
   React.useEffect(() => {
-    // getTopProducts();
+    getTopProducts();
   }, []);
 
   async function getTopProducts() {
@@ -33,7 +30,6 @@ function TopProductsCard() {
     } else {
       setTopProductsError(getTopProductsResult);
     }
-    console.log(getTopProductsResult);
   }
 
   return (
@@ -46,17 +42,21 @@ function TopProductsCard() {
 
       {topProductsError && (
         <div className={Styles.ErrorBox}>
-          <Row>
+          <div className={Styles.InnerErrorBox}>
             <span
               class="material-icons"
-              style={{ color: "red", display: "block" }}
+              style={{
+                color: "red",
+                display: "block",
+                fontSize: "110px",
+                marginBottom: "10px",
+              }}
             >
               error
             </span>
-          </Row>
-          <Row>
+
             <p>{topProductsError.message}</p>
-          </Row>
+          </div>
         </div>
       )}
 

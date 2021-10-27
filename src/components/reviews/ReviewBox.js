@@ -5,6 +5,7 @@ import ViewReview from "../reviews/ViewReview.js";
 import {
   getReviewsByProductId,
   deleteReviewByReviewId,
+  approveReviewByReviewId,
 } from "../../api/review.js";
 import { LinearProgress } from "@material-ui/core";
 
@@ -45,8 +46,14 @@ function ReviewBox(props) {
   }
 
   async function deleteProductReview(review_id) {
-    if (typeof review_id !== "undefined") {
-      var deleteReviewResult = await deleteReviewByReviewId(review_id);
+    if (
+      typeof review_id !== "undefined" &&
+      typeof props.product_id !== "undefined"
+    ) {
+      var deleteReviewResult = await deleteReviewByReviewId(
+        review_id,
+        props.product_id
+      );
 
       if (deleteReviewResult.ok === true) {
         //Delete Of review Successful
@@ -62,6 +69,34 @@ function ReviewBox(props) {
         console.log("Delete was Not Successful");
         console.log(deleteReviewResult);
         return deleteReviewResult;
+      }
+    } else {
+      console.log("Review ID is Undefined");
+    }
+  }
+
+  async function approveProductReview(review_id) {
+    if (
+      typeof review_id !== "undefined" &&
+      typeof props.product_id !== "undefined"
+    ) {
+      var approveReviewResult = await approveReviewByReviewId(
+        review_id,
+        props.product_id
+      );
+
+      if (approveReviewResult.ok === true) {
+        //Delete Of review Successful
+        //Notify User by Displaying message on screen
+        //Then refresh product Reviews
+        console.log(approveReviewResult);
+        return approveReviewResult;
+      } else {
+        //Delete Of review Not Successful
+        //Notify User by Displaying message on screen
+        //Dont bother refreshing product Reviews
+        console.log(approveReviewResult);
+        return approveReviewResult;
       }
     } else {
       console.log("Review ID is Undefined");
@@ -116,6 +151,7 @@ function ReviewBox(props) {
                     body={review.body}
                     createdAt={review.createdAt}
                     user={review.customer_id}
+                    approved={review.approved}
                     replies={review.replies}
                     id={review._id}
                     deleteReview={async (review_id) => {
@@ -124,6 +160,12 @@ function ReviewBox(props) {
                       );
 
                       return deleteProductReviewResult;
+                    }}
+                    approveReview={async (review_id) => {
+                      var approveProductReviewResult =
+                        await approveProductReview(review_id);
+
+                      return approveProductReviewResult;
                     }}
                     callGetReviews={() => {
                       if (typeof props.product_id !== "undefined") {

@@ -42,7 +42,7 @@ export const getReviewsByProductId = async (id) => {
   }
 };
 
-export const deleteReviewByReviewId = async (id) => {
+export const deleteReviewByReviewId = async (id, productId) => {
   //Getting the User Id Token of the current signed in User.
   var getCurrentUserIdTokenResult = await getCurrentUserIdToken();
 
@@ -53,6 +53,9 @@ export const deleteReviewByReviewId = async (id) => {
       headers: {
         credentialClaims: "administrator",
         Authorization: "Bearer " + getCurrentUserIdTokenResult.data,
+      },
+      params: {
+        product_id: productId,
       },
     };
     return axios
@@ -115,5 +118,47 @@ export const sendReviewReply = async (review_id, reviewReply) => {
   } else {
     //Returning an appropriate response when retrieving the current signed user's ID token fails.
     return getCurrentUserIdTokenResult;
+  }
+};
+
+export const approveReviewByReviewId = async (id, productId) => {
+  var getTokenResult = await getCurrentUserIdToken();
+
+  // checks whether the current user's token was retrieved successfully
+  if (getTokenResult.ok === true) {
+    const config = {
+      // sets the necessary header information for authentication based on the user's token
+      headers: {
+        credentialClaims: "administrator",
+        Authorization: "Bearer " + getTokenResult.data,
+      },
+      params: {
+        product_id: productId,
+      },
+    };
+    return axios
+      .put(API_CONSTANTS.REVIEWS_ROUTE + "/" + id, {}, config) //removes a review from the reviews collection based on an id
+      .then((res) => {
+        //Request Succesfull
+        //Handle Different HTTP Status Codes and Responses
+
+        //checks whether the post request was successful
+        if (res.status === 200) {
+          console.log(res.data);
+          return res.data; //returns the data of the review that has just been deleted
+        } else {
+          return res.data; //returns a general error when adding a review to the product is unsuccessful
+        }
+      })
+      .catch((error) => {
+        //returns a general error when the initial delete request is unsuccessful
+        return {
+          ok: false,
+          message: "Network Error: Please Check your internet connection.",
+        };
+      });
+  } else {
+    //returns a general error when the system has failed to get the user's token
+    return getTokenResult;
   }
 };

@@ -18,10 +18,20 @@
 }
 
 .ErrorBox {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   height: 350px;
+}
+
+.ErrorBox {
+  text-align: center;
+  display: flex;
+}
+
+.InnerErrorBox {
+  margin: auto;
+}
+
+.InnerErrorBox p {
+  font-size: 17px;
 }
 
 .TopProductsBox {
@@ -33,7 +43,8 @@
   font-size: 20px;
   font-weight: 500;
   padding: 0px;
-  margin-bottom: 18px;
+  margin-bottom: 15px;
+  margin-top: 5px;
 }
 
 .RecordHeader p {
