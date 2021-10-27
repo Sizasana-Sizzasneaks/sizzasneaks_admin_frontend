@@ -28,6 +28,9 @@ function ViewReview(props) {
   );
   var [rating, setRating] = React.useState(props.rating || 0);
   var [reviewBody, setReviewBody] = React.useState(props.body || null);
+  var [reviewApproved, setReviewApproved] = React.useState(
+    props.approved || false
+  );
   var [reviewReplies, setReviewReplies] = React.useState(props.replies || null);
 
   async function reloadReview() {}
@@ -102,17 +105,59 @@ function ViewReview(props) {
               label="Delete"
               styles={{ float: "right", marginBottom: "20px" }}
             />
+            {!reviewApproved && (
+              <Button
+                onClick={async () => {
+                  if (
+                    typeof props.id !== "undefined" &&
+                    typeof props.deleteReview !== "undefined"
+                  ) {
+                    setDeleteLoad(true);
+                    var approveReviewResult = await props.approveReview(props.id);
+
+                    setDeleteLoad(false);
+                    if (approveReviewResult.ok === true) {
+                      setDeletReviewState(approveReviewResult);
+
+                      if (typeof props.callGetReviews !== "undefined") {
+                        setTimeout(() => {
+                          props.callGetReviews();
+                        }, 2000);
+                      }
+                    } else {
+                      setDeletReviewState(approveReviewResult);
+                    }
+                  }
+                }}
+                label="Approve"
+                styles={{
+                  float: "right",
+                  marginBottom: "20px",
+                  marginRight: "20px",
+                  backgroundColor: "#209E4F",
+                  color: "white",
+                }}
+              />
+            )}
           </Col>
         </Row>
 
         <Row>
           <Col>
             <p className={Styles.ReviewRepliesBanner}>Review Replies</p>
-            <hr/>
-            {reviewReplies && (reviewReplies.length !==  0 ? (reviewReplies.map((reply) => {
-                return <ReviewReply body={reply.body} time={reply.createdAt} />;
-              })) : (<p className={Styles.NoRepliesText}>No replies for this review</p>))
-              }
+            <hr />
+            {reviewReplies &&
+              (reviewReplies.length !== 0 ? (
+                reviewReplies.map((reply) => {
+                  return (
+                    <ReviewReply body={reply.body} time={reply.createdAt} />
+                  );
+                })
+              ) : (
+                <p className={Styles.NoRepliesText}>
+                  No replies for this review
+                </p>
+              ))}
           </Col>
         </Row>
 

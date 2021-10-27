@@ -12,3 +12,4 @@ export const REVIEWS_ROUTE = BACKEND_ROUTE + "/reviews";
 
 export const ORDERS_ROUTE = BACKEND_ROUTE + "/orders";
 
+export const REVENUE_ROUTE = BACKEND_ROUTE + "/revenue";
