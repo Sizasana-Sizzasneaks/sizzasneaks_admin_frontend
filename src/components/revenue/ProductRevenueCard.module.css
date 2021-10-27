@@ -1,0 +1,48 @@
+.ProductRevenueCard {
+  background-color: white;
+  margin-top: 25px;
+  margin-bottom: 35px;
+  padding: 25px;
+}
+.LoadingBox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ErrorBox {
+  height: 350px;
+}
+
+.ErrorBox {
+  text-align: center;
+  display: flex;
+}
+
+.InnerErrorBox {
+  margin: auto;
+}
+
+.InnerErrorBox p {
+  font-size: 17px;
+}
+.RecordHeader p {
+  margin-bottom: 0px;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.Record {
+  margin-top: 6px;
+  margin-bottom: 6px;
+  padding-left: 2px;
+  padding-right: 3px;
+  display: flex;
+  align-items: center;
+}
+
+.Record p {
+  margin-bottom: 0px;
+  font-size: 16px;
+  font-weight: 300;
+}
