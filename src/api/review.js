@@ -54,7 +54,7 @@ export const deleteReviewByReviewId = async (id, productId) => {
         credentialClaims: "administrator",
         Authorization: "Bearer " + getCurrentUserIdTokenResult.data,
       },
-      params: {
+      data: {
         product_id: productId,
       },
     };
@@ -132,12 +132,15 @@ export const approveReviewByReviewId = async (id, productId) => {
         credentialClaims: "administrator",
         Authorization: "Bearer " + getTokenResult.data,
       },
-      params: {
-        product_id: productId,
-      },
     };
     return axios
-      .put(API_CONSTANTS.REVIEWS_ROUTE + "/" + id, {}, config) //removes a review from the reviews collection based on an id
+      .put(
+        API_CONSTANTS.REVIEWS_ROUTE + "/" + id,
+        {
+          product_id: productId,
+        },
+        config
+      ) //removes a review from the reviews collection based on an id
       .then((res) => {
         //Request Succesfull
         //Handle Different HTTP Status Codes and Responses
