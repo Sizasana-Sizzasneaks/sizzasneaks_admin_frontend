@@ -242,3 +242,7 @@ footer {
 .payment-container {
   margin-left: auto;
 }
+
+.footer-icon-link:hover {
+  cursor: pointer;
+}

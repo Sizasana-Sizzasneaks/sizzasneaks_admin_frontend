@@ -3,6 +3,7 @@ import Styles from "./Dashboard.module.css";
 import { Row, Col } from "react-bootstrap";
 import { CircularProgress } from "@material-ui/core";
 
+import UnitsSoldChart from "../revenue/UnitsSoldChart";
 import TopProductsCard from "../revenue/TopProductsCard.js";
 
 function Dashboard() {
@@ -19,13 +20,7 @@ function Dashboard() {
   return (
     <Row className={Styles.EntirePage}>
       <Col xl={8} style={{ paddingLeft: "0px", paddingRight: "50px" }}>
-        <div className={Styles.Card}>
-          {loadingRevenueChart && (
-            <div className={Styles.LoadingBox}>
-              <CircularProgress size={110} />
-            </div>
-          )}
-        </div>
+        <UnitsSoldChart/>
       </Col>
 
       <Col xl={4} style={{ paddingLeft: "0px", paddingRight: "0px" }}>

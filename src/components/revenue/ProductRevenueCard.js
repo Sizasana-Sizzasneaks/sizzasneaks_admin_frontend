@@ -15,6 +15,11 @@ function ProductRevenueCard(props) {
     getProductRevenue();
   }, []);
 
+  var formatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "ZAR",
+  });
+
   async function getProductRevenue() {
     setLoadingProductRevenue(true);
     setProductRevenue(null);
@@ -28,6 +33,7 @@ function ProductRevenueCard(props) {
     setLoadingProductRevenue(false);
     if (getProductRevenueResult.ok) {
       console.log(Object.values(getProductRevenueResult.data));
+     
       setProductRevenue(Object.values(getProductRevenueResult.data));
     } else {
       console.log(getProductRevenueResult);
@@ -50,7 +56,7 @@ function ProductRevenueCard(props) {
               style={{
                 color: "red",
                 display: "block",
-                fontSize: "110px",
+                fontSize: "80px",
                 marginBottom: "10px",
               }}
             >
@@ -98,10 +104,10 @@ function ProductRevenueCard(props) {
                   <p>{month.quantity}</p>
                 </Col>
                 <Col xl={3} style={{ padding: "0px" }}>
-                  <p>{"ZAR " + month.revenue}</p>
+                  <p>{formatter.format(month.revenue)}</p>
                 </Col>
                 <Col xl={3} style={{ padding: "0px", textAlign: "right" }}>
-                  <p>{"ZAR " + month.profit}</p>
+                  <p>{formatter.format(month.profit)}</p>
                 </Col>
 
                 <hr

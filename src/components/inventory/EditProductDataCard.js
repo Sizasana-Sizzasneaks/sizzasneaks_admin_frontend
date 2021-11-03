@@ -41,7 +41,11 @@ function EditProductDataCard(props) {
                   <EditProductImageItem
                     addNewProductImage={props.addNewProductImage}
                     empty={true}
-                    key={productImage._id ? productImage._id + randomString(5) : randomString(9)}
+                    key={
+                      productImage._id
+                        ? productImage._id + randomString(5)
+                        : randomString(9)
+                    }
                   />
                 </>
               ) : (
@@ -84,11 +88,13 @@ function EditProductDataCard(props) {
                         subtractQuantity={props.subtractQuantity}
                         addQuantity={props.addQuantity}
                         deleteProductOption={props.deleteProductOption}
+                        key={randomString(10)}
                       />
                       <EditProductOptionLine // Varaint add
                         color={productOption.color}
                         editType="variant"
                         addVariant={props.addProductOptionVariant}
+                        key={randomString(10)}
                       />
                       <div
                         style={{
@@ -109,6 +115,7 @@ function EditProductDataCard(props) {
                       subtractQuantity={props.subtractQuantity}
                       addQuantity={props.addQuantity}
                       deleteProductOption={props.deleteProductOption}
+                      key={randomString(10)}
                     />
                   );
                 });
@@ -117,6 +124,7 @@ function EditProductDataCard(props) {
             <EditProductOptionLine // Add Color
               updateVariant={props.addProductOptionVariant}
               addOption={props.addProductOption}
+              key={randomString(10)}
             />
           </ProductOptionsSection>
         </Col>

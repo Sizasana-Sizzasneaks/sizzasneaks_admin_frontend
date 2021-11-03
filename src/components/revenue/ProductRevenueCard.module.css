@@ -11,7 +11,7 @@
 }
 
 .ErrorBox {
-  height: 350px;
+  height: max-content;
 }
 
 .ErrorBox {
@@ -28,7 +28,7 @@
 }
 .RecordHeader p {
   margin-bottom: 0px;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 400;
 }
 
@@ -43,6 +43,6 @@
 
 .Record p {
   margin-bottom: 0px;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 300;
 }
