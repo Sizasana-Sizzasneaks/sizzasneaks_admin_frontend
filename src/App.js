@@ -22,6 +22,9 @@ import InventoryCreatePage from "./components/pages/InventoryCreatePage.js";
 import OrderPage from "./components/pages/OrderPage.js";
 import OrderItemPage from "./components/pages/OrderItemPage.js";
 
+//Additional Pages
+import PageNotFound from "./components/pages/PageNotFound.js";
+
 //Test
 import TestOrders from "./components/pages/TestOrders.js";
 
@@ -110,21 +113,18 @@ function App() {
                   path="/inventory/update/:id"
                   component={UpdateInventoryItemPage}
                 />
-{/* 
+                {/* 
 route for the orders in the navigation */}
-                <ProtectedRoute
-                 exact
-                 path="/orders"
-                 component={OrderPage}
-                />
+                <ProtectedRoute exact path="/orders" component={OrderPage} />
 
                 <ProtectedRoute
                   exact
                   path="/orders/:id"
                   component={OrderItemPage}
-                />    
+                />
 
                 <ProtectedRoute exact path="/" component={Dashboard} />
+                <Route path="*" exact={true} component={PageNotFound} />
               </Switch>
             </div>
           </Container>
