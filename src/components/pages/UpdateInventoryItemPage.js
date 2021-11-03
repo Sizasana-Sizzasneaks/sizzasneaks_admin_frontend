@@ -293,7 +293,7 @@ function UpdateInventoryItemPage(props) {
     // Remember - Mongoose adds _id field for all objects added through the mongoose api - antisipate that change and if it really has any effect on the data
 
     if (typeof product_id !== "undefined") {
-      setSaveState({ok: true, message: "Updating Images.."});
+      setSaveState({ ok: true, message: "Updating Images.." });
       //Find Images to Deletes
       var imagesToDelete = compareImageData(initialImages, newImages);
       // Delete Images
@@ -775,7 +775,6 @@ function UpdateInventoryItemPage(props) {
             }}
             //Add Variant To Product Option
             addProductOptionVariant={(option) => {
-              console.log("Here I am");
               var newProductOptions = JSON.parse(
                 JSON.stringify(productOptions)
               );
@@ -809,7 +808,10 @@ function UpdateInventoryItemPage(props) {
                 }
               });
 
-              setProductOptions(newProductOptions);
+              if (output.ok) {
+                setProductOptions(newProductOptions);
+              }
+
               return output;
             }}
             // Add Quantity to Product Option

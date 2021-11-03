@@ -14,6 +14,7 @@ import ReviewBox from "../reviews/ReviewBox.js";
 import Button from "../general/Button.js";
 import ProductOptionsCard from "../inventory/ProductOptionsCard";
 import { CircularProgress } from "@material-ui/core";
+import ProductRevenueCard from "../revenue/ProductRevenueCard";
 
 function InventoryItemPage(props) {
   var { id } = useParams();
@@ -94,6 +95,8 @@ function InventoryItemPage(props) {
               productOptions={product.options}
               productDescription={product.productDescription}
             />
+            <ProductRevenueCard product_id={id}/>
+            <ReviewBox product_id={id} />
           </>
         ) : (
           <div
@@ -107,7 +110,8 @@ function InventoryItemPage(props) {
             <CircularProgress size={115} style={{ margin: "0px auto" }} />
           </div>
         )}
-        <ReviewBox product_id={id} />
+
+        
       </div>
     </div>
   );

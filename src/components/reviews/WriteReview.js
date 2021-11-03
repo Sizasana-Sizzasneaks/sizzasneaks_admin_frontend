@@ -112,6 +112,7 @@ function WriteReview(props) {
 
                 if (formValid === true) {
                   setloading(true);
+                  setWriteReviewState(null)
                   var sendReviewReplyResult = await sendReviewReply(
                     props.review_id,
                     body
@@ -134,13 +135,12 @@ function WriteReview(props) {
                   } else {
                     setWriteReviewState({
                       ...sendReviewReplyResult,
-                      message: "Failed To Send Review Reply",
                     });
                   }
                 }
               }}
               label="Send"
-              styles={{ float: "right", backgroundColor:"#FADA35" }}
+              styles={{ float: "right", backgroundColor: "#FADA35" }}
             />
           </Col>
         </Row>

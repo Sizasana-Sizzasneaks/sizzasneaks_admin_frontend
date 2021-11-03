@@ -3,6 +3,7 @@ import { Row, Col } from "react-bootstrap";
 import Styles from "./ProductOptionLine.module.css";
 import InputField from "../general/InputField.js";
 import Button from "../general/Button.js";
+import BoxSelector from "../general/BoxSelector.js";
 
 import {
   validateColorName,
@@ -48,6 +49,18 @@ function EditProductOptionLine(props) {
   function checkFormValidity() {
     if (colorError && sizeError && quantityError) {
       if (colorError.ok && sizeError.ok && quantityError.ok) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  function checkFormValidityVariant() {
+    if (sizeError && quantityError) {
+      if (sizeError.ok && quantityError.ok) {
         return true;
       } else {
         return false;
@@ -202,10 +215,8 @@ function EditProductOptionLine(props) {
                   quantitySubtract
                 );
                 if (!subtractQuantityResult.ok) {
-                  console.log("Failed");
                   setQuantitySubtractError(subtractQuantityResult);
                 } else {
-                  console.log("Worked");
                   setQuantitySubtract(0);
                   setQuantitySubtractError(null);
                   setQuantityAdd(0);
@@ -249,7 +260,6 @@ function EditProductOptionLine(props) {
               float: "right",
             }}
             onClick={async () => {
-              console.log("Tea");
               if (typeof props.addQuantity !== "undefined") {
                 var addQuantityResult = await props.addQuantity(
                   {
@@ -259,10 +269,8 @@ function EditProductOptionLine(props) {
                   quantityAdd
                 );
                 if (!addQuantityResult.ok) {
-                  console.log("Failed");
                   setQuantityAddError(addQuantityResult);
                 } else {
-                  console.log("Worked");
                   setQuantitySubtract(0);
                   setQuantitySubtractError(null);
                   setQuantityAdd(0);
@@ -286,7 +294,6 @@ function EditProductOptionLine(props) {
                 ? "ADD NEW VARIANT"
                 : "ADD NEW OPTION"
             }
-            disabled={!checkFormValidity()}
             styles={{
               padding: "8px 13px",
               backgroundColor: "#FADA35",
@@ -294,8 +301,8 @@ function EditProductOptionLine(props) {
               float: "right",
             }}
             onClick={async () => {
-              if (checkFormValidity()) {
-                if (typeof props.addOption !== "undefined") {
+              if (typeof props.addOption !== "undefined") {
+                if (checkFormValidity()) {
                   var addOptionResult = await props.addOption({
                     color,
                     size,
@@ -309,21 +316,22 @@ function EditProductOptionLine(props) {
                     setSize(0);
                     setQuantity(0);
                   }
-                } else if (typeof props.addVariant !== "undefined") {
+                }
+              } else if (typeof props.addVariant !== "undefined") {
+                if (checkFormValidityVariant()) {
                   var addVariantResult = await props.addVariant({
                     color,
                     size,
                     quantity,
                   });
 
-                  if (!addVariantResult.ok) {
-                    setAddError(addVariantResult);
-                  } else {
+                  console.log("Err", addVariantResult);
+                  if (addVariantResult.ok) {
                     setQuantity(0);
+                  } else {
+                    setAddError(addVariantResult);
                   }
                 }
-              } else {
-                console.log("Not Adding");
               }
             }}
           />

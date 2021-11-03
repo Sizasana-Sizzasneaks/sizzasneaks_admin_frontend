@@ -185,7 +185,7 @@ function InventoryCreatePage(props) {
   }
 
   async function createNewProduct() {
-    setSaveState({ok: true, message: "Uploading Images.."});
+    setSaveState({ ok: true, message: "Uploading Images.." });
     var imagesToUploadResult = await uploadImages();
     if (!imagesToUploadResult.ok) {
       return { ok: false, message: "Failed to Upload Images" };
@@ -270,7 +270,7 @@ function InventoryCreatePage(props) {
       //Check Images
       var imagesCheckOutput =
         newImages.length < 1
-          ? { ok: false, message: "Product Must have at least One Image" }
+          ? { ok: false, message: "Product must have at least one image" }
           : { ok: true, message: null };
       await setProductImagesError(imagesCheckOutput);
 
@@ -505,7 +505,7 @@ function InventoryCreatePage(props) {
             outputImages.length < 1
               ? {
                   ok: false,
-                  message: "Product Must have at least One Image",
+                  message: "Product must have at least one image",
                 }
               : { ok: true, message: null };
 
@@ -525,7 +525,7 @@ function InventoryCreatePage(props) {
             outputImages.length < 1
               ? {
                   ok: false,
-                  message: "Product Must have at least One Image",
+                  message: "Product must have at least one image",
                 }
               : { ok: true, message: null };
           setProductImagesError(imagesCheckOutput);
@@ -562,7 +562,7 @@ function InventoryCreatePage(props) {
               outputObject.length < 1
                 ? {
                     ok: false,
-                    message: "Product Must have at least One Option",
+                    message: "Product must have at least one option",
                   }
                 : { ok: true, message: null };
 
@@ -573,13 +573,12 @@ function InventoryCreatePage(props) {
         }}
         //Add Variant To Product Option
         addProductOptionVariant={(option) => {
-          console.log("Here I am");
           var newProductOptions = JSON.parse(JSON.stringify(productOptions));
 
           var variantExists = false;
           var output = {
             ok: false,
-            message: "Error adding Product Variant",
+            message: "Error adding product variant",
           };
           newProductOptions.forEach((oneOption) => {
             if (option.color === oneOption.color) {
@@ -605,7 +604,9 @@ function InventoryCreatePage(props) {
             }
           });
 
-          setProductOptions(newProductOptions);
+          if (output.ok) {
+            setProductOptions(newProductOptions);
+          }
           return output;
         }}
         // Add Quantity to Product Option
@@ -641,7 +642,7 @@ function InventoryCreatePage(props) {
         subtractQuantity={(option, amount) => {
           var newProductOptions = JSON.parse(JSON.stringify(productOptions));
 
-          var output = { ok: false, message: "Failed to Subtract" };
+          var output = { ok: false, message: "Failed to subtract" };
           newProductOptions.forEach((singleOption) => {
             if (singleOption.color === option.color) {
               singleOption.variants.forEach((variant) => {
@@ -684,7 +685,7 @@ function InventoryCreatePage(props) {
           });
 
           if (emptyOption) {
-            console.log("Cleaning");
+            
             newProductOptions = newProductOptions.filter((oneOption) => {
               return oneOption.color !== option.color;
             });
@@ -699,7 +700,7 @@ function InventoryCreatePage(props) {
             outputOptions.length < 1
               ? {
                   ok: false,
-                  message: "Product Must have at least One Option",
+                  message: "Product must have at least one option",
                 }
               : { ok: true, message: null };
           setProductOptionsError(optionsCheckOutput);
