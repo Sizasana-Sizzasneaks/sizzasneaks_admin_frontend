@@ -11,6 +11,12 @@ import InventoryItemLine from "../inventory/InventoryItemLine.js";
 import { getProducts } from "../../api/products.js";
 
 function InventoryPage(props) {
+
+  var formatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "ZAR",
+  });
+
   const history = useHistory();
   var [loading, setLoading] = React.useState(true);
   var [products, setProducts] = React.useState(null);
@@ -171,7 +177,7 @@ function InventoryPage(props) {
             />
           </Col>
         </Row>
-        <Row >
+        <Row>
           <Col>
             {" "}
             <SearchInputField
@@ -195,7 +201,7 @@ function InventoryPage(props) {
       </Row>
       <Row className={Styles.InventoryPageBody}>
         <InventoryItemLineHeader />
-        {error && <p>{error.message}</p>}
+        {error && <p style={{ fontSize: "16px", color:"red" }}>{error.message}</p>}
         {loading && <LinearProgress />}
         {products &&
           products.map((product) => {
@@ -204,7 +210,7 @@ function InventoryPage(props) {
                 productId={product._id}
                 productName={product.productName}
                 brand={product.brand}
-                sellingPrice={product.sellingPrice}
+                sellingPrice={formatter.format(product.sellingPrice)}
                 visibility={product.showProduct}
                 pushToProductPage={() => {
                   history.push("/inventory/" + product._id);

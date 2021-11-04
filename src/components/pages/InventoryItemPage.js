@@ -19,25 +19,31 @@ import ProductRevenueCard from "../revenue/ProductRevenueCard";
 function InventoryItemPage(props) {
   var { id } = useParams();
   var history = useHistory();
+
   var [product, setProduct] = React.useState(null);
+  var [productLoading, setProductLoading] = React.useState(false);
+  var [productError, setProductError] = React.useState(null);
 
   React.useEffect(() => {
     getProductItem(id);
   }, [id]);
 
   async function getProductItem(product_id) {
+    setProductLoading(true);
+    setProductError(null);
+    setProduct(null);
     if (typeof product_id !== "undefined") {
       var getProductResult = await getProduct(product_id);
-
+      setProductLoading(false);
       if (getProductResult.ok === true) {
         //Product Item is at index 0 of date
         setProduct(getProductResult.data[0]);
-        console.log(getProductResult.data[0]);
       } else {
-        console.log(getProductResult);
+        setProductError(getProductResult);
       }
     } else {
-      console.log("Product Id is Undefined");
+      setProductLoading(false);
+      setProductError({ ok: false, message: "Invalid Product Id" });
     }
   }
 
@@ -61,7 +67,28 @@ function InventoryItemPage(props) {
               arrow_back
             </span>
           </div>
-
+          {productLoading && (
+            <div
+              style={{
+                marginTop: "150px",
+                marginBottom: "100vh",
+                alignContent: "center",
+                display: "flex",
+              }}
+            >
+              <CircularProgress size={115} style={{ margin: "0px auto" }} />
+            </div>
+          )}
+          {productError && (
+            <div className={Styles.ErrorBox}>
+              <div className={Styles.InnerErrorBox}>
+                <span class="material-icons">error</span>
+              </div>
+              <div className={Styles.InnerErrorBox}>
+                <p>{productError.message}</p>
+              </div>
+            </div>
+          )}
           {product && (
             <Button
               label="Edit"
@@ -76,7 +103,7 @@ function InventoryItemPage(props) {
             />
           )}
         </Row>
-        {product ? (
+        {product && (
           <>
             <ProductDetailsCard
               productId={product._id}
@@ -95,23 +122,10 @@ function InventoryItemPage(props) {
               productOptions={product.options}
               productDescription={product.productDescription}
             />
-            <ProductRevenueCard product_id={id}/>
+            <ProductRevenueCard product_id={id} />
             <ReviewBox product_id={id} />
           </>
-        ) : (
-          <div
-            style={{
-              marginTop: "150px",
-              marginBottom: "100vh",
-              alignContent: "center",
-              display: "flex",
-            }}
-          >
-            <CircularProgress size={115} style={{ margin: "0px auto" }} />
-          </div>
         )}
-
-        
       </div>
     </div>
   );

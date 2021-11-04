@@ -35,8 +35,17 @@ export const getOrders = async (searchBy, value) => {
             return res.data;
           }) // returns the corresponding data for a signed in user's cart
           .catch((error) => {
+            if (error.message === "Network Error") {
+              //Checking if the error is of type "Network Error"
+              return {
+                //Returning a appropriate response if the error is of type network error.
+                ok: false,
+                message:
+                  "Network Error - Please Check your Internet Connection",
+              };
+            }
             // returns general error when trying to getting cart is unsuccessful
-            return { ok: false, error: error };
+            return { ok: false, message: "Error getting Orders" };
           });
       } else {
         //returns a general error when the system has failed to get the user's token
@@ -81,8 +90,17 @@ export const getOrder = async (orderId) => {
             return res.data;
           }) // returns the corresponding data for a signed in user's cart
           .catch((error) => {
+            if (error.message === "Network Error") {
+              //Checking if the error is of type "Network Error"
+              return {
+                //Returning a appropriate response if the error is of type network error.
+                ok: false,
+                message:
+                  "Network Error - Please Check your Internet Connection",
+              };
+            }
             // returns general error when trying to getting cart is unsuccessful
-            return { ok: false, error: error };
+            return { ok: false, message: "Error getting order" };
           });
       } else {
         //returns a general error when the system has failed to get the user's token
@@ -128,8 +146,17 @@ export const updateOrder = async (orderId, orderData) => {
             return res.data;
           }) // returns the corresponding data for a signed in user's cart
           .catch((error) => {
+            if (error.message === "Network Error") {
+              //Checking if the error is of type "Network Error"
+              return {
+                //Returning a appropriate response if the error is of type network error.
+                ok: false,
+                message:
+                  "Network Error - Please Check your Internet Connection",
+              };
+            }
             // returns general error when trying to getting cart is unsuccessful
-            return { ok: false, error: error };
+            return { ok: false, message: "Error when updating order" };
           });
       } else {
         //returns a general error when the system has failed to get the user's token
@@ -175,8 +202,17 @@ export const cancelOrder = async (orderId, cancelDescription) => {
             return res.data;
           }) // returns the corresponding data for a signed in user's cart
           .catch((error) => {
+            if (error.message === "Network Error") {
+              //Checking if the error is of type "Network Error"
+              return {
+                //Returning a appropriate response if the error is of type network error.
+                ok: false,
+                message:
+                  "Network Error - Please Check your Internet Connection",
+              };
+            }
             // returns general error when trying to getting cart is unsuccessful
-            return { ok: false, error: error };
+            return { ok: false, message: "Error canceling order" };
           });
       } else {
         //returns a general error when the system has failed to get the user's token

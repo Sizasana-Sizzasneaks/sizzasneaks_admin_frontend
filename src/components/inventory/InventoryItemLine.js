@@ -30,7 +30,7 @@ function InventoryItemLine(props) {
         <p>{props.visibility ? "Visible" : "Hidden"}</p>
       </Col>
       <Col xl={2} className={Styles.LeftAlign}>
-        <p>{"R " + props.sellingPrice}</p>
+        <p>{props.sellingPrice}</p>
       </Col>
     </Row>
   );

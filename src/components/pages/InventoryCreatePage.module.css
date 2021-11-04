@@ -3,7 +3,7 @@
   /* display: inline; */
 }
 
-.SaveStateText{
+.SaveStateText {
   width: fit-content;
   margin-bottom: 0px;
   display: flex;
@@ -12,14 +12,34 @@
   font-weight: 400;
 }
 
-.SaveStateTextSuccess{
-  color: #64BC26
-
+.SaveStateTextSuccess {
+  color: #64bc26;
 }
 
-
-.SaveStateTextError{
-
+.SaveStateTextError {
   color: #b00020;
+}
 
+.ErrorBox {
+  height: 65vh;
+  width: 100%;
+  color: red;
+  text-align: "center";
+  padding-top: 80px;
+}
+
+.ErrorBox span {
+  font-size: 90px;
+}
+
+.InnerErrorBox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.InnerErrorBox p {
+  font-size: 22px;
+  margin-top: 20px;
+  color: red;
 }

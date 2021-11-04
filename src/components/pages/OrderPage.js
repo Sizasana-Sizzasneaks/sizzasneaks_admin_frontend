@@ -190,12 +190,8 @@ function OrderPage(props) {
 
     if (getOrdersResult.ok) {
       setOrders(getOrdersResult.data);
-      console.log("Worked");
-      console.log(getOrdersResult);
     } else {
       setError(getOrdersResult);
-      console.log("Failed");
-      console.log(getOrdersResult);
     }
   }
 
@@ -207,10 +203,9 @@ function OrderPage(props) {
 
     if (updateOrderResult.ok) {
       refreshOrders();
-      console.log(updateOrderResult);
+
       return { ok: true };
     } else {
-      console.log(updateOrderResult);
       return { ok: false };
     }
   }
@@ -223,10 +218,9 @@ function OrderPage(props) {
 
     if (updateOrderResult.ok) {
       refreshOrders();
-      console.log(updateOrderResult);
+
       return { ok: true };
     } else {
-      console.log(updateOrderResult);
       return { ok: false };
     }
   }
@@ -236,10 +230,8 @@ function OrderPage(props) {
 
     if (cancelOrderResult.ok) {
       refreshOrders();
-      console.log(cancelOrderResult);
       return { ok: true };
     } else {
-      console.log(cancelOrderResult);
       return { ok: false };
     }
   }
@@ -369,7 +361,9 @@ function OrderPage(props) {
       <Row className={Styles.InventoryPageBody}>
         <OrderItemLineHeader />
 
-        {error && <p>{error.message}</p>}
+        {error && (
+          <p style={{ fontSize: "16px", color: "red" }}>{error.message}</p>
+        )}
         {loading && <LinearProgress />}
 
         {orders &&

@@ -28,3 +28,26 @@
 .BackButton:hover {
   cursor: pointer;
 }
+.ErrorBox {
+  height: 65vh;
+  width: 100%;
+  color: red;
+  text-align: "center";
+  padding-top: 80px;
+}
+
+.ErrorBox span {
+  font-size: 90px;
+}
+
+.InnerErrorBox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.InnerErrorBox p {
+  font-size: 22px;
+  margin-top: 20px;
+  color: red;
+}
