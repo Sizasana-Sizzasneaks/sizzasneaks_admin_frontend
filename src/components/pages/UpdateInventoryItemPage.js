@@ -43,6 +43,8 @@ function UpdateInventoryItemPage(props) {
   var [changesNotSaved, setChangesNotSaved] = React.useState(true);
 
   var [loading, setLoading] = React.useState(true);
+  var [mainError, setMainError] = React.useState(null);
+  var [productShow, setProductShow] = React.useState(false);
 
   //Product Id
   var [productId, setProductId] = React.useState(null);
@@ -132,7 +134,9 @@ function UpdateInventoryItemPage(props) {
   }
 
   async function onStart(idValue) {
-    console.log("On Start Called");
+    setLoading(true);
+    setMainError(null);
+    setProductShow(false);
     var setAvailabilityToFalseResult = await changeProductAvailabilityState(
       idValue,
       false
@@ -143,11 +147,18 @@ function UpdateInventoryItemPage(props) {
       var getProductItemResult = await getProductItem(idValue);
 
       if (!getProductItemResult.ok) {
-        console.log(getProductItemResult);
+        setLoading(false);
+        setMainError(getProductItemResult);
+
         //Display Error and allow User to Try again - (Reload Page)
+      } else {
+        setLoading(false);
+        setProductShow(true);
       }
     } else {
-      console.log(setAvailabilityToFalseResult);
+      setLoading(false);
+      setMainError(setAvailabilityToFalseResult);
+
       //Display Error and allow User to Try again - (Reload Page)
     }
   }
@@ -174,7 +185,6 @@ function UpdateInventoryItemPage(props) {
           setProductOptions(product.options);
           setProductDescription(product.productDescription);
 
-          setLoading(false);
           return { ok: true, message: "Product Retrieved and Set to View" };
         } else {
           return { ok: false, message: "Product Not Set to Unavailable" };
@@ -229,7 +239,7 @@ function UpdateInventoryItemPage(props) {
       if (updateProductResult.ok === true) {
         return { ok: true, message: "Product Availability Changed" };
       } else {
-        return { ok: false, message: "Failed to change Product Availability" };
+        return updateProductResult;
       }
     } else {
       return { ok: false, message: "Product ID Not Supplied" };
@@ -441,8 +451,7 @@ function UpdateInventoryItemPage(props) {
           (snapshot) => {},
           (error) => {
             // Handle unsuccessful uploads
-            console.log("Error");
-            console.log(error);
+
             reject({ ok: false, message: "Unsuccessful to Upload" });
           },
           () => {
@@ -457,7 +466,6 @@ function UpdateInventoryItemPage(props) {
           }
         );
       } catch (error) {
-        console.log(error);
         reject({
           ok: false,
           message: "Unexpected Error When Uploading an Images",
@@ -522,12 +530,22 @@ function UpdateInventoryItemPage(props) {
 
   return (
     <div>
+      {mainError && (
+        <div className={Styles.ErrorBox}>
+          <div className={Styles.InnerErrorBox}>
+            <span class="material-icons">error</span>
+          </div>
+          <div className={Styles.InnerErrorBox}>
+            <p>{mainError.message}</p>
+          </div>
+        </div>
+      )}
       <Row className={Styles.EditButtonSegment}>
         <Prompt
           when={changesNotSaved}
           message="Changes made have not yet been stored, are you sure that you want to leave this page?"
         />
-        {!loading && (
+        {productShow && (
           <>
             <Button
               label="Save"
@@ -624,8 +642,7 @@ function UpdateInventoryItemPage(props) {
             </p>
           ))}
       </Row>
-
-      {loading ? (
+      {loading && (
         <div
           style={{
             marginTop: "150px",
@@ -636,7 +653,8 @@ function UpdateInventoryItemPage(props) {
         >
           <CircularProgress size={115} style={{ margin: "0px auto" }} />
         </div>
-      ) : (
+      )}{" "}
+      {productShow && (
         <>
           <EditProductDetailsCard
             //ProductID

@@ -31,8 +31,17 @@ export const getTopProducts = async () => {
             return res.data;
           }) // returns the corresponding data for a signed in user's cart
           .catch((error) => {
+            if (error.message === "Network Error") {
+              //Checking if the error is of type "Network Error"
+              return {
+                //Returning a appropriate response if the error is of type network error.
+                ok: false,
+                message:
+                  "Network Error - Please Check your Internet Connection",
+              };
+            }
             // returns general error when trying to getting cart is unsuccessful
-            return { ok: false, error: error };
+            return { ok: false, message: "Error getting top products" };
           });
       } else {
         //returns a general error when the system has failed to get the user's token
@@ -74,8 +83,18 @@ export const getProductRevenue = async (productId) => {
             return res.data;
           }) // returns the corresponding data for a signed in user's cart
           .catch((error) => {
+            if (error.message === "Network Error") {
+              //Checking if the error is of type "Network Error"
+              return {
+                //Returning a appropriate response if the error is of type network error.
+                ok: false,
+                message:
+                  "Network Error - Please Check your Internet Connection",
+              };
+            }
+            //Returning a general error response when there is an error with sending the http request.
             // returns general error when trying to getting cart is unsuccessful
-            return { ok: false, error: error };
+            return { ok: false, message: "Error getting product revenue" };
           });
       } else {
         //returns a general error when the system has failed to get the user's token
@@ -90,7 +109,6 @@ export const getProductRevenue = async (productId) => {
     return { ok: false, message: "Getting Top Products Failed - Try again" };
   }
 };
-
 
 export const getUnitsSold = async () => {
   //Checks whether data from the redux store has been loaded
@@ -118,8 +136,17 @@ export const getUnitsSold = async () => {
             return res.data;
           }) // returns the corresponding data for a signed in user's cart
           .catch((error) => {
+            if (error.message === "Network Error") {
+              //Checking if the error is of type "Network Error"
+              return {
+                //Returning a appropriate response if the error is of type network error.
+                ok: false,
+                message:
+                  "Network Error - Please Check your Internet Connection",
+              };
+            }
             // returns general error when trying to getting cart is unsuccessful
-            return { ok: false, error: error };
+            return { ok: false, message: "Error getting units sold" };
           });
       } else {
         //returns a general error when the system has failed to get the user's token

@@ -32,11 +32,9 @@ function ProductRevenueCard(props) {
 
     setLoadingProductRevenue(false);
     if (getProductRevenueResult.ok) {
-      console.log(Object.values(getProductRevenueResult.data));
      
       setProductRevenue(Object.values(getProductRevenueResult.data));
     } else {
-      console.log(getProductRevenueResult);
       setProductRevenueError(getProductRevenueResult);
     }
   }

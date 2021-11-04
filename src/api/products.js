@@ -36,7 +36,7 @@ export const updateProduct = async (productId, productData) => {
           };
         }
         //Returning a general error response when there is an error with sending the http request.
-        return { ok: false, message: "Error Updating Product." };
+        return { ok: false, message: "Error updating product." };
       });
   } else {
     //Returning an appropriate response when retrieving the current signed user's ID token fails.
@@ -75,7 +75,7 @@ export const getProducts = async (queryObject) => {
           };
         }
         //Returning a general error response when there is an error with sending the http request.
-        return { ok: false, message: "Error Getting Products." };
+        return { ok: false, message: "Error getting products." };
       });
   } else {
     //Returning an appropriate response when retrieving the current signed user's ID token fails.
@@ -112,7 +112,7 @@ export const getProduct = async (id) => {
           };
         }
         //Returning a general error response when there is an error with sending the http request.
-        return { ok: false, message: "Error Getting Product." };
+        return { ok: false, message: "Error getting product." };
       });
   } else {
     //Returning an appropriate response when retrieving the current signed user's ID token fails.
@@ -150,7 +150,7 @@ export const createProduct = async (productData) => {
         }
 
         //Returning a general error response when there is an error with sending the http request.
-        return { ok: false, message: "Error Creating New Product." };
+        return { ok: false, message: "Error creating new product." };
       });
   } else {
     //Returning an appropriate response when retrieving the current signed user's ID token fails.

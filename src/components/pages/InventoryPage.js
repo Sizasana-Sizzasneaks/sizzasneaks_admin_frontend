@@ -171,7 +171,7 @@ function InventoryPage(props) {
             />
           </Col>
         </Row>
-        <Row >
+        <Row>
           <Col>
             {" "}
             <SearchInputField
@@ -195,7 +195,7 @@ function InventoryPage(props) {
       </Row>
       <Row className={Styles.InventoryPageBody}>
         <InventoryItemLineHeader />
-        {error && <p>{error.message}</p>}
+        {error && <p style={{ fontSize: "16px", color:"red" }}>{error.message}</p>}
         {loading && <LinearProgress />}
         {products &&
           products.map((product) => {

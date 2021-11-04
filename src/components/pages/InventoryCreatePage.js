@@ -404,7 +404,7 @@ function InventoryCreatePage(props) {
             setChangesNotSaved(false);
 
             setTimeout(() => {
-              history.goBack();
+              history.push("/inventory");
             }, 1000);
           }}
         />
@@ -685,7 +685,6 @@ function InventoryCreatePage(props) {
           });
 
           if (emptyOption) {
-            
             newProductOptions = newProductOptions.filter((oneOption) => {
               return oneOption.color !== option.color;
             });
