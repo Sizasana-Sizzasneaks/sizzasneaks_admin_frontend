@@ -95,7 +95,7 @@ function TopProductsCard() {
                   }}
                 >
                   <Col xl={2} style={{ padding: "0px" }}>
-                    <p>{index}</p>
+                    <p>{++index}</p>
                   </Col>
                   <Col xl={6} style={{ padding: "0px" }}>
                     <p>{product.productName}</p>

@@ -191,7 +191,7 @@ export const validateNumber = (value) => {
 const productDescriptionSchema = Yup.object().shape({
   text: Yup.string("Please enter a string")
     .required("Required")
-    .max(300)
+    .max(1000)
     .nullable(),
 });
 

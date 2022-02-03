@@ -136,7 +136,7 @@ function EditProductDataCard(props) {
           <InputTextArea
             value={props.productDescription}
             // label="Product Description"
-            wrapperStyle={{ width: "auto", height: "120px" }}
+            wrapperStyle={{ width: "auto", height: "150px" }}
             entireComponentStyle={{ width: "100%" }}
             inputStyle={{ width: "99%" }}
             onChange={async (value) => {

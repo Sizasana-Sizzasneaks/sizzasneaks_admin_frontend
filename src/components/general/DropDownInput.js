@@ -43,8 +43,8 @@ function DropDownInput(props) {
           }}
         >
           <option value=""></option>
-          <option value="true">True</option>
-          <option value="false">False</option>
+          <option value="true">Visible</option>
+          <option value="false">Hidden</option>
         </select>
       </div>
       {props.error && !props.error.ok && !focused && (
